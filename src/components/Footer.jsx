@@ -15,14 +15,13 @@ export default function Footer() {
         </div>
         <div className="row justify-content-center pt-4 sm-pt-35px text-center text-md-start">
           <div className="col-xl-3 col-md-12 lg-mb-30px d-flex justify-content-center justify-content-xl-start">
-            <Link href="/" className="footer-logo d-inline-block" aria-label="Adlyngo Logo">
-              <Image 
-                src="/images/footer-logo.svg" 
-                alt="Adlyngo Footer Logo" 
-                width={150} 
-                height={100} 
-                style={{ height: 'auto', display: 'block' }} 
-                className="transition-03" 
+            <Link href="/" className="d-inline-block" aria-label="Adlyngo Logo">
+              <Image
+                src="/images/footer-logo.svg"
+                alt="Adlyngo Footer Logo"
+                width={200}
+                height={265}
+                className="block w-36 md:w-48 h-auto mb-6 transition-03"
               />
             </Link>
           </div>
@@ -45,11 +44,11 @@ export default function Footer() {
             <span className="text-white mb-15px d-block fw-600 fs-18">Stay Updated</span>
             <p className="mb-20px text-white opacity-8 w-90">Get growth insights, trends, and updates from Adlyngo.</p>
             <form className="position-relative w-100" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                className="bg-transparent text-white w-100 pb-15px fs-15 border-bottom border-color-transparent-white-light" 
-                type="email" 
-                placeholder="Enter your email" 
-                style={{ border: 'none', borderBottom: '1px solid rgba(255,255,255,0.2)', outline: 'none', borderRadius: 0 }} 
+              <input
+                className="bg-transparent text-white w-100 pb-15px fs-15 border-bottom border-color-transparent-white-light"
+                type="email"
+                placeholder="Enter your email"
+                style={{ border: 'none', borderBottom: '1px solid rgba(255,255,255,0.2)', outline: 'none', borderRadius: 0 }}
                 required
               />
               <button className="btn p-0 text-white position-absolute top-0 right-0 h-100" type="submit" aria-label="Subscribe to newsletter">
