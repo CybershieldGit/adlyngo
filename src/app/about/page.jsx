@@ -2,6 +2,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Stats from "@/components/sections/Stats";
 
+export const metadata = {
+  title: "About Us",
+  description: "Learn more about Adlyngo, a premium digital creative agency based in Greater Noida. We empower brands through strategic design and digital marketing.",
+};
+
 export default function AboutPage() {
   return (
     <>

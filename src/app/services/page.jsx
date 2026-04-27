@@ -1,6 +1,12 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Services from "@/components/sections/Services";
+import Image from "next/image";
+
+export const metadata = {
+  title: "Our Services",
+  description: "Explore the wide range of digital services offered by Adlyngo, including branding, performance ads, and website design.",
+};
 
 export default function ServicesPage() {
   return (
@@ -25,7 +31,13 @@ export default function ServicesPage() {
               </div>
             </div>
           </div>
-          <img className="position-absolute left-30px top-130px z-index-minus-2 w-25" src="/images/demo-branding-studio-bg-01.jpg" alt="" data-bottom-top="transform:scale(0.5, 0.5)" data-top-bottom="transform:scale(1.2, 1.2)" />
+          <Image 
+            className="position-absolute left-30px top-130px z-index-minus-2 w-25 h-auto" 
+            src="/images/demo-branding-studio-bg-01.jpg" 
+            alt="Background Pattern" 
+            width={400} 
+            height={400} 
+          />
         </section>
 
         {/* Hero Image Section */}
@@ -45,7 +57,7 @@ export default function ServicesPage() {
               <div className="col-lg-5 md-mb-50px">
                 <div className="position-sticky top-50px" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 600, "delay":0, "staggervalue": 300, "easing": "easeOutQuad" }'>
                   <div className="fs-11 lh-26 fw-500 text-uppercase text-white bg-base-color border-radius-30px ps-15px pe-15px mb-20px d-inline-block">Discover our process</div>
-                  <h2 className="fw-500 text-dark-gray mb-40px">We craft indelible digital <span className="highlight-separator pb-0" data-shadow-animation="true" data-animation-delay="1500">experience<span><img src="/images/highlight-separator-11.svg" alt="" /></span></span> via best services.</h2>
+                  <h2 className="fw-500 text-dark-gray mb-40px">We craft indelible digital <span className="highlight-separator pb-0" data-shadow-animation="true" data-animation-delay="1500">experience<span><Image src="/images/highlight-separator-11.svg" alt="Highlight" width={200} height={20} /></span></span> via best services.</h2>
                   <a href="/contact" className="btn border-1 btn-transparent-light-gray btn-box-shadow btn-large fw-500 btn-rounded left-icon btn-switch-text mt-auto">
                     <span>
                       <span><i className="feather icon-feather-mail"></i></span>
@@ -57,7 +69,7 @@ export default function ServicesPage() {
               <div className="col-lg-6 offset-lg-1 pe-70px lg-pe-15px">
                 <div className="feature-box feature-box-left-icon last-paragraph-no-margin border-bottom border-color-extra-medium-gray pb-40px mb-40px">
                   <div className="feature-box-icon">
-                    <img src="/images/demo-branding-studio-services-icon-01.svg" alt="" />
+                    <Image src="/images/demo-branding-studio-services-icon-01.svg" alt="Research Icon" width={50} height={50} />
                   </div>
                   <div className="feature-box-content">
                     <span className="fs-20 fw-500 d-inline-block text-dark-gray mb-5px">Research and strategy</span>
@@ -66,7 +78,7 @@ export default function ServicesPage() {
                 </div>
                 <div className="feature-box feature-box-left-icon last-paragraph-no-margin border-bottom border-color-extra-medium-gray pb-40px mb-40px">
                   <div className="feature-box-icon">
-                    <img src="/images/demo-branding-studio-services-icon-02.svg" alt="" />
+                    <Image src="/images/demo-branding-studio-services-icon-02.svg" alt="Wireframe Icon" width={50} height={50} />
                   </div>
                   <div className="feature-box-content">
                     <span className="fs-20 fw-500 d-inline-block text-dark-gray mb-5px">Create wireframe</span>
@@ -75,7 +87,7 @@ export default function ServicesPage() {
                 </div>
                 <div className="feature-box feature-box-left-icon last-paragraph-no-margin border-bottom border-color-extra-medium-gray pb-40px mb-40px">
                   <div className="feature-box-icon">
-                    <img src="/images/demo-branding-studio-services-icon-03.svg" alt="" />
+                    <Image src="/images/demo-branding-studio-services-icon-03.svg" alt="Scale Icon" width={50} height={50} />
                   </div>
                   <div className="feature-box-content">
                     <span className="fs-20 fw-500 d-inline-block text-dark-gray mb-5px">Development and scale</span>
@@ -84,7 +96,7 @@ export default function ServicesPage() {
                 </div>
                 <div className="feature-box feature-box-left-icon last-paragraph-no-margin">
                   <div className="feature-box-icon">
-                    <img src="/images/demo-branding-studio-services-icon-04.svg" alt="" />
+                    <Image src="/images/demo-branding-studio-services-icon-04.svg" alt="Launch Icon" width={50} height={50} />
                   </div>
                   <div className="feature-box-content">
                     <span className="fs-20 fw-500 d-inline-block text-dark-gray mb-5px">Launch and go-live</span>

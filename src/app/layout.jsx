@@ -2,8 +2,20 @@ import "./globals.css";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Adlyngo - Premium Digital Creative Agency",
+  title: {
+    default: "Adlyngo - Premium Digital Creative Agency",
+    template: "%s | Adlyngo"
+  },
   description: "Adlyngo is a premium digital creative agency helping startups, modern brands, and ecommerce businesses grow through branding, performance ads, and website design.",
+  keywords: ["Digital Agency", "Branding", "Performance Ads", "Website Design", "Startup Growth"],
+  authors: [{ name: "Adlyngo Team" }],
+  creator: "Adlyngo",
+  publisher: "Adlyngo",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: "/images/favicon.png",
     apple: [
@@ -11,6 +23,39 @@ export const metadata = {
       { url: "/images/apple-touch-icon-72x72.png", sizes: "72x72" },
       { url: "/images/apple-touch-icon-114x114.png", sizes: "114x114" },
     ],
+  },
+  openGraph: {
+    title: "Adlyngo - Premium Digital Creative Agency",
+    description: "Adlyngo is a premium digital creative agency helping startups, modern brands, and ecommerce businesses grow.",
+    url: "https://adlyngo.com",
+    siteName: "Adlyngo",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Adlyngo Agency",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Adlyngo - Premium Digital Creative Agency",
+    description: "Adlyngo is a premium digital creative agency helping startups, modern brands, and ecommerce businesses grow.",
+    images: ["/images/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 

@@ -1,5 +1,11 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Image from "next/image";
+
+export const metadata = {
+  title: "Contact Us",
+  description: "Get in touch with Adlyngo for branding, performance ads, and website design. Start a conversation about your next project today.",
+};
 
 export default function ContactPage() {
   return (
@@ -24,11 +30,29 @@ export default function ContactPage() {
               </div>
             </div>
             <div className="position-absolute right-minus-120px xxl-right-0px xl-right-30px bottom-minus-180px z-index-1 d-none d-md-flex flex-column align-items-center justify-content-center">
-              <img src="/images/demo-branding-studio-about-01.png" className="position-absolute" alt="" />
-              <img src="/images/demo-branding-studio-about-02.png" className="animation-rotation" alt="" />
+              <Image 
+                src="/images/demo-branding-studio-about-01.png" 
+                className="position-absolute" 
+                alt="About Icon 1" 
+                width={100} 
+                height={100} 
+              />
+              <Image 
+                src="/images/demo-branding-studio-about-02.png" 
+                className="animation-rotation" 
+                alt="About Icon 2" 
+                width={100} 
+                height={100} 
+              />
             </div>
           </div>
-          <img className="position-absolute left-30px top-130px z-index-minus-2 w-25" src="/images/demo-branding-studio-bg-01.jpg" alt="" data-bottom-top="transform:scale(0.5, 0.5)" data-top-bottom="transform:scale(1.2, 1.2)" />
+          <Image 
+            className="position-absolute left-30px top-130px z-index-minus-2 w-25 h-auto" 
+            src="/images/demo-branding-studio-bg-01.jpg" 
+            alt="Background Pattern" 
+            width={400} 
+            height={400} 
+          />
         </section>
 
         {/* Start a Conversation Tagline */}
@@ -79,7 +103,13 @@ export default function ContactPage() {
             <div className="row justify-content-center">
               <div className="col-lg-6 col-md-10" data-bottom-top="transform: translateY(50px)" data-top-bottom="transform: translateY(-50px)">
                 <div>
-                  <img src="/images/generic-600x440.jpg" className="border-radius-4px w-100" alt=""/> 
+                  <Image 
+                    src="/images/generic-600x440.jpg" 
+                    className="border-radius-4px w-100 h-auto" 
+                    alt="Office Location" 
+                    width={600} 
+                    height={440} 
+                  /> 
                 </div>
                 <div className="position-relative ps-40px pe-40px pt-50px lg-ps-25px lg-pe-25px sm-pt-35px">
                   <div className="fs-80 fw-700 text-uppercase text-dark-gray position-absolute top-minus-40px left-40px lg-left-25px">In</div>
@@ -112,7 +142,7 @@ export default function ContactPage() {
             <div className="row">
               <div className="col-xxl-4 col-lg-5 md-mb-50px sm-mb-30px" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 600, "delay":0, "staggervalue": 300, "easing": "easeOutQuad" }'>
                 <div className="fs-11 lh-26 fw-500 text-uppercase text-white bg-base-color border-radius-30px ps-15px pe-15px mb-20px d-inline-block">Get in touch with us</div>
-                <h2 className="fw-500 text-dark-gray mb-0">Let us help you get your project <span className="highlight-separator mb-0 pb-0 z-index-1" data-shadow-animation="true" data-animation-delay="500">started.<span><img src="/images/highlight-separator-08.svg" alt="" /></span></span></h2>
+                <h2 className="fw-500 text-dark-gray mb-0">Let us help you get your project <span className="highlight-separator mb-0 pb-0 z-index-1" data-shadow-animation="true" data-animation-delay="500">started.<span><Image src="/images/highlight-separator-08.svg" alt="Highlight" width={200} height={20} /></span></span></h2>
               </div>
               <div className="col-md-7 offset-xxl-1">
                 <form action="#" method="post" className="contact-form-style-07" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 200, "staggervalue": 300, "easing": "easeOutQuad" }'>

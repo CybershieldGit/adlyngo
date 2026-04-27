@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar() {
   return (
@@ -6,10 +7,31 @@ export default function Navbar() {
       <nav className="navbar navbar-expand-lg header-light bg-white border-bottom border-color-transparent-dark-very-light disable-fixed">
         <div className="container-fluid">
           <div className="col-auto">
-            <Link className="navbar-brand" href="/" aria-label="logo">
-              <img src="/images/logo.svg" data-at2x="/images/logo.svg" alt="" className="default-logo" />
-              <img src="/images/logo.svg" data-at2x="/images/logo.svg" alt="" className="alt-logo" />
-              <img src="/images/logo.svg" data-at2x="/images/logo.svg" alt="" className="mobile-logo" />
+            <Link className="navbar-brand" href="/" aria-label="Adlyngo Logo">
+              <Image 
+                src="/images/logo.svg" 
+                alt="Adlyngo Logo" 
+                width={150} 
+                height={40} 
+                className="default-logo" 
+                priority
+              />
+              <Image 
+                src="/images/logo.svg" 
+                alt="Adlyngo Logo" 
+                width={150} 
+                height={40} 
+                className="alt-logo" 
+                priority
+              />
+              <Image 
+                src="/images/logo.svg" 
+                alt="Adlyngo Logo" 
+                width={150} 
+                height={40} 
+                className="mobile-logo" 
+                priority
+              />
             </Link>
           </div>
           <div className="col-auto menu-order left-nav">
