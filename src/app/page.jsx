@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/sections/Hero";
 import Stats from "@/components/sections/Stats";
+import InfiniteHorizontalCarousel from "@/components/InfiniteHorizontalCarousel";
 import AboutSection from "@/components/sections/About";
 import Services from "@/components/sections/Services";
 import CaseStudies from "@/components/sections/CaseStudies";
@@ -37,6 +38,18 @@ export default function Home() {
         <Services />
         <CaseStudies />
         
+        {/* Reels Section */}
+        <section className="p-0 overflow-hidden" style={{ background: '#262626' }}>
+          <div className="container">
+            <div className="row justify-content-center">
+              <div className="col-12 text-center pt-5">
+                <h2 className="fs-65 fw-500 text-white mb-0">Featured Work</h2>
+              </div>
+            </div>
+          </div>
+          <InfiniteHorizontalCarousel />
+        </section>
+
         {/* Brands Section */}
         <section className="py-5">
           <div className="container">

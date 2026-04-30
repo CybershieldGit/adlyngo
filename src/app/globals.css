@@ -1,1 +1,257 @@
 /* Global styles can be added here or left empty since we are using original styles from public/css */
+
+/* ========================================
+   Infinite Horizontal Carousel
+   ======================================== */
+
+/* Section wrapper */
+.ihc-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0 40px;
+}
+
+/* Tabs container - pill shape matching wireframe */
+.ihc-tabs {
+  display: inline-flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50px;
+  padding: 5px 6px;
+  margin-bottom: 50px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.ihc-tab {
+  padding: 10px 28px;
+  border-radius: 50px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  text-transform: uppercase;
+}
+
+.ihc-tab:hover {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ihc-tab--active {
+  background: #fff !important;
+  color: #1a1a1a !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Carousel wrapper - full width, hides overflow */
+.ihc-carousel {
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  padding: 20px 0;
+  perspective: 1200px;
+}
+
+/* Gradient fade on edges */
+.ihc-carousel::before,
+.ihc-carousel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.ihc-carousel::before {
+  left: 0;
+  background: linear-gradient(to right, #262626 0%, transparent 100%);
+}
+
+.ihc-carousel::after {
+  right: 0;
+  background: linear-gradient(to left, #262626 0%, transparent 100%);
+}
+
+/* Track - horizontal flex row with animation */
+.ihc-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  animation: ihc-scroll 40s linear infinite;
+  transform-style: preserve-3d;
+  padding: 10px 0;
+}
+
+@keyframes ihc-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 12px));
+  }
+}
+
+/* Pause on hover or when manually paused */
+.ihc-track:hover,
+.ihc-track--paused {
+  animation-play-state: paused !important;
+}
+
+/* Individual reel card */
+.ihc-reel {
+  flex-shrink: 0;
+  width: 260px;
+  height: 460px;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  background: #000;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, filter;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.ihc-reel video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  display: block;
+}
+
+/* Mute/Unmute button */
+.ihc-mute-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
+  pointer-events: none;
+}
+
+.ihc-mute-btn--visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.ihc-mute-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Category overlay */
+.ihc-reel__overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px 20px 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.ihc-reel__label {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Hover: blur all, un-blur hovered */
+.ihc-track:hover .ihc-reel {
+  filter: blur(5px) brightness(0.55);
+  transform: scale(0.93);
+}
+
+.ihc-track .ihc-reel:hover {
+  filter: blur(0px) brightness(1) !important;
+  transform: scale(1.08) translateZ(40px) !important;
+  z-index: 30;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.ihc-track .ihc-reel:hover .ihc-reel__overlay {
+  opacity: 1;
+}
+
+/* ========================================
+   Mobile Responsive
+   ======================================== */
+@media (max-width: 768px) {
+  .ihc-section {
+    padding: 10px 0 20px;
+  }
+
+  .ihc-tabs {
+    margin-bottom: 30px;
+    gap: 2px;
+    padding: 4px 5px;
+  }
+
+  .ihc-tab {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .ihc-carousel {
+    padding: 10px 0;
+  }
+
+  .ihc-carousel::before,
+  .ihc-carousel::after {
+    width: 40px;
+  }
+
+  .ihc-reel {
+    width: 200px;
+    height: 355px;
+    border-radius: 16px;
+  }
+
+  .ihc-track {
+    gap: 16px;
+  }
+
+  /* Disable hover effects on mobile */
+  .ihc-track:hover .ihc-reel {
+    filter: none;
+    transform: none;
+  }
+
+  .ihc-track .ihc-reel:hover {
+    transform: none !important;
+    filter: none !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
