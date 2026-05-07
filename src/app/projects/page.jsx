@@ -1,7 +1,15 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import * as projectService from "@/services/project.service";
+import connectDB from "@/lib/mongodb";
 
-export default function ProjectsPage() {
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function ProjectsPage() {
+  await connectDB();
+  const { projects } = await projectService.getProjects({ published: true });
+
   return (
     <>
       <Navbar />
@@ -53,49 +61,52 @@ export default function ProjectsPage() {
           <div className="container-fluid">
             <div className="position-relative z-index-2">
               <div className="row mb-30px md-mb-0">
+                {/* Slot 1 */}
                 <div className="col-lg-5 col-md-4">
                   <ul className="portfolio-transform portfolio-wrapper grid-loading grid grid-4col xxl-grid-4col xl-grid-4col lg-grid-4col md-grid-2col sm-grid-2col xs-grid-1col gutter-large">
                     <li className="grid-sizer"></li>
                     <li className="grid-item grid-item-single selected" data-anime='{ "effect": "slide", "direction": "tb", "color": "#151515", "duration": 1000, "delay": 0 }'>
                       <div className="portfolio-box mousetip-wrapper">
-                        <a href="#">
+                        <a href={`/projects/${projects[0]?.slug || "#"}`}>
                           <div className="portfolio-image overflow-hidden">
-                            <img src="/images/generic-735x920.jpg" alt="" />
+                            <img src={projects[0]?.coverImage?.url || "/images/generic-735x920.jpg"} alt={projects[0]?.title || "Project"} />
                           </div>
                           <div className="caption bg-white border-radius-100px">
-                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">Studio cascade</span>
+                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">{projects[0]?.title || "Creative Work"}</span>
                           </div>
                         </a>             
                       </div>
                     </li>
                   </ul>
                 </div>
+                {/* Slot 2 */}
                 <div className="col-lg-3 col-md-4 align-self-end">
                    <ul className="portfolio-transform portfolio-wrapper grid-loading grid gutter-large">
                     <li className="grid-item grid-item-single selected" data-anime='{ "effect": "slide", "direction": "tb", "color": "#151515", "duration": 1000, "delay": 200 }'>
                       <div className="portfolio-box mousetip-wrapper">
-                        <a href="#">
+                        <a href={`/projects/${projects[1]?.slug || "#"}`}>
                           <div className="portfolio-image overflow-hidden">
-                            <img src="/images/generic-735x735.jpg" alt="" />
+                            <img src={projects[1]?.coverImage?.url || "/images/generic-735x735.jpg"} alt={projects[1]?.title || "Project"} />
                           </div>
                           <div className="caption bg-white border-radius-100px">
-                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">Velvet frame</span>
+                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">{projects[1]?.title || "Brand Identity"}</span>
                           </div>
                         </a>             
                       </div>
                     </li>
                   </ul>
                 </div>
+                {/* Slot 3 */}
                 <div className="col-lg-4 col-md-4">
                   <ul className="portfolio-transform portfolio-wrapper grid-loading grid gutter-large">
                     <li className="grid-item grid-item-single selected" data-anime='{ "effect": "slide", "direction": "tb", "color": "#151515", "duration": 1000, "delay": 400 }'>
                       <div className="portfolio-box mousetip-wrapper">
-                        <a href="#">
+                        <a href={`/projects/${projects[2]?.slug || "#"}`}>
                           <div className="portfolio-image overflow-hidden">
-                            <img src="/images/generic-735x735.jpg" alt="" />
+                            <img src={projects[2]?.coverImage?.url || "/images/generic-735x735.jpg"} alt={projects[2]?.title || "Project"} />
                           </div>
                           <div className="caption bg-white border-radius-100px">
-                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">Echo house</span>
+                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">{projects[2]?.title || "Digital Experience"}</span>
                           </div>
                         </a>             
                       </div>
@@ -105,16 +116,17 @@ export default function ProjectsPage() {
               </div>
 
               <div className="row mb-30px md-mb-0">
+                {/* Slot 4 */}
                 <div className="col-lg-7 offset-lg-2">
                   <ul className="portfolio-transform portfolio-wrapper grid-loading grid gutter-large">
                     <li className="grid-item grid-item-single selected" data-anime='{ "effect": "slide", "direction": "tb", "color": "#151515", "duration": 1000, "delay": 100 }'>
                       <div className="portfolio-box mousetip-wrapper">
-                        <a href="#">
+                        <a href={`/projects/${projects[3]?.slug || "#"}`}>
                           <div className="portfolio-image overflow-hidden">
-                            <img src="/images/generic-1410x850.jpg" alt="" />
+                            <img src={projects[3]?.coverImage?.url || "/images/generic-1410x850.jpg"} alt={projects[3]?.title || "Project"} />
                           </div>
                           <div className="caption bg-white border-radius-100px">
-                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">Urban nest</span>
+                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">{projects[3]?.title || "Modern Solution"}</span>
                           </div>
                         </a>             
                       </div>
@@ -124,48 +136,51 @@ export default function ProjectsPage() {
               </div>
 
               <div className="row">
+                {/* Slot 5 */}
                  <div className="col-lg-3 col-md-4">
                   <ul className="portfolio-transform portfolio-wrapper grid-loading grid gutter-large">
                     <li className="grid-item grid-item-single selected" data-anime='{ "effect": "slide", "direction": "tb", "color": "#151515", "duration": 1000, "delay": 0 }'>
                       <div className="portfolio-box mousetip-wrapper">
-                        <a href="#">
+                        <a href={`/projects/${projects[4]?.slug || "#"}`}>
                           <div className="portfolio-image overflow-hidden">
-                            <img src="/images/generic-735x850.jpg" alt="" />
+                            <img src={projects[4]?.coverImage?.url || "/images/generic-735x850.jpg"} alt={projects[4]?.title || "Project"} />
                           </div>
                           <div className="caption bg-white border-radius-100px">
-                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">Atlas house</span>
+                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">{projects[4]?.title || "Global Reach"}</span>
                           </div>
                         </a>             
                       </div>
                     </li>
                   </ul>
                 </div>
+                {/* Slot 6 */}
                 <div className="col-lg-4 col-md-4 align-self-end">
                    <ul className="portfolio-transform portfolio-wrapper grid-loading grid gutter-large">
                     <li className="grid-item grid-item-single selected" data-anime='{ "effect": "slide", "direction": "tb", "color": "#151515", "duration": 1000, "delay": 200 }'>
                       <div className="portfolio-box mousetip-wrapper">
-                        <a href="#">
+                        <a href={`/projects/${projects[5]?.slug || "#"}`}>
                           <div className="portfolio-image overflow-hidden">
-                            <img src="/images/generic-735x735.jpg" alt="" />
+                            <img src={projects[5]?.coverImage?.url || "/images/generic-735x735.jpg"} alt={projects[5]?.title || "Project"} />
                           </div>
                           <div className="caption bg-white border-radius-100px">
-                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">Horizon edge</span>
+                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">{projects[5]?.title || "Visual Strategy"}</span>
                           </div>
                         </a>             
                       </div>
                     </li>
                   </ul>
                 </div>
+                {/* Slot 7 */}
                 <div className="col-lg-5 col-md-4">
                   <ul className="portfolio-transform portfolio-wrapper grid-loading grid gutter-large">
                     <li className="grid-item grid-item-single selected" data-anime='{ "effect": "slide", "direction": "tb", "color": "#151515", "duration": 1000, "delay": 400 }'>
                       <div className="portfolio-box mousetip-wrapper">
-                        <a href="#">
+                        <a href={`/projects/${projects[6]?.slug || "#"}`}>
                           <div className="portfolio-image overflow-hidden">
-                            <img src="/images/generic-735x920.jpg" alt="" />
+                            <img src={projects[6]?.coverImage?.url || "/images/generic-735x920.jpg"} alt={projects[6]?.title || "Project"} />
                           </div>
                           <div className="caption bg-white border-radius-100px">
-                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">Timber palette</span>
+                            <span className="text-dark-gray fs-24 px-4 py-2 d-inline-block">{projects[6]?.title || "Crafted Design"}</span>
                           </div>
                         </a>             
                       </div>

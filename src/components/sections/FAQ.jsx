@@ -1,4 +1,10 @@
+'use client';
+
+import { useState } from 'react';
+
 export default function FAQ() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const faqs = [
     {
       q: "How long does a typical web design project take?",
@@ -18,35 +24,46 @@ export default function FAQ() {
     }
   ];
 
+  const toggleAccordion = (e, index) => {
+    e.preventDefault();
+    setActiveIndex(activeIndex === index ? null : index);
+  };
+
   return (
-    <section className="py-5">
+    <section className="py-100px lg-py-80px sm-py-50px bg-very-light-gray">
       <div className="container">
-        <div className="row justify-content-center mb-5">
+        <div className="row justify-content-center mb-50px">
           <div className="col-lg-7 text-center">
-            <span className="fs-18 text-base-color fw-600 mb-5px d-block text-uppercase">Got Questions?</span>
-            <h2 className="text-dark-gray fw-600 ls-minus-1px">Frequently Asked Questions</h2>
+            <span className="fs-18 text-base-color fw-600 mb-10px d-block text-uppercase">Got Questions?</span>
+            <h2 className="text-dark-gray fw-700 ls-minus-2px mb-0">Frequently Asked Questions</h2>
           </div>
         </div>
         <div className="row justify-content-center">
           <div className="col-lg-8">
-            <div className="accordion accordion-style-02" id="accordion-faq" data-active-icon="icon-feather-minus" data-inactive-icon="icon-feather-plus">
-              {faqs.map((faq, index) => (
-                <div key={index} className={`accordion-item ${index === 0 ? 'active-accordion' : ''} mb-15px border-radius-5px box-shadow-small border-0`}>
-                  <div className="accordion-header bg-white border-radius-5px">
-                    <a href="#" data-bs-toggle="collapse" data-bs-target={`#accordion-faq-0${index + 1}`} aria-expanded={index === 0 ? "true" : "false"} data-bs-parent="#accordion-faq">
-                      <div className="accordion-title mb-0 position-relative text-dark-gray fw-600 pe-30px p-20px">
-                        <span>{faq.q}</span>
-                        <i className={`feather ${index === 0 ? 'icon-feather-minus' : 'icon-feather-plus'} fs-20 position-absolute right-20px top-50 translate-middle-y`}></i>
+            <div className="accordion accordion-style-02" id="accordion-faq">
+              {faqs.map((faq, index) => {
+                const isActive = activeIndex === index;
+                return (
+                  <div key={index} className={`accordion-item ${isActive ? 'active-accordion' : ''} mb-20px border-radius-10px box-shadow-small border-0 overflow-hidden`}>
+                    <div className="accordion-header bg-white p-0">
+                      <a href="#" onClick={(e) => toggleAccordion(e, index)} aria-expanded={isActive} className="d-block text-decoration-none">
+                        <div className="accordion-title mb-0 position-relative text-dark-gray fw-600 ps-40px pe-100px py-25px fs-19">
+                          <span>{faq.q}</span>
+                          <i 
+                            className={`feather ${isActive ? 'icon-feather-minus' : 'icon-feather-plus'} fs-20 position-absolute top-50 translate-middle-y text-base-color`}
+                            style={{ right: '50px' }}
+                          ></i>
+                        </div>
+                      </a>
+                    </div>
+                    <div className={`accordion-collapse collapse ${isActive ? 'show' : ''}`}>
+                      <div className="accordion-body last-paragraph-no-margin bg-white ps-40px pe-40px pb-30px pt-0">
+                        <p className="opacity-8">{faq.a}</p>
                       </div>
-                    </a>
-                  </div>
-                  <div id={`accordion-faq-0${index + 1}`} className={`accordion-collapse collapse ${index === 0 ? 'show' : ''}`} data-bs-parent="#accordion-faq">
-                    <div className="accordion-body last-paragraph-no-margin bg-white border-radius-bottom-5px p-20px pt-0">
-                      <p>{faq.a}</p>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

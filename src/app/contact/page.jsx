@@ -1,6 +1,7 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import Image from "next/image";
+import ContactForm from "@/components/sections/ContactForm";
 
 export const metadata = {
   title: "Contact Us",
@@ -145,37 +146,7 @@ export default function ContactPage() {
                 <h2 className="fw-500 text-dark-gray mb-0">Let us help you get your project <span className="highlight-separator mb-0 pb-0 z-index-1" data-shadow-animation="true" data-animation-delay="500">started.<span><Image src="/images/highlight-separator-08.svg" alt="Highlight" width={200} height={20} /></span></span></h2>
               </div>
               <div className="col-md-7 offset-xxl-1">
-                <form action="#" method="post" className="contact-form-style-07" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 200, "staggervalue": 300, "easing": "easeOutQuad" }'>
-                  <div className="position-relative form-group mb-30px d-flex flex-md-row flex-column">
-                    <label className="form-label alt-font fs-26 md-fs-22 text-dark-gray mb-0 me-30px">My name is</label>
-                    <div className="position-relative col">
-                      <span className="form-icon"><i className="bi bi-person icon-small"></i></span>
-                      <input className="ps-0 border-radius-0px border-color-transparent-dark-very-light bg-transparent form-control required" type="text" name="name" placeholder="Enter your name here*" />
-                    </div>
-                  </div>
-                  <div className="position-relative form-group mb-30px d-flex flex-md-row flex-column">
-                    <label className="form-label alt-font fs-26 md-fs-22 text-dark-gray mb-0 me-30px">Here is my email</label>
-                    <div className="position-relative col">
-                      <span className="form-icon"><i className="bi bi-envelope icon-small"></i></span>
-                      <input className="ps-0 border-radius-0px border-color-transparent-dark-very-light bg-transparent form-control required" type="email" name="email" placeholder="Enter your email here*" />
-                    </div>
-                  </div>
-                  <div className="position-relative form-group form-textarea d-flex flex-md-row flex-column"> 
-                    <label className="form-label alt-font fs-26 md-fs-22 text-dark-gray mb-0 me-30px">I need a</label>
-                    <div className="position-relative col">
-                      <textarea className="ps-0 border-radius-0px border-color-transparent-dark-very-light bg-transparent form-control" name="comment" placeholder="Enter your project details here" rows="3"></textarea>
-                      <span className="form-icon"><i className="bi bi-chat-square-dots icon-small"></i></span>
-                    </div>
-                  </div>
-                  <div className="row mt-40px align-items-center">
-                    <div className="col-md-7 col-sm-7 lg-mb-30px md-mb-0">
-                      <p className="fs-14 lh-22 text-center text-sm-start mb-0 ">We are committed to protecting your privacy. We will never collect information about you without your explicit consent.</p>
-                    </div>
-                    <div className="col-md-5 col-sm-5 text-center text-sm-end xs-mt-25px">
-                      <button className="btn btn-dark-gray btn-medium btn-rounded btn-box-shadow d-inline-flex align-items-center submit" type="submit">Send message</button>
-                    </div>
-                  </div>
-                </form>
+                <ContactForm />
               </div>
             </div>
           </div>

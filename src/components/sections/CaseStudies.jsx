@@ -3,19 +3,29 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function CaseStudies() {
+export default function CaseStudies({ projects = [] }) {
   const [isMounted, setIsMounted] = useState(false);
   
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const cases = [
+  const defaultCases = [
     { id: "tab_four1", title: "Bold Ecommerce Brand", img: "/images/case-study-1.jpg", active: true },
     { id: "tab_four2", title: "Tech Startup Identity", img: "/images/case-study-2.jpg", active: false },
     { id: "tab_four3", title: "Fintech Ad Campaign", img: "/images/case-study-3.jpg", active: false },
     { id: "tab_four4", title: "Real Estate Web Design", img: "/images/case-study-4.jpg", active: false },
   ];
+
+  const cases = projects.length > 0 
+    ? projects.map((p, idx) => ({
+        id: `project_${p._id}`,
+        title: p.title,
+        img: (p.coverImage && p.coverImage.url) ? p.coverImage.url : "/images/case-study-1.jpg",
+        slug: p.slug,
+        active: idx === 0
+      }))
+    : defaultCases;
 
   return (
     <section className="py-0 ps-6 pe-6 xl-ps-3 xl-pe-3 md-ps-0 md-pe-0 position-relative overflow-hidden" suppressHydrationWarning>
@@ -84,10 +94,10 @@ export default function CaseStudies() {
                     <div className="position-absolute top-0px left-0px w-100 h-100 bg-gradient-dark-transparent opacity-2"></div>
                     <figcaption className="w-100 h-100 d-flex flex-column align-items-center p-40px">
                       <div className="position-relative d-flex flex-column h-100 z-index-1">
-                        <Link href="/projects" className="d-flex justify-content-center align-items-center mx-auto mt-auto icon-box w-90px h-90px rounded-circle bg-white box-shadow-quadruple-large">
+                        <Link href={`/projects/${c.slug || ""}`} className="d-flex justify-content-center align-items-center mx-auto mt-auto icon-box w-90px h-90px rounded-circle bg-white box-shadow-quadruple-large">
                           <i className="bi bi-arrow-right-short text-dark-gray icon-medium lh-0px"></i>
                         </Link>
-                        <Link href="/projects" className="text-white d-block mt-auto text-decoration-none">Discover case study</Link>
+                        <Link href={`/projects/${c.slug || ""}`} className="text-white d-block mt-auto text-decoration-none">Discover case study</Link>
                       </div>
                       <div className="box-overlay bg-gradient-black-bottom-transparent"></div>
                     </figcaption>

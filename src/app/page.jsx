@@ -1,15 +1,24 @@
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/Hero";
 import Stats from "@/components/sections/Stats";
-import InfiniteHorizontalCarousel from "@/components/InfiniteHorizontalCarousel";
+import InfiniteHorizontalCarousel from "@/components/sections/InfiniteHorizontalCarousel";
 import AboutSection from "@/components/sections/About";
 import Services from "@/components/sections/Services";
 import CaseStudies from "@/components/sections/CaseStudies";
-import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
-import Footer from "@/components/Footer";
+import Footer from "@/components/layout/Footer";
+import * as projectService from "@/services/project.service";
+import connectDB from "@/lib/mongodb";
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function Home() {
+  await connectDB();
+  // Fetch projects and convert to plain objects to avoid serialization issues in Client Components
+  const result = await projectService.getProjects({ published: true, limit: 4 });
+  const featuredProjects = JSON.parse(JSON.stringify(result.projects));
+
   return (
     <>
       <Navbar />
@@ -36,7 +45,7 @@ export default function Home() {
         </section>
 
         <Services />
-        <CaseStudies />
+        <CaseStudies projects={featuredProjects} />
         
         {/* Reels Section */}
         <section className="p-0 overflow-hidden" style={{ background: '#262626' }}>
@@ -79,7 +88,7 @@ export default function Home() {
           </div>
         </section>
 
-        <Pricing />
+
         <FAQ />
 
         {/* Social Icons Section */}

@@ -1,13 +1,26 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeMenu = () => {
+    if (isOpen) setIsOpen(false);
+  };
+
   return (
     <header>
       <nav className="navbar navbar-expand-lg header-light bg-white border-bottom border-color-transparent-dark-very-light disable-fixed">
         <div className="container-fluid">
           <div className="col-auto">
-            <Link className="navbar-brand" href="/" aria-label="Adlyngo Logo">
+            <Link className="navbar-brand" href="/" aria-label="Adlyngo Logo" onClick={closeMenu}>
               <Image 
                 src="/images/logo.svg" 
                 alt="Adlyngo Logo" 
@@ -36,11 +49,10 @@ export default function Navbar() {
           </div>
           <div className="col-auto menu-order left-nav">
             <button
-              className="navbar-toggler float-start"
+              className={`navbar-toggler float-start ${!isOpen ? 'collapsed' : ''}`}
               type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
+              onClick={toggleMenu}
+              aria-expanded={isOpen}
               aria-label="Toggle navigation"
             >
               <span className="navbar-toggler-line"></span>
@@ -48,14 +60,14 @@ export default function Navbar() {
               <span className="navbar-toggler-line"></span>
               <span className="navbar-toggler-line"></span>
             </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
+            <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
               <ul className="navbar-nav">
-                <li className="nav-item"><Link href="/" className="nav-link">Home</Link></li>
-                <li className="nav-item"><Link href="/about" className="nav-link">About</Link></li>
-                <li className="nav-item"><Link href="/services" className="nav-link">Services</Link></li>
-                <li className="nav-item"><Link href="/projects" className="nav-link">Projects</Link></li>
-                <li className="nav-item"><Link href="/blog" className="nav-link">Blog</Link></li>
-                <li className="nav-item"><Link href="/contact" className="nav-link">Contact</Link></li>
+                <li className="nav-item"><Link href="/" className="nav-link" onClick={closeMenu}>Home</Link></li>
+                <li className="nav-item"><Link href="/about" className="nav-link" onClick={closeMenu}>About</Link></li>
+                <li className="nav-item"><Link href="/services" className="nav-link" onClick={closeMenu}>Services</Link></li>
+                <li className="nav-item"><Link href="/projects" className="nav-link" onClick={closeMenu}>Projects</Link></li>
+                <li className="nav-item"><Link href="/blog" className="nav-link" onClick={closeMenu}>Blog</Link></li>
+                <li className="nav-item"><Link href="/contact" className="nav-link" onClick={closeMenu}>Contact</Link></li>
               </ul>
             </div>
           </div>

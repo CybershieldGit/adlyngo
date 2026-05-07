@@ -1,59 +1,22 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import Image from "next/image";
 import Link from "next/link";
+import * as blogService from "@/services/blog.service";
+import connectDB from "@/lib/mongodb";
 
 export const metadata = {
   title: "Latest Blogs",
   description: "Read the latest articles and industry insights from Adlyngo, your premium digital creative agency.",
 };
 
-const blogs = [
-  {
-    category: "Creative",
-    title: "Creativity is nothing but a mind set free.",
-    excerpt: "Lorem ipsum is simply text of the printing and typesetting industry.",
-    author: "Den viliamson",
-    image: "/images/blog-img-01.jpg"
-  },
-  {
-    category: "Creative",
-    title: "Simplicity, wit, and good typography.",
-    excerpt: "Lorem ipsum is simply text of the printing and typesetting industry.",
-    author: "Walton smith",
-    image: "/images/blog-img-02.jpg"
-  },
-  {
-    category: "Meetup",
-    title: "What works good is that good different.",
-    excerpt: "Lorem ipsum is simply text of the printing and typesetting industry.",
-    author: "Rosald smith",
-    image: "/images/blog-img-03.jpg"
-  },
-  {
-    category: "Meetup",
-    title: "Look at usual things with unusual.",
-    excerpt: "Lorem ipsum is simply text of the printing and typesetting industry.",
-    author: "Maya angelou",
-    image: "/images/blog-img-04.jpg"
-  },
-  {
-    category: "Creative",
-    title: "Make it simple, but significant.",
-    excerpt: "Lorem ipsum is simply text of the printing and typesetting industry.",
-    author: "Andy glamer",
-    image: "/images/blog-img-05.jpg"
-  },
-  {
-    category: "Business",
-    title: "Do not seek praise seek criticism.",
-    excerpt: "Lorem ipsum is simply text of the printing and typesetting industry.",
-    author: "Den viliamson",
-    image: "/images/blog-img-06.jpg"
-  }
-];
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  await connectDB();
+  const { blogs } = await blogService.getBlogs({ published: true });
+
   return (
     <>
       <Navbar />
@@ -109,24 +72,24 @@ export default function BlogPage() {
               <div className="col-12">
                 <ul className="blog-side-image blog-wrapper grid grid-2col xl-grid-2col lg-grid-2col md-grid-1col sm-grid-1col xs-grid-1col gutter-extra-large list-style-none p-0">
                   {blogs.map((blog, index) => (
-                    <li key={index} className="grid-item mb-4">
+                    <li key={blog._id} className="grid-item mb-4">
                       <div className="blog-box d-md-flex d-block flex-row h-100 border-radius-15px overflow-hidden box-shadow-bottom border border-color-transparent-dark-very-light h-100">
                         <div className="blog-image w-50 sm-w-100 position-relative min-h-300px">
                           <Image 
-                            src={blog.image} 
+                            src={(blog.thumbnail && blog.thumbnail.url) ? blog.thumbnail.url : "/images/generic-800x800.jpg"} 
                             alt={blog.title} 
                             fill 
                             className="object-fit-cover" 
                           />
-                          <Link href="/blog" className="blog-post-image-overlay position-absolute top-0 start-0 w-100 h-100 z-index-1" aria-label={`Read ${blog.title}`}></Link>
+                          <Link href={`/blog/${blog.slug}`} className="blog-post-image-overlay position-absolute top-0 start-0 w-100 h-100 z-index-1" aria-label={`Read ${blog.title}`}></Link>
                         </div>
                         <div className="blog-content w-50 sm-w-100 pt-50px pb-40px ps-40px pe-40px xl-p-30px bg-white d-flex flex-column justify-content-center align-items-start last-paragraph-no-margin">
-                          <Link href="/blog" className="categories-btn bg-dark-gray text-white text-uppercase fw-500 mb-30px text-decoration-none">{blog.category}</Link>
-                          <Link href="/blog" className="card-title text-dark-gray text-dark-gray-hover mb-5px fw-600 fs-18 lh-26 text-decoration-none">{blog.title}</Link>
+                          <Link href={`/blog/${blog.slug}`} className="categories-btn bg-dark-gray text-white text-uppercase fw-500 mb-30px text-decoration-none">{blog.category?.name || "Uncategorized"}</Link>
+                          <Link href={`/blog/${blog.slug}`} className="card-title text-dark-gray text-dark-gray-hover mb-5px fw-600 fs-18 lh-26 text-decoration-none">{blog.title}</Link>
                           <p>{blog.excerpt}</p>
                           <div className="mt-15px">
                             <span className="separator bg-dark-gray"></span>
-                            <Link href="/blog" className="text-dark-gray text-dark-gray-hover d-inline-block fs-15 fw-500 text-decoration-none">{blog.author}</Link>
+                            <span className="text-dark-gray d-inline-block fs-15 fw-500">{blog.author?.name || "Adlyngo Team"}</span>
                           </div>
                         </div>
                       </div>
