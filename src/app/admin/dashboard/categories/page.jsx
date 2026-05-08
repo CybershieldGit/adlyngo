@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import CustomSelect from '@/components/admin/CustomSelect';
+import Modal from '@/components/admin/Modal';
 
 export default function ManageCategories() {
   const [categories, setCategories] = useState([]);
@@ -95,17 +97,22 @@ export default function ManageCategories() {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
         <h3 className="fw-700 text-dark-gray mb-0">Manage Categories</h3>
         <button 
-          className="btn btn-dark-gray btn-small btn-rounded"
+          className="btn btn-dark-gray btn-small btn-rounded px-4"
           onClick={() => {
             setIsCreating(!isCreating);
             setError('');
             setSuccess('');
           }}
+          style={{ width: 'fit-content' }}
         >
-          {isCreating ? 'Cancel' : '+ Add New Category'}
+          {isCreating ? 'Cancel' : (
+            <span className="d-flex align-items-center">
+              <i className="bi bi-plus-lg me-2"></i> Add New Category
+            </span>
+          )}
         </button>
       </div>
 
@@ -123,61 +130,64 @@ export default function ManageCategories() {
         </div>
       )}
 
-      {isCreating && (
-        <div className="card border-0 box-shadow-small border-radius-10px p-4 bg-white mb-4">
-          <h5 className="fw-600 mb-3">Create New Category</h5>
-          <form onSubmit={handleCreate}>
-            <div className="row g-3">
-              <div className="col-md-4">
-                <label className="form-label fs-14 fw-500">Name</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  value={formData.name}
-                  onChange={e => setFormData({...formData, name: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-')})}
-                  required 
-                />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label fs-14 fw-500">Slug</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  value={formData.slug}
-                  onChange={e => setFormData({...formData, slug: e.target.value})}
-                  required 
-                />
-              </div>
-              <div className="col-md-4">
-                <label className="form-label fs-14 fw-500">Type</label>
-                <select 
-                  className="form-select" 
-                  value={formData.type}
-                  onChange={e => setFormData({...formData, type: e.target.value})}
-                >
-                  <option value="reel">Reel (Video)</option>
-                  <option value="blog">Blog (Article)</option>
-                  <option value="project">Project (Case Study)</option>
-                </select>
-              </div>
-              <div className="col-12">
-                <label className="form-label fs-14 fw-500">Description</label>
-                <textarea 
-                  className="form-control" 
-                  rows="2"
-                  value={formData.description}
-                  onChange={e => setFormData({...formData, description: e.target.value})}
-                ></textarea>
-              </div>
-              <div className="col-12 mt-4">
-                <button type="submit" className="btn btn-primary btn-small btn-rounded" disabled={submitting}>
-                  {submitting ? 'Saving...' : 'Save Category'}
-                </button>
-              </div>
+      <Modal
+        isOpen={isCreating}
+        onClose={() => setIsCreating(false)}
+        title="Create New Category"
+        size="lg"
+      >
+        <form onSubmit={handleCreate}>
+          <div className="row g-3">
+            <div className="col-md-4">
+              <label className="form-label fs-14 fw-500">Name</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={formData.name}
+                onChange={e => setFormData({...formData, name: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-')})}
+                required 
+              />
             </div>
-          </form>
-        </div>
-      )}
+            <div className="col-md-4">
+              <label className="form-label fs-14 fw-500">Slug</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={formData.slug}
+                onChange={e => setFormData({...formData, slug: e.target.value})}
+                required 
+              />
+            </div>
+            <div className="col-md-4">
+              <CustomSelect
+                label="Type"
+                options={[
+                  { value: 'reel', label: 'Reel (Video)' },
+                  { value: 'blog', label: 'Blog (Article)' },
+                  { value: 'project', label: 'Project (Case Study)' }
+                ]}
+                value={formData.type}
+                onChange={val => setFormData({ ...formData, type: val })}
+              />
+            </div>
+            <div className="col-12">
+              <label className="form-label fs-14 fw-500">Description</label>
+              <textarea 
+                className="form-control" 
+                rows="2"
+                value={formData.description}
+                onChange={e => setFormData({...formData, description: e.target.value})}
+              ></textarea>
+            </div>
+            <div className="col-12 mt-4 text-end">
+              <button type="button" className="btn btn-light btn-small btn-rounded me-2" onClick={() => setIsCreating(false)}>Cancel</button>
+              <button type="submit" className="btn btn-primary btn-small btn-rounded" disabled={submitting}>
+                {submitting ? 'Saving...' : 'Save Category'}
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
 
       <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
         <div className="table-responsive">
@@ -187,7 +197,7 @@ export default function ManageCategories() {
                 <th className="ps-4 py-3 fw-600 border-0">Name</th>
                 <th className="py-3 fw-600 border-0">Slug</th>
                 <th className="py-3 fw-600 border-0">Type</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end">Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -208,7 +218,7 @@ export default function ManageCategories() {
                         {cat.type.toUpperCase()}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-end">
+                    <td className="pe-4 py-3 text-end sticky-column-end">
                       <button className="btn btn-link text-danger p-0 text-decoration-none" onClick={() => handleDelete(cat._id)}><i className="bi bi-trash"></i></button>
                     </td>
                   </tr>

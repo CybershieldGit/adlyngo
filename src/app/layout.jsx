@@ -82,7 +82,9 @@ export default function RootLayout({ children }) {
         </div>
         {children}
         
-        <div className="crafto-progressive-blur crafto-progressive-blur-bottom" data-blur-bottom="yes" style={{ "--progressive-blur-height": "15vh" }}></div>
+        
+        {/* Progressive blur removed as requested */}
+        
         
         <a href="https://wa.me/91XXXXXXXXXX" className="wa-float-btn" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
           <i className="bi bi-whatsapp"></i>

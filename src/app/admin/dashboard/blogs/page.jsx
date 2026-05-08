@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import FileUpload from '@/components/admin/FileUpload';
+import CustomSelect from '@/components/admin/CustomSelect';
+import Modal from '@/components/admin/Modal';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 
 export default function ManageBlogs() {
   const [blogs, setBlogs] = useState([]);
@@ -9,14 +12,19 @@ export default function ManageBlogs() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   const [isCreating, setIsCreating] = useState(false);
-  const [formData, setFormData] = useState({ 
-    title: '', 
+  const [isEditing, setIsEditing] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
+  const [viewingBlog, setViewingBlog] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+
+  const [formData, setFormData] = useState({
+    title: '',
     slug: '',
     excerpt: '',
-    content: '', 
-    category: '', 
+    content: '',
+    category: '',
     thumbnail: { url: '', publicId: '' },
     published: true,
     featured: false
@@ -30,10 +38,10 @@ export default function ManageBlogs() {
         fetch(`${apiUrl}/blogs`),
         fetch(`${apiUrl}/categories?type=blog`)
       ]);
-      
+
       const blogData = await blogRes.json();
       const catData = await catRes.json();
-      
+
       if (blogData.success) setBlogs(blogData.data.blogs);
       if (catData.success) {
         console.log(`Loaded ${catData.data.categories.length} blog categories`);
@@ -50,33 +58,71 @@ export default function ManageBlogs() {
     fetchData();
   }, []);
 
-  const handleCreate = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError('');
     setSuccess('');
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/blogs`, {
-        method: 'POST',
+      const url = isEditing ? `${apiUrl}/blogs/${editingId}` : `${apiUrl}/blogs`;
+      const method = isEditing ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(formData),
       });
       const data = await response.json();
       if (data.success) {
-        setBlogs([data.data.blog, ...blogs]);
-        setSuccess('Blog post published!');
-        setIsCreating(false);
-        setFormData({ title: '', slug: '', excerpt: '', content: '', category: '', thumbnail: { url: '', publicId: '' }, published: true, featured: false });
+        if (isEditing) {
+          setBlogs(blogs.map(b => b._id === editingId ? data.data.blog : b));
+          setSuccess('Blog post updated!');
+        } else {
+          setBlogs([data.data.blog, ...blogs]);
+          setSuccess('Blog post published!');
+        }
+        closeModals();
       } else {
-        setError(data.message || 'Failed to publish blog');
+        setError(data.message || `Failed to ${isEditing ? 'update' : 'publish'} blog`);
       }
     } catch (err) {
-      setError('Error saving blog');
+      setError(`Error ${isEditing ? 'updating' : 'saving'} blog`);
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleEdit = (blog) => {
+    setEditingId(blog._id);
+    setFormData({
+      title: blog.title || '',
+      slug: blog.slug || '',
+      excerpt: blog.excerpt || '',
+      content: blog.content || '',
+      category: blog.category?._id || blog.category || '',
+      thumbnail: blog.thumbnail || { url: '', publicId: '' },
+      published: blog.published ?? true,
+      featured: blog.featured ?? false
+    });
+    setIsEditing(true);
+    setError('');
+    setSuccess('');
+  };
+
+  const handleView = (blog) => {
+    setViewingBlog(blog);
+    setIsViewing(true);
+  };
+
+  const closeModals = () => {
+    setIsCreating(false);
+    setIsEditing(false);
+    setIsViewing(false);
+    setViewingBlog(null);
+    setEditingId(null);
+    setFormData({ title: '', slug: '', excerpt: '', content: '', category: '', thumbnail: { url: '', publicId: '' }, published: true, featured: false });
   };
 
   const handleDelete = async (id) => {
@@ -85,9 +131,9 @@ export default function ManageBlogs() {
     setSuccess('');
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/blogs/${id}`, { 
+      const response = await fetch(`${apiUrl}/blogs/${id}`, {
         method: 'DELETE',
-        credentials: 'include' 
+        credentials: 'include'
       });
       if (response.ok) {
         setBlogs(blogs.filter(b => b._id !== id));
@@ -104,17 +150,22 @@ export default function ManageBlogs() {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
         <h3 className="fw-700 text-dark-gray mb-0">Manage Blog Posts</h3>
-        <button 
-          className="btn btn-dark-gray btn-small btn-rounded" 
+        <button
+          className="btn btn-dark-gray btn-small btn-rounded px-4"
           onClick={() => {
             setIsCreating(!isCreating);
             setError('');
             setSuccess('');
           }}
+          style={{ width: 'fit-content' }}
         >
-          {isCreating ? 'Cancel' : '+ New Post'}
+          {isCreating ? 'Cancel' : (
+            <span className="d-flex align-items-center">
+              <i className="bi bi-plus-lg me-2"></i> New Post
+            </span>
+          )}
         </button>
       </div>
 
@@ -132,95 +183,181 @@ export default function ManageBlogs() {
         </div>
       )}
 
-      {isCreating && (
-        <div className="card border-0 box-shadow-small border-radius-10px p-4 bg-white mb-4">
-          <h5 className="fw-600 mb-3">Create New Article</h5>
-          <form onSubmit={handleCreate}>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <label className="form-label fs-14 fw-500">Title</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  value={formData.title} 
-                  onChange={e => setFormData({...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-')})} 
-                  required 
-                />
-              </div>
-              <div className="col-md-6">
-                <label className="form-label fs-14 fw-500">Category</label>
-                <select className="form-select" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} required>
-                  <option value="">Select Category</option>
-                  {Array.isArray(categories) && categories.map(c => (
-                    <option key={c._id || c.id} value={c._id || c.id}>{c.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-12">
-                <label className="form-label fs-14 fw-500">Excerpt</label>
-                <input type="text" className="form-control" value={formData.excerpt} onChange={e => setFormData({...formData, excerpt: e.target.value})} placeholder="Brief summary of the post" />
-              </div>
-              <div className="col-12">
-                <label className="form-label fs-14 fw-500">Post Thumbnail (Drag & Drop)</label>
-                <FileUpload 
-                  type="image"
-                  folder="adlyngo/blogs"
-                  onUploadSuccess={(result) => setFormData({...formData, thumbnail: result})} 
-                  currentUrl={formData.thumbnail.url}
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label fs-14 fw-500">Content (Markdown supported)</label>
-                <textarea className="form-control" rows="8" value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} required></textarea>
-              </div>
-              <div className="col-md-6">
-                <div className="form-check form-switch mt-2">
-                  <input className="form-check-input" type="checkbox" checked={formData.featured} onChange={e => setFormData({...formData, featured: e.target.checked})} />
-                  <label className="form-check-label fw-500">Feature this post</label>
-                </div>
-              </div>
-              <div className="col-12">
-                <button type="submit" className="btn btn-primary btn-small btn-rounded mt-3" disabled={submitting}>
-                  {submitting ? 'Publishing...' : 'Publish Blog'}
-                </button>
+      <Modal
+        isOpen={isCreating || isEditing}
+        onClose={closeModals}
+        title={isEditing ? "Edit Article" : "Create New Article"}
+        size="lg"
+      >
+        <form onSubmit={handleSubmit}>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <label className="form-label fs-14 fw-500">Title</label>
+              <input
+                type="text"
+                className="form-control"
+                value={formData.title}
+                onChange={e => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-') })}
+                required
+              />
+            </div>
+            <div className="col-md-6">
+              <CustomSelect
+                label="Category"
+                options={Array.isArray(categories) ? categories.map(c => ({ value: c._id || c.id, label: c.name })) : []}
+                value={formData.category}
+                onChange={val => setFormData({ ...formData, category: val })}
+                placeholder="Select Category"
+              />
+            </div>
+            <div className="col-12">
+              <label className="form-label fs-14 fw-500">Excerpt</label>
+              <input type="text" className="form-control" value={formData.excerpt} onChange={e => setFormData({ ...formData, excerpt: e.target.value })} placeholder="Brief summary of the post" />
+            </div>
+            <div className="col-12">
+              <label className="form-label fs-14 fw-500">Post Thumbnail (Drag & Drop)</label>
+              <FileUpload
+                type="image"
+                folder="adlyngo/blogs"
+                onUploadSuccess={(result) => setFormData({ ...formData, thumbnail: result })}
+                currentUrl={formData.thumbnail.url}
+              />
+            </div>
+            <div className="col-12">
+              <RichTextEditor
+                label="Content"
+                value={formData.content}
+                onChange={val => setFormData({ ...formData, content: val })}
+              />
+            </div>
+            <div className="col-md-6">
+              <div className="form-check form-switch mt-2">
+                <input className="form-check-input" type="checkbox" checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} />
+                <label className="form-check-label fw-500">Feature this post</label>
               </div>
             </div>
-          </form>
-        </div>
-      )}
+            <div className="col-12 text-end">
+              <button type="button" className="btn btn-light btn-small btn-rounded mt-3 me-2" onClick={closeModals}>Cancel</button>
+              <button type="submit" className="btn btn-primary btn-small btn-rounded mt-3" disabled={submitting}>
+                {submitting ? 'Saving...' : (isEditing ? 'Update Blog' : 'Publish Blog')}
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        isOpen={isViewing}
+        onClose={closeModals}
+        title="View Article"
+        size="lg"
+      >
+        {viewingBlog && (
+          <div className="view-blog-details">
+            <div className="row g-4">
+              {viewingBlog.thumbnail?.url && (
+                <div className="col-12">
+                  <img 
+                    src={viewingBlog.thumbnail.url} 
+                    alt={viewingBlog.title} 
+                    className="img-fluid rounded-4 mb-3 border" 
+                    style={{ maxHeight: '400px', width: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
+              <div className="col-12">
+                <span className="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2 rounded-pill">
+                  {viewingBlog.category?.name || 'Uncategorized'}
+                </span>
+                <h2 className="fw-700 text-dark-gray mb-3">{viewingBlog.title}</h2>
+                <div className="d-flex align-items-center gap-3 text-muted fs-14 mb-4">
+                  <span><i className="bi bi-calendar-event me-1"></i> {new Date(viewingBlog.createdAt).toLocaleDateString()}</span>
+                  <span><i className="bi bi-eye me-1"></i> {viewingBlog.views || 0} views</span>
+                  {viewingBlog.featured && <span className="text-warning"><i className="bi bi-star-fill me-1"></i> Featured</span>}
+                </div>
+                <div className="excerpt-box p-3 bg-light rounded-3 mb-4">
+                  <h6 className="fw-600 mb-1 fs-14 text-uppercase text-muted">Excerpt</h6>
+                  <p className="mb-0 text-dark-gray">{viewingBlog.excerpt || 'No excerpt provided.'}</p>
+                </div>
+                <div className="content-preview">
+                  <h6 className="fw-600 mb-3 fs-14 text-uppercase text-muted border-bottom pb-2">Content Preview</h6>
+                  <div 
+                    className="ql-editor p-0" 
+                    dangerouslySetInnerHTML={{ __html: viewingBlog.content }} 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
-        <table className="table table-hover align-middle mb-0">
-          <thead className="bg-light text-muted fs-14 text-uppercase">
-            <tr>
-              <th className="ps-4 py-3 fw-600 border-0">Article Title</th>
-              <th className="py-3 fw-600 border-0">Category</th>
-              <th className="py-3 fw-600 border-0">Status</th>
-              <th className="pe-4 py-3 fw-600 border-0 text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {blogs.length === 0 ? (
-              <tr><td colSpan="4" className="text-center py-5">No articles yet. Start writing!</td></tr>
-            ) : (
-              blogs.map(b => (
-                <tr key={b._id}>
-                  <td className="ps-4 py-3 fw-500">{b.title}</td>
-                  <td className="py-3 text-muted">{b.category?.name || 'Uncategorized'}</td>
-                  <td className="py-3">
-                    {b.featured && <span className="badge bg-warning bg-opacity-10 text-warning me-2">Featured</span>}
-                    <span className={`badge ${b.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${b.published ? 'success' : 'secondary'}`}>
-                      {b.published ? 'Published' : 'Draft'}
-                    </span>
-                  </td>
-                  <td className="pe-4 py-3 text-end">
-                    <button className="btn btn-link text-danger p-0" onClick={() => handleDelete(b._id)}><i className="bi bi-trash"></i></button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+        <div className="table-responsive">
+          <table className="table table-hover align-middle mb-0">
+            <thead className="bg-light text-muted fs-14 text-uppercase">
+              <tr>
+                <th className="ps-4 py-3 fw-600 border-0" style={{ width: '120px', whiteSpace: 'nowrap' }}>Image</th>
+                <th className="py-3 fw-600 border-0 ps-3" style={{ whiteSpace: 'nowrap' }}>Article Title</th>
+                <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Category</th>
+                <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Status</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-end" style={{ whiteSpace: 'nowrap' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {blogs.length === 0 ? (
+                <tr><td colSpan="5" className="text-center py-5">No articles yet. Start writing!</td></tr>
+              ) : (
+                blogs.map(b => (
+                  <tr key={b._id}>
+                    <td className="ps-4 py-3">
+                      <div className="rounded-3 border overflow-hidden bg-light d-flex align-items-center justify-content-center" style={{ width: '50px', height: '50px' }}>
+                        {b.thumbnail?.url ? (
+                          <img src={b.thumbnail.url} alt="" className="w-100 h-100 object-fit-cover" />
+                        ) : (
+                          <i className="bi bi-image text-muted fs-18"></i>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-3 fw-600 text-dark-gray ps-3">{b.title}</td>
+                    <td className="py-3 text-dark-gray opacity-75">{b.category?.name || 'Uncategorized'}</td>
+                    <td className="py-3">
+                      {b.featured && <span className="badge bg-warning bg-opacity-10 text-warning me-2">Featured</span>}
+                      <span className={`badge ${b.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${b.published ? 'success' : 'secondary'}`}>
+                        {b.published ? 'Published' : 'Draft'}
+                      </span>
+                    </td>
+                    <td className="pe-4 py-3 text-end">
+                      <div className="d-flex justify-content-end gap-2">
+                        <button 
+                          className="btn btn-icon btn-light-gray btn-small" 
+                          onClick={() => handleView(b)}
+                          title="View"
+                        >
+                          <i className="bi bi-eye"></i>
+                        </button>
+                        <button 
+                          className="btn btn-icon btn-primary-light btn-small" 
+                          onClick={() => handleEdit(b)}
+                          title="Edit"
+                        >
+                          <i className="bi bi-pencil"></i>
+                        </button>
+                        <button 
+                          className="btn btn-icon btn-danger-light btn-small" 
+                          onClick={() => handleDelete(b._id)}
+                          title="Delete"
+                        >
+                          <i className="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

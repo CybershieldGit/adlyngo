@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import FileUpload from '@/components/admin/FileUpload';
+import CustomSelect from '@/components/admin/CustomSelect';
+import Modal from '@/components/admin/Modal';
 
 export default function ManageReels() {
   const [reels, setReels] = useState([]);
@@ -20,7 +22,7 @@ export default function ManageReels() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const [reelsRes, catsRes] = await Promise.all([
         fetch(`${apiUrl}/reels`),
-        fetch(`${apiUrl}/categories?type=reel`)
+        fetch(`${apiUrl}/categories`)
       ]);
       
       const reelsData = await reelsRes.json();
@@ -103,17 +105,22 @@ export default function ManageReels() {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
         <h3 className="fw-700 text-dark-gray mb-0">Manage Reels</h3>
         <button 
-          className="btn btn-dark-gray btn-small btn-rounded"
+          className="btn btn-dark-gray btn-small btn-rounded px-4"
           onClick={() => {
             setIsCreating(!isCreating);
             setError('');
             setSuccess('');
           }}
+          style={{ width: 'fit-content' }}
         >
-          {isCreating ? 'Cancel' : '+ Add New Reel'}
+          {isCreating ? 'Cancel' : (
+            <span className="d-flex align-items-center">
+              <i className="bi bi-plus-lg me-2"></i> Add New Reel
+            </span>
+          )}
         </button>
       </div>
 
@@ -131,64 +138,62 @@ export default function ManageReels() {
         </div>
       )}
 
-      {isCreating && (
-        <div className="card border-0 box-shadow-small border-radius-10px p-4 bg-white mb-4">
-          <h5 className="fw-600 mb-3">Create New Reel</h5>
-          <form onSubmit={handleCreate}>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <label className="form-label fs-14 fw-500">Title</label>
+      <Modal
+        isOpen={isCreating}
+        onClose={() => setIsCreating(false)}
+        title="Create New Reel"
+        size="md"
+      >
+        <form onSubmit={handleCreate}>
+          <div className="row g-3">
+            <div className="col-md-12">
+              <label className="form-label fs-14 fw-500">Title</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={formData.title}
+                onChange={e => setFormData({...formData, title: e.target.value})}
+                required 
+              />
+            </div>
+            <div className="col-12">
+              <label className="form-label fs-14 fw-500">Reel Video (Drag & Drop)</label>
+              <FileUpload 
+                type="video"
+                folder="adlyngo/reels"
+                onUploadSuccess={(result) => setFormData({...formData, reelUrl: result.url})} 
+                currentUrl={formData.reelUrl}
+              />
+            </div>
+            <div className="col-md-12">
+              <CustomSelect
+                label="Category"
+                options={Array.isArray(categories) ? categories.map(c => ({ value: c._id || c.id, label: c.name })) : []}
+                value={formData.category}
+                onChange={val => setFormData({ ...formData, category: val })}
+                placeholder="Select Category"
+              />
+            </div>
+            <div className="col-md-12">
+              <div className="form-check form-switch fs-14 mt-2">
                 <input 
-                  type="text" 
-                  className="form-control" 
-                  value={formData.title}
-                  onChange={e => setFormData({...formData, title: e.target.value})}
-                  required 
+                  className="form-check-input" 
+                  type="checkbox" 
+                  checked={formData.published}
+                  onChange={e => setFormData({...formData, published: e.target.checked})}
                 />
-              </div>
-              <div className="col-12">
-                <label className="form-label fs-14 fw-500">Reel Video (Drag & Drop)</label>
-                <FileUpload 
-                  type="video"
-                  folder="adlyngo/reels"
-                  onUploadSuccess={(result) => setFormData({...formData, reelUrl: result.url})} 
-                  currentUrl={formData.reelUrl}
-                />
-              </div>
-              <div className="col-md-6">
-                <label className="form-label fs-14 fw-500">Category</label>
-                <select 
-                  className="form-select" 
-                  value={formData.category}
-                  onChange={e => setFormData({...formData, category: e.target.value})}
-                  required
-                >
-                  <option value="">Select Category</option>
-                  {Array.isArray(categories) && categories.map(c => (
-                    <option key={c._id || c.id} value={c._id || c.id}>{c.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-md-6 d-flex align-items-end">
-                <div className="form-check form-switch fs-14 mb-2">
-                  <input 
-                    className="form-check-input" 
-                    type="checkbox" 
-                    checked={formData.published}
-                    onChange={e => setFormData({...formData, published: e.target.checked})}
-                  />
-                  <label className="form-check-label fw-500">Published</label>
-                </div>
-              </div>
-              <div className="col-12 mt-4">
-                <button type="submit" className="btn btn-primary btn-small btn-rounded" disabled={submitting}>
-                  {submitting ? 'Saving...' : 'Save Reel'}
-                </button>
+                <label className="form-check-label fw-500">Published</label>
               </div>
             </div>
-          </form>
-        </div>
-      )}
+            <div className="col-12 mt-4 text-end">
+              <button type="button" className="btn btn-light btn-small btn-rounded me-2" onClick={() => setIsCreating(false)}>Cancel</button>
+              <button type="submit" className="btn btn-primary btn-small btn-rounded" disabled={submitting}>
+                {submitting ? 'Saving...' : 'Save Reel'}
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
 
       <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
         <div className="table-responsive">
@@ -199,7 +204,7 @@ export default function ManageReels() {
                 <th className="py-3 fw-600 border-0">Category</th>
                 <th className="py-3 fw-600 border-0">Status</th>
                 <th className="py-3 fw-600 border-0">Date</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end">Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -220,7 +225,7 @@ export default function ManageReels() {
                     <td className="py-3 fs-14 text-muted">
                       {new Date(reel.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="pe-4 py-3 text-end">
+                    <td className="pe-4 py-3 text-end sticky-column-end">
                       <button className="btn btn-link text-primary p-0 me-3 text-decoration-none"><i className="bi bi-pencil"></i></button>
                       <button className="btn btn-link text-danger p-0 text-decoration-none" onClick={() => handleDelete(reel._id)}><i className="bi bi-trash"></i></button>
                     </td>

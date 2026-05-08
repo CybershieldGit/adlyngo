@@ -49,7 +49,7 @@ export default function DashboardOverview() {
         <div className="col-md-4">
           <div className="card border-0 box-shadow-small border-radius-10px p-4 bg-white h-100">
             <div className="d-flex align-items-center mb-3">
-              <div className="bg-primary bg-opacity-10 text-primary rounded-circle p-3 me-3">
+              <div className="bg-admin-primary bg-opacity-10 text-admin-primary rounded-circle p-3 me-3">
                 <i className="bi bi-film fs-4"></i>
               </div>
               <h5 className="mb-0 fw-600">Reels</h5>
