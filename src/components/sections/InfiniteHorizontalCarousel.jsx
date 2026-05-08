@@ -29,6 +29,7 @@ export default function InfiniteHorizontalCarousel() {
   const [activeTab, setActiveTab] = useState('All');
   const [activeIdx, setActiveIdx] = useState(null);
   const [mutedMap, setMutedMap] = useState({});
+  const [selectedReel, setSelectedReel] = useState(null);
   const videoRefs = useRef({});
 
   useEffect(() => {
@@ -65,6 +66,18 @@ export default function InfiniteHorizontalCarousel() {
 
     fetchReels();
   }, []);
+
+  // Prevent scrolling when lightbox is open
+  useEffect(() => {
+    if (selectedReel) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedReel]);
 
   // Dynamically generate tabs based on fetched reels
   const tabs = useMemo(() => {
@@ -109,19 +122,16 @@ export default function InfiniteHorizontalCarousel() {
   }, [activeIdx]);
 
   const handleReelClick = useCallback((idx) => {
-    // On mobile, tap to toggle active state
-    if (activeIdx === idx) {
-      // Tap again to deactivate and resume scroll
-      setActiveIdx(null);
-      const video = videoRefs.current[idx];
-      if (video) {
-        video.muted = true;
+    const reel = loopData[idx];
+    if (reel) {
+      setSelectedReel(reel);
+      // Mute the carousel video when opening lightbox
+      if (videoRefs.current[idx]) {
+        videoRefs.current[idx].muted = true;
         setMutedMap(prev => ({ ...prev, [idx]: true }));
       }
-    } else {
-      handleReelInteraction(idx);
     }
-  }, [activeIdx, handleReelInteraction]);
+  }, [loopData]);
 
   const handleMouseLeave = useCallback((idx) => {
     // Mute video when mouse leaves (desktop)
@@ -195,12 +205,36 @@ export default function InfiniteHorizontalCarousel() {
                 </button>
 
                 <div className="ihc-reel__overlay">
-                  <span className="ihc-reel__label">{item.category?.name || 'Reel'}</span>
+                  <span className="ihc-reel__label">{item.title || 'Reel'}</span>
                 </div>
               </div>
             );
           })}
         </div>
+      </div>
+
+      {/* Video Lightbox */}
+      <div className={`video-lightbox ${selectedReel ? 'video-lightbox--active' : ''}`} onClick={() => setSelectedReel(null)}>
+        {selectedReel && (
+          <>
+            <button className="video-lightbox__close" onClick={() => setSelectedReel(null)}>
+              <i className="bi bi-x-lg"></i>
+            </button>
+            <div className="video-lightbox__container" onClick={(e) => e.stopPropagation()}>
+              <video
+                src={selectedReel.reelUrl}
+                className="video-lightbox__video"
+                autoPlay
+                controls
+                playsInline
+              />
+              <div className="video-lightbox__content">
+                <span className="video-lightbox__category">{selectedReel.category?.name || 'Reel'}</span>
+                <h3 className="video-lightbox__title">{selectedReel.title || 'Adlyngo Creative'}</h3>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

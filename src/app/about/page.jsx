@@ -1,152 +1,220 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Stats from "@/components/sections/Stats";
+import Image from "next/image";
 
 export const metadata = {
-  title: "About Us",
-  description: "Learn more about Adlyngo, a premium digital creative agency based in Greater Noida. We empower brands through strategic design and digital marketing.",
+  title: "About Adlyngo - Premium Digital Creative Agency",
+  description: "Learn more about Adlyngo, a premium digital creative agency based in Greater Noida. We empower brands through strategic design, performance ads, and digital marketing excellence.",
 };
 
 export default function AboutPage() {
   return (
     <>
       <Navbar />
-      
-      <main>
-        {/* Page Title Section */}
-        <section className="pb-0 top-space-margin position-relative">
-          <div className="container page-title-extra-large position-relative">
-            <div className="row" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 600, "delay": 0, "staggervalue": 300, "easing": "easeOutQuad" }'>
-              <div className="col-xxl-9 col-xl-10 text-center text-lg-start">
-                <h2 className="text-dark-gray mb-6">Empowering brands through creative thinking.</h2>
-              </div>
-            </div>
-            <div className="row align-items-center" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 600, "delay": 0, "staggervalue": 300, "easing": "easeOutQuad" }'>
-              <div className="col-md-5 text-center text-md-end md-mb-15px">
-                <h1 className="text-uppercase text-white bg-base-color border-radius-30px ps-25px pe-25px pt-10px pb-10px d-inline-block mb-0">About studio</h1>
-              </div>
-              <div className="col-xl-3 col-lg-4 col-md-5 last-paragraph-no-margin text-center text-md-start">
-                <p className="lh-26 w-90 sm-w-100">Collaborate to create stronger, smarter branding strategies.</p>
-              </div>
-            </div>
-            <div className="position-absolute right-minus-120px xxl-right-0px xl-right-30px bottom-minus-180px z-index-1 d-none d-md-flex flex-column align-items-center justify-content-center">
-              <img src="/images/demo-branding-studio-about-01.png" className="position-absolute" alt="" />
-              <img src="/images/demo-branding-studio-about-02.png" className="animation-rotation" alt="" />
-            </div>
-          </div>
-          <img className="position-absolute left-30px top-130px z-index-minus-2 w-25" src="/images/demo-branding-studio-bg-01.jpg" alt="" data-bottom-top="transform:scale(0.5, 0.5)" data-top-bottom="transform:scale(1.2, 1.2)" />
-        </section>
 
-        {/* Branding Slogan Section */}
-        <section className="pt-50px overflow-hidden">
-          <div className="container-fluid p-0">
-            <div className="row g-0">
-              <div className="col-12 text-center opacity-8">
-                <div 
-                  className="fs-200 lh-200 lg-fs-200 sm-w-100 ls-minus-3px text-gradient-light-gray-white text-white-space-nowrap" 
-                  data-bottom-top="transform: translate3d(-50px, 0px, 0px);" 
-                  data-top-bottom="transform: translate3d(50px, 0px, 0px);"
-                >
-                  creative digital agency
+      <main className="bg-white">
+        {/* Hero Section */}
+        <section className="pb-0 top-space-margin position-relative overflow-hidden">
+          <div className="container">
+            <div className="row align-items-center mb-5">
+              <div className="col-lg-10" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 0, "staggervalue": 200, "easing": "easeOutQuad" }'>
+                <span className="fs-14 fw-600 text-base-color text-uppercase ls-2px d-block mb-10px">The Adlyngo Story</span>
+                <h1 className="text-dark-gray fw-700 ls-minus-2px mb-0 w-90 xl-w-100">We build <span className="text-base-color">brands</span> that <span className="text-base-color">matter</span> in the digital age.</h1>
+              </div>
+            </div>
+
+            <div className="row g-0 border-radius-20px overflow-hidden box-shadow-extra-large mb-5" data-anime='{ "opacity": [0,1], "duration": 1000, "delay": 400, "easing": "easeOutQuad" }'>
+              <div className="col-12">
+                <div className="position-relative h-600px lg-h-450px sm-h-300px">
+                  <Image
+                    src="/images/about_hero_image_1778242953770.png"
+                    alt="Adlyngo Studio"
+                    fill
+                    className="object-fit-cover"
+                    priority
+                  />
+                  <div className="position-absolute bottom-0 left-0 w-100 p-5 bg-gradient-transparent-dark-70">
+                    <div className="row align-items-end">
+                      <div className="col-md-8 text-white">
+                        <h3 className="fw-600 mb-0">Based in Greater Noida, delivering globally.</h3>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Hero Image Parallax */}
-        <section className="pt-0 position-relative overflow-hidden">
-          <div className="one-third-screen lg-h-600px sm-h-350px skrollr-parallax magic-cursor round-cursor mx-auto border-radius-15px lg-no-border-radius" data-bottom-top="width: 54%" data-center-top="width: 92%;" data-parallax-background-ratio="0.5" style={{ backgroundImage: "url('/images/generic-1920x1100.jpg')" }}></div>
+        {/* Mission & Vision */}
+        <section className="py-5 bg-very-light-gray">
+          <div className="container">
+            <div className="row justify-content-center mb-5">
+              <div className="col-lg-10 text-center" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 0, "staggervalue": 200, "easing": "easeOutQuad" }'>
+                <h2 className="fw-700 text-dark-gray mb-30px">Our Mission</h2>
+                <p className="fs-22 lh-40 text-dark-gray opacity-7 w-80 mx-auto">
+                  At Adlyngo, our mission is to empower startups and modern brands by bridging the gap between innovative design and performance marketing. We don't just create visuals; we craft experiences that drive growth and build lasting brand equity.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
 
-        {/* About Experience Section */}
-        <section className="py-0">
+        {/* Detailed Services/Values Section */}
+        <section className="pb-0">
           <div className="container">
-            <div className="row align-items-center mb-6 sm-mb-50px">
-              <div className="col-xl-5 col-lg-5 md-mb-50px sm-mb-30px text-center text-md-start">
-                <h2 className="fw-500 text-dark-gray mb-0">We are a creative bold digital agency based in <span className="highlight-separator mb-0 pb-0" data-shadow-animation="true" data-animation-delay="500">Greater Noida.<span><img src="/images/highlight-separator-08.svg" alt="" /></span></span></h2>
-              </div>
-              <div className="col-xl-6 col-lg-7 offset-xl-1 last-paragraph-no-margin">
-                <div className="row align-items-center">
-                  <div className="col-xl-6 col-lg-6 col-md-5 position-relative atropos transform-3d sm-mb-30px text-center text-md-start text-lg-center" data-anime='{ "el": "childs", "translateY": [0, 0],"scale": [1.1, 1],"opacity": [0,1], "duration": 500, "delay": 200, "staggervalue": 300, "easing": "easeInSine" }'>
-                    <div className="atropos d-inline-block" data-atropos data-atropos-perspective="500">
-                      <div className="atropos-scale">
-                        <div className="atropos-rotate">
-                          <div className="atropos-inner text-center overflow-visible">
-                            <div data-atropos-offset="-5" className="position-relative">
-                              <span className="w-250px h-250px rounded-circle d-flex align-items-center justify-content-center bg-dark-gray bg-sliding-line-dark-gray">
-                                <span className="fs-130 fw-600 ls-minus-6px text-white d-flex w-100 justify-content-center">12<sub className="fs-50">+</sub></span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+            <div className="row align-items-center">
+              <div className="col-lg-6 md-mb-50px" data-anime='{ "opacity": [0,1], "duration": 800, "delay": 200, "easing": "easeOutQuad" }'>
+                <div className="position-relative">
+                  <Image
+                    src="/images/creative_process_image_1778242973318.png"
+                    alt="Creative Process"
+                    width={600}
+                    height={600}
+                    className="border-radius-20px box-shadow-extra-large"
+                  />
+                  <div className="position-absolute -right-30px -bottom-30px d-none d-md-block" data-anime='{ "translateY": [-30, 0], "opacity": [0,1], "duration": 1000, "delay": 800, "easing": "easeOutQuad" }'>
+                    <div className="bg-white p-4 border-radius-15px box-shadow-large">
+                      <h4 className="fw-700 text-dark-gray mb-0 ls-minus-1px">4.9/5</h4>
+                      <p className="mb-0 fs-14 text-muted">Customer Satisfaction</p>
                     </div>
                   </div>
-                  <div className="col-xl-6 col-lg-6 col-md-7 text-center text-md-start" data-anime='{ "el": "childs", "translateY": [-15, 0], "opacity": [0,1], "duration": 800, "delay": 200, "staggervalue": 300, "easing": "easeOutQuad" }'>
-                    <span className="fs-18 lh-32 fw-500 text-dark-gray d-block mb-5px">12+ years of experience.</span>
-                    <p>We are dedicated to providing outstanding digital and design services that meet your functional needs and aesthetic desires.</p>
+                </div>
+              </div>
+              <div className="col-lg-5 offset-lg-1" data-anime='{ "el": "childs", "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 400, "staggervalue": 200, "easing": "easeOutQuad" }'>
+                <h2 className="fw-700 text-dark-gray ls-minus-1px mb-35px">Why Adlyngo?</h2>
+
+                <ul className="ps-0">
+                  <li className="d-flex align-items-center mb-15px text-dark-gray fw-500">
+                    <i className="bi bi-check-circle-fill text-base-color me-10px fs-18"></i>
+                    Results-focused marketing approach
+                  </li>
+                  <li className="d-flex align-items-center mb-15px text-dark-gray fw-500">
+                    <i className="bi bi-check-circle-fill text-base-color me-10px fs-18"></i>
+                    Creative + performance under one roof
+                  </li>
+                  <li className="d-flex align-items-center mb-15px text-dark-gray fw-500">
+                    <i className="bi bi-check-circle-fill text-base-color me-10px fs-18"></i>
+                    Premium visuals that increase trust
+                  </li>
+                  <li className="d-flex align-items-center mb-15px text-dark-gray fw-500">
+                    <i className="bi bi-check-circle-fill text-base-color me-10px fs-18"></i>
+                    Growth strategies tailored for your niche
+                  </li>
+                  <li className="d-flex align-items-center mb-15px text-dark-gray fw-500">
+                    <i className="bi bi-check-circle-fill text-base-color me-10px fs-18"></i>
+                    Affordable startup-friendly plans
+                  </li>
+                  <li className="d-flex align-items-center mb-15px text-dark-gray fw-500">
+                    <i className="bi bi-check-circle-fill text-base-color me-10px fs-18"></i>
+                    Fast communication & execution
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* What Makes Us Different Section */}
+        <section className="bg-dark-gray py-5 text-white overflow-hidden">
+          <div className="container">
+            <div className="row align-items-center mb-5">
+              <div className="col-lg-7 mb-4 mb-lg-0" data-anime='{ "opacity": [0,1], "duration": 800, "delay": 200, "easing": "easeOutQuad" }'>
+                <div className="d-flex align-items-center mb-30px">
+                  <div className="flex-shrink-0">
+                    <i className="bi bi-gem text-base-color fs-40"></i>
                   </div>
+                  <div className="ps-20px">
+                    <h2 className="fw-700 mb-0 ls-minus-1px text-uppercase">What Makes Us <br />Different</h2>
+                  </div>
+                </div>
+                
+                <ul className="list-style-01 ps-0">
+                  <li className="d-flex align-items-center mb-20px fw-500 fs-18">
+                    <i className="bi bi-check-circle-fill text-base-color me-15px fs-20"></i>
+                    Demo website options available
+                  </li>
+                  <li className="d-flex align-items-center mb-20px fw-500 fs-18">
+                    <i className="bi bi-check-circle-fill text-base-color me-15px fs-20"></i>
+                    Affordable first creative/video offers
+                  </li>
+                  <li className="d-flex align-items-center mb-20px fw-500 fs-18">
+                    <i className="bi bi-check-circle-fill text-base-color me-15px fs-20"></i>
+                    Performance-driven marketing approach
+                  </li>
+                  <li className="d-flex align-items-center mb-20px fw-500 fs-18">
+                    <i className="bi bi-check-circle-fill text-base-color me-15px fs-20"></i>
+                    Focus on quality leads, not random traffic
+                  </li>
+                  <li className="d-flex align-items-center mb-20px fw-500 fs-18">
+                    <i className="bi bi-check-circle-fill text-base-color me-15px fs-20"></i>
+                    Strategy + content + ads under one roof
+                  </li>
+                </ul>
+              </div>
+              <div className="col-lg-4 offset-lg-1 d-none d-lg-block" data-anime='{ "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 400, "easing": "easeOutQuad" }'>
+                <div className="position-relative">
+                  <Image 
+                    src="/images/different_section_image_1778244663487.png" 
+                    alt="What Makes Us Different" 
+                    width={400} 
+                    height={600} 
+                    className="border-radius-20px box-shadow-extra-large"
+                  />
                 </div>
               </div>
             </div>
             
-            <Stats />
-
-            <div className="row mt-4 md-mt-50px pb-5">
-              <div className="col-12 text-center">
-                <span className="fs-20 text-dark-gray">Let's make something great work together. <a href="/contact" className="text-dark-gray text-dark-gray-hover text-decoration-line-bottom border-2 border-color-dark-gray fw-500">Got a project in mind?</a></span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Marquee Section */}
-        <section className="position-relative overflow-hidden py-0">
-          <div className="container-fluid p-0">
-            <div className="row g-0 position-relative">
-              <div className="col-12 marquee-rotate-down">
-                <div className="swiper swiper-width-auto text-center bg-base-color pt-10px pb-10px outside-box-right-1 outside-box-left-1" data-slider-options='{ "slidesPerView": "auto", "spaceBetween":40, "centeredSlides": true, "speed": 20000, "loop": true, "pagination": { "el": ".slider-four-slide-pagination-2", "clickable": false }, "allowTouchMove": false, "autoplay": { "delay":1, "disableOnInteraction": false }, "navigation": { "nextEl": ".slider-four-slide-next-2", "prevEl": ".slider-four-slide-prev-2" }, "keyboard": { "enabled": true, "onlyInViewport": true }, "effect": "slide" }'>
-                  <div className="swiper-wrapper marquee-slide">
-                    <div className="swiper-slide"><div className="fs-60 fw-300 text-white pt-10px pb-10px">Building brands with soul and strategy.</div></div>
-                    <div className="swiper-slide"><div className="fs-60 fw-300 text-white pt-10px pb-10px">Designing memorable brands that connect.</div></div>
-                    <div className="swiper-slide"><div className="fs-60 fw-300 text-white pt-10px pb-10px">Branding solutions that drive growth.</div></div>
-                    <div className="swiper-slide"><div className="fs-60 fw-300 text-white pt-10px pb-10px">Smart branding for the modern world.</div></div>
-                  </div> 
-                </div>
-              </div>                    
-              <div className="col-12 marquee-rotate-up z-index-minus-1">
-                <div className="swiper swiper-width-auto text-center bg-extra-medium-gray pt-10px pb-10px outside-box-right-1 outside-box-left-1" data-slider-options='{ "slidesPerView": "auto", "spaceBetween":40, "centeredSlides": true, "speed": 20000, "loop": true, "pagination": { "el": ".slider-four-slide-pagination-2", "clickable": false }, "allowTouchMove": false, "autoplay": { "delay":1, "disableOnInteraction": false, "reverseDirection": true }, "navigation": { "nextEl": ".slider-four-slide-next-2", "prevEl": ".slider-four-slide-prev-2" }, "keyboard": { "enabled": true, "onlyInViewport": true }, "effect": "slide" }'>
-                  <div className="swiper-wrapper marquee-slide">
-                    <div className="swiper-slide"><div className="fs-60 fw-300 text-dark-gray pt-10px pb-10px">Elevating brands through design thinking.</div></div>
-                    <div className="swiper-slide"><div className="fs-60 fw-300 text-dark-gray pt-10px pb-10px">Crafting identities that stand out.</div></div>
-                    <div className="swiper-slide"><div className="fs-60 fw-300 text-dark-gray pt-10px pb-10px">Where ideas become iconic brands.</div></div>
-                    <div className="swiper-slide"><div className="fs-60 fw-300 text-dark-gray pt-10px pb-10px">Creating cohesive brand experiences.</div></div>
-                  </div> 
+            <div className="row" data-anime='{ "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 600, "easing": "easeOutQuad" }'>
+              <div className="col-12">
+                <div className="p-4 p-md-5 border-radius-20px bg-white-transparent-1 border border-color-transparent-white-light position-relative text-center">
+                  <i className="bi bi-quote fs-60 text-base-color opacity-3 position-absolute top-20px left-20px d-none d-md-block"></i>
+                  <h3 className="fw-600 mb-0 lh-45 d-inline-block">
+                    We don't bring you more leads. We bring you the <span className="text-base-color fw-700 text-decoration-line-bottom border-2 border-color-base-color">right ones.</span>
+                  </h3>
+                  <i className="bi bi-quote fs-60 text-base-color opacity-3 position-absolute bottom-20px right-20px rotate-180 d-none d-md-block"></i>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Clients Section */}
-        <section className="py-5">
+        {/* Stats Section */}
+        <Stats />
+
+        {/* Process Section */}
+        <section className="bg-dark-gray py-5 text-white overflow-hidden">
           <div className="container">
-            <div className="row justify-content-center mb-35px sm-mb-0">
+            <div className="row justify-content-center mb-5">
               <div className="col-lg-7 text-center">
-                <div className="fs-11 lh-26 fw-500 text-uppercase text-white bg-base-color border-radius-30px ps-15px pe-15px mb-20px d-inline-block">Valuable clients</div>
-                <h2 className="fw-500 text-dark-gray">Trusted by leading <span className="highlight-separator pb-0" data-shadow-animation="true" data-animation-delay="1500">reputed companies.<span><img src="/images/highlight-separator-05.svg" alt="" /></span></span></h2>
+                <h2 className="fw-700 mb-0">Our Creative Process</h2>
               </div>
             </div>
-            <div className="row row-cols-1 row-cols-lg-4 row-cols-md-4 row-cols-sm-2 clients-style-04">
-              {[1,2,3,4,5,6,7,8].map(i => (
-                <div key={i} className="col text-center border-end border-bottom border-color-transparent-dark-very-light pt-8 pb-8">
-                  <div className="client-box">
-                    <img src={`/images/demo-branding-studio-client-0${i}.svg`} className="h-40px" alt="" />
+            <div className="row g-4">
+              {[
+                { step: "01", title: "Discovery", desc: "We deep dive into your brand, audience, and goals." },
+                { step: "02", title: "Strategy", desc: "Crafting a roadmap for success based on research." },
+                { step: "03", title: "Execution", desc: "Bringing the vision to life with world-class design." },
+                { step: "04", title: "Optimization", desc: "Testing and refining for the best possible results." }
+              ].map((item, idx) => (
+                <div key={idx} className="col-lg-3 col-md-6" data-anime='{ "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 200, "easing": "easeOutQuad" }'>
+                  <div className="p-4 border border-color-transparent-white-light border-radius-15px h-100 transition-all hover-bg-base-color group">
+                    <span className="fs-40 fw-700 opacity-2 group-hover-opacity-5 mb-20px d-block">{item.step}</span>
+                    <h4 className="fw-600 mb-10px">{item.title}</h4>
+                    <p className="opacity-7 mb-0">{item.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-5">
+          <div className="container text-center">
+            <h2 className="fw-700 text-dark-gray mb-30px">Ready to scale your brand?</h2>
+            <a href="/contact" className="btn btn-dark-gray btn-large btn-rounded btn-box-shadow px-5">Get Started with Adlyngo</a>
           </div>
         </section>
       </main>

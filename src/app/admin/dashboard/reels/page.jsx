@@ -14,6 +14,8 @@ export default function ManageReels() {
   
   // Form State
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ title: '', reelUrl: '', category: '', published: true });
   const [submitting, setSubmitting] = useState(false);
 
@@ -68,7 +70,27 @@ export default function ManageReels() {
     }
   };
 
-  const handleCreate = async (e) => {
+  const handleEdit = (reel) => {
+    setEditingId(reel._id);
+    setFormData({
+      title: reel.title || '',
+      reelUrl: reel.reelUrl || '',
+      category: reel.category?._id || reel.category || '',
+      published: reel.published ?? true
+    });
+    setIsEditing(true);
+    setError('');
+    setSuccess('');
+  };
+
+  const closeModals = () => {
+    setIsCreating(false);
+    setIsEditing(false);
+    setEditingId(null);
+    setFormData({ title: '', reelUrl: '', category: '', published: true });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError('');
@@ -76,9 +98,11 @@ export default function ManageReels() {
     
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const url = isEditing ? `${apiUrl}/reels/${editingId}` : `${apiUrl}/reels`;
+      const method = isEditing ? 'PUT' : 'POST';
       
-      const response = await fetch(`${apiUrl}/reels`, {
-        method: 'POST',
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(formData),
@@ -87,15 +111,19 @@ export default function ManageReels() {
       const data = await response.json();
       
       if (response.ok && data.success) {
-        setReels([data.data.reel, ...reels]);
-        setSuccess('New reel added!');
-        setIsCreating(false);
-        setFormData({ title: '', reelUrl: '', category: '', published: true });
+        if (isEditing) {
+          setReels(reels.map(r => r._id === editingId ? data.data.reel : r));
+          setSuccess('Reel updated successfully!');
+        } else {
+          setReels([data.data.reel, ...reels]);
+          setSuccess('New reel added!');
+        }
+        closeModals();
       } else {
-        setError(data.message || 'Failed to create reel');
+        setError(data.message || `Failed to ${isEditing ? 'update' : 'create'} reel`);
       }
     } catch (err) {
-      setError('Network error while creating');
+      setError(`Network error while ${isEditing ? 'updating' : 'creating'}`);
     } finally {
       setSubmitting(false);
     }
@@ -110,9 +138,8 @@ export default function ManageReels() {
         <button 
           className="btn btn-dark-gray btn-small btn-rounded px-4"
           onClick={() => {
-            setIsCreating(!isCreating);
-            setError('');
-            setSuccess('');
+            closeModals();
+            setIsCreating(true);
           }}
           style={{ width: 'fit-content' }}
         >
@@ -139,12 +166,12 @@ export default function ManageReels() {
       )}
 
       <Modal
-        isOpen={isCreating}
-        onClose={() => setIsCreating(false)}
-        title="Create New Reel"
+        isOpen={isCreating || isEditing}
+        onClose={closeModals}
+        title={isEditing ? "Edit Reel" : "Create New Reel"}
         size="md"
       >
-        <form onSubmit={handleCreate}>
+        <form onSubmit={handleSubmit}>
           <div className="row g-3">
             <div className="col-md-12">
               <label className="form-label fs-14 fw-500">Title</label>
@@ -186,9 +213,9 @@ export default function ManageReels() {
               </div>
             </div>
             <div className="col-12 mt-4 text-end">
-              <button type="button" className="btn btn-light btn-small btn-rounded me-2" onClick={() => setIsCreating(false)}>Cancel</button>
+              <button type="button" className="btn btn-light btn-small btn-rounded me-2" onClick={closeModals}>Cancel</button>
               <button type="submit" className="btn btn-primary btn-small btn-rounded" disabled={submitting}>
-                {submitting ? 'Saving...' : 'Save Reel'}
+                {submitting ? 'Saving...' : (isEditing ? 'Update Reel' : 'Save Reel')}
               </button>
             </div>
           </div>
@@ -226,7 +253,12 @@ export default function ManageReels() {
                       {new Date(reel.createdAt).toLocaleDateString()}
                     </td>
                     <td className="pe-4 py-3 text-end sticky-column-end">
-                      <button className="btn btn-link text-primary p-0 me-3 text-decoration-none"><i className="bi bi-pencil"></i></button>
+                      <button 
+                        className="btn btn-link text-primary p-0 me-3 text-decoration-none"
+                        onClick={() => handleEdit(reel)}
+                      >
+                        <i className="bi bi-pencil"></i>
+                      </button>
                       <button className="btn btn-link text-danger p-0 text-decoration-none" onClick={() => handleDelete(reel._id)}><i className="bi bi-trash"></i></button>
                     </td>
                   </tr>

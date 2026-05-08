@@ -5,7 +5,23 @@ import ApiResponse from "../../../utils/ApiResponse.js";
 
 export async function POST(request) {
   try {
-    await connectDB();
+    // Manual Auth Check (since we bypassed middleware)
+    const token = request.cookies.get("adlyngo_token")?.value;
+    if (!token) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    // Logging headers for debugging
+    console.log("Upload Request Headers:", Object.fromEntries(request.headers.entries()));
+
+    // Check content type
+    const contentType = request.headers.get("content-type") || "";
+    if (!contentType.includes("multipart/form-data")) {
+      return NextResponse.json(
+        { success: false, message: "Invalid content type. Expected multipart/form-data" },
+        { status: 400 }
+      );
+    }
 
     const formData = await request.formData();
     const file = formData.get("file");
@@ -17,6 +33,9 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
+    // Connect to DB after parsing body to prioritize body stream consumption
+    await connectDB();
 
     // Convert file to buffer
     const bytes = await file.arrayBuffer();
@@ -30,7 +49,7 @@ export async function POST(request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Upload API Error:", error);
+    console.error("Upload API Error Details:", error);
     return NextResponse.json(
       { success: false, message: error.message || "Upload failed" },
       { status: 500 }

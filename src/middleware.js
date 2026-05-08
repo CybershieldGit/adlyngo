@@ -34,6 +34,12 @@ export async function middleware(request) {
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-admin-id', payload.id);
 
+      // CRITICAL: Re-creating the request with modified headers can cause issues with 
+      // large file uploads (FormData stream corruption). We skip this for the upload route.
+      if (pathname === '/api/upload') {
+        return NextResponse.next();
+      }
+
       return NextResponse.next({
         request: {
           headers: requestHeaders,
@@ -69,6 +75,6 @@ export async function middleware(request) {
 export const config = {
   matcher: [
     '/admin/:path*',
-    '/api/:path*',
+    '/api/((?!upload).*)',
   ],
 };

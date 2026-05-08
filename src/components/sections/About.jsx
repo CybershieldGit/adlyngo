@@ -14,8 +14,9 @@ export default function AboutSection() {
               We are excited for our work and how it positively impacts clients. With over 12 years of experience have been constantly providing excellent.
             </p>
             <div className="mt-auto" data-anime='{"translateY": [30, 0], "opacity": [0,1], "duration": 1200, "delay": 800, "staggervalue": 300, "bounce": "easeOutQuad" }'>
-              <Image className="mb-5px" src="/images/logo-awwards.svg" alt="Awards Logo" width={100} height={30} />
-              <p className="mb-0"><span className="text-dark-gray">Awards</span> - Site of the day 2025</p>
+              <Image className="mb-15px" src="/images/logo-awwards.svg" alt="Awards Logo" width={100} height={30} />
+              <p className="mb-25px"><span className="text-dark-gray">Awards</span> - Site of the day 2025</p>
+              <a href="/about" className="btn btn-dark-gray btn-small btn-rounded btn-box-shadow px-30px">About Adlyngo</a>
             </div>
           </div>
           <div className="col-xl-2 col-md-4 offset-xl-1 sm-mb-30px" data-anime='{ "el": "childs", "translateY": [50, 0], "opacity": [0,1], "duration": 600, "delay": 0, "staggervalue": 300, "easing": "easeOutQuad" }'>

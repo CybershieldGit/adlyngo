@@ -13,6 +13,8 @@ export default function ManageProjects() {
   const [success, setSuccess] = useState('');
   
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ 
     title: '', 
     description: '', 
@@ -24,6 +26,39 @@ export default function ManageProjects() {
     featured: false
   });
   const [submitting, setSubmitting] = useState(false);
+
+  const closeModals = () => {
+    setIsCreating(false);
+    setIsEditing(false);
+    setEditingId(null);
+    setFormData({ 
+      title: '', 
+      description: '', 
+      category: '', 
+      clientName: '', 
+      liveUrl: '', 
+      coverImage: { url: '', publicId: '' },
+      published: true,
+      featured: false
+    });
+  };
+
+  const handleEdit = (project) => {
+    setEditingId(project._id);
+    setFormData({
+      title: project.title || '',
+      description: project.description || '',
+      category: project.category?._id || project.category || '',
+      clientName: project.clientName || '',
+      liveUrl: project.liveUrl || '',
+      coverImage: project.coverImage || { url: '', publicId: '' },
+      published: project.published ?? true,
+      featured: project.featured ?? false
+    });
+    setIsEditing(true);
+    setError('');
+    setSuccess('');
+  };
 
   const fetchData = async () => {
     try {
@@ -52,30 +87,37 @@ export default function ManageProjects() {
     fetchData();
   }, []);
 
-  const handleCreate = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError('');
     setSuccess('');
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/projects`, {
-        method: 'POST',
+      const url = isEditing ? `${apiUrl}/projects/${editingId}` : `${apiUrl}/projects`;
+      const method = isEditing ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(formData),
       });
       const data = await response.json();
       if (data.success) {
-        setProjects([data.data.project, ...projects]);
-        setSuccess('Project saved successfully!');
-        setIsCreating(false);
-        setFormData({ title: '', description: '', category: '', clientName: '', liveUrl: '', coverImage: { url: '', publicId: '' }, published: true, featured: false });
+        if (isEditing) {
+          setProjects(projects.map(p => p._id === editingId ? data.data.project : p));
+          setSuccess('Project updated successfully!');
+        } else {
+          setProjects([data.data.project, ...projects]);
+          setSuccess('Project created successfully!');
+        }
+        closeModals();
       } else {
-        setError(data.message || 'Failed to save project');
+        setError(data.message || `Failed to ${isEditing ? 'update' : 'save'} project`);
       }
     } catch (err) {
-      setError('Error saving project');
+      setError(`Error ${isEditing ? 'updating' : 'saving'} project`);
     } finally {
       setSubmitting(false);
     }
@@ -111,9 +153,8 @@ export default function ManageProjects() {
         <button 
           className="btn btn-dark-gray btn-small btn-rounded px-4" 
           onClick={() => {
-            setIsCreating(!isCreating);
-            setError('');
-            setSuccess('');
+            closeModals();
+            setIsCreating(true);
           }}
           style={{ width: 'fit-content' }}
         >
@@ -140,12 +181,12 @@ export default function ManageProjects() {
       )}
 
       <Modal
-        isOpen={isCreating}
-        onClose={() => setIsCreating(false)}
-        title="Add New Case Study"
+        isOpen={isCreating || isEditing}
+        onClose={closeModals}
+        title={isEditing ? "Edit Case Study" : "Add New Case Study"}
         size="lg"
       >
-        <form onSubmit={handleCreate}>
+        <form onSubmit={handleSubmit}>
           <div className="row g-3">
             <div className="col-md-6">
               <label className="form-label fs-14 fw-500">Project Title</label>
@@ -188,9 +229,9 @@ export default function ManageProjects() {
               </div>
             </div>
             <div className="col-12 text-end">
-              <button type="button" className="btn btn-light btn-small btn-rounded mt-3 me-2" onClick={() => setIsCreating(false)}>Cancel</button>
+              <button type="button" className="btn btn-light btn-small btn-rounded mt-3 me-2" onClick={closeModals}>Cancel</button>
               <button type="submit" className="btn btn-primary btn-small btn-rounded mt-3" disabled={submitting}>
-                {submitting ? 'Saving...' : 'Save Project'}
+                {submitting ? 'Saving...' : (isEditing ? 'Update Project' : 'Save Project')}
               </button>
             </div>
           </div>
@@ -223,6 +264,12 @@ export default function ManageProjects() {
                       </span>
                     </td>
                     <td className="pe-4 py-3 text-end sticky-column-end">
+                      <button 
+                        className="btn btn-link text-primary p-0 me-3 text-decoration-none"
+                        onClick={() => handleEdit(p)}
+                      >
+                        <i className="bi bi-pencil"></i>
+                      </button>
                       <button className="btn btn-link text-danger p-0" onClick={() => handleDelete(p._id)}><i className="bi bi-trash"></i></button>
                     </td>
                   </tr>
