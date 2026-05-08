@@ -22,7 +22,7 @@ export default function ManageReels() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const [reelsRes, catsRes] = await Promise.all([
         fetch(`${apiUrl}/reels`),
-        fetch(`${apiUrl}/categories`)
+        fetch(`${apiUrl}/categories?type=reel`)
       ]);
       
       const reelsData = await reelsRes.json();

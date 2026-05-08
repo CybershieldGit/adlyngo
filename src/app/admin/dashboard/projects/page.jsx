@@ -30,7 +30,7 @@ export default function ManageProjects() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const [projRes, catRes] = await Promise.all([
         fetch(`${apiUrl}/projects`),
-        fetch(`${apiUrl}/categories`)
+        fetch(`${apiUrl}/categories?type=project`)
       ]);
       
       const projData = await projRes.json();
