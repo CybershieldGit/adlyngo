@@ -59,6 +59,8 @@ export const metadata = {
   },
 };
 
+import ThemeInitializer from "@/components/ThemeInitializer";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="no-js">
@@ -76,6 +78,7 @@ export default function RootLayout({ children }) {
         data-mobile-nav-bg-color="#2d2c2b" 
         className="overflow-x-hidden custom-cursor"
       >
+        <ThemeInitializer />
         <div className="cursor-page-inner">
           <div className="circle-cursor circle-cursor-inner"></div>
           <div className="circle-cursor circle-cursor-outer"></div>

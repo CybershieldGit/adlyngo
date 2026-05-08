@@ -3826,6 +3826,51 @@
         }
     });
 
+    window.REINIT_THEME = function() {
+        // Re-run the data-anime initialization for new elements
+        const $dataAnimeElements = $('[data-anime]:not(.swiper [data-anime])');
+        $dataAnimeElements.each(function () {
+            const $self = $(this);
+            const animeOptions = $self.data('anime');
+            if (animeOptions && getWindowWidth() > animeBreakPoint) {
+                try {
+                    const effect = animeOptions.effect && animeOptions.effect.toLowerCase();
+                    $self.on('appear', function () {
+                        if ($self.hasClass('appear') || $self.hasClass('animating')) return;
+                        $self.addClass('animating');
+                        setTimeout(function () {
+                            $self.removeClass('animating').addClass('appear');
+                        }, animeOptions.delay || 0);
+                        if (effect === 'slide') {
+                            slideAnimation(this, animeOptions);
+                        } else {
+                            animeAnimation(this, animeOptions);
+                        }
+                    });
+                } catch (e) {}
+            }
+        });
+
+        // Trigger appear for other elements
+        $('.vertical-counter, .counter, .progress-bar, .pie-chart-style-01, .attractive-hover, .splitting-animation, .section-dark, footer, [data-anime], [data-fancy-text]').each(function () {
+            $(this).appear().trigger('resize');
+        });
+
+        // Re-run standard init functions
+        if (typeof setupSwiper === 'function') setupSwiper();
+        if (typeof initAtropos === 'function') initAtropos();
+        if (typeof initSkrollr === 'function') initSkrollr();
+        if (typeof animateCounters === 'function') animateCounters();
+        
+        // Refresh skrollr
+        if (typeof skroller !== 'undefined' && skroller !== null) {
+            skroller.refresh();
+        }
+        
+        // Trigger resize to fix layouts
+        $(window).trigger('resize');
+    };
+
 })(jQuery);
 
 /* ===================================

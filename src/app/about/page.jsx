@@ -121,16 +121,11 @@ export default function AboutPage() {
           <div className="container">
             <div className="row align-items-center mb-5">
               <div className="col-lg-7 mb-4 mb-lg-0" data-anime='{ "opacity": [0,1], "duration": 800, "delay": 200, "easing": "easeOutQuad" }'>
-                <div className="d-flex align-items-center mb-30px">
-                  <div className="flex-shrink-0">
-                    <i className="bi bi-gem text-base-color fs-40"></i>
-                  </div>
-                  <div className="ps-20px">
-                    <h2 className="fw-700 mb-0 ls-minus-1px text-uppercase">What Makes Us <br />Different</h2>
-                  </div>
+                <div className="mb-30px">
+                  <h2 className="fw-700 mb-0 ls-minus-1px text-uppercase">What Makes Us <br />Different?</h2>
                 </div>
-                
-                <ul className="list-style-01 ps-0">
+
+                <ul className="ps-0">
                   <li className="d-flex align-items-center mb-20px fw-500 fs-18">
                     <i className="bi bi-check-circle-fill text-base-color me-15px fs-20"></i>
                     Demo website options available
@@ -155,24 +150,24 @@ export default function AboutPage() {
               </div>
               <div className="col-lg-4 offset-lg-1 d-none d-lg-block" data-anime='{ "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 400, "easing": "easeOutQuad" }'>
                 <div className="position-relative">
-                  <Image 
-                    src="/images/different_section_image_1778244663487.png" 
-                    alt="What Makes Us Different" 
-                    width={400} 
-                    height={600} 
+                  <Image
+                    src="/images/different_section_image_1778244663487.png"
+                    alt="What Makes Us Different"
+                    width={400}
+                    height={600}
                     className="border-radius-20px box-shadow-extra-large"
                   />
                 </div>
               </div>
             </div>
-            
+
             <div className="row" data-anime='{ "translateY": [30, 0], "opacity": [0,1], "duration": 800, "delay": 600, "easing": "easeOutQuad" }'>
               <div className="col-12">
                 <div className="p-4 p-md-5 border-radius-20px bg-white-transparent-1 border border-color-transparent-white-light position-relative text-center">
                   <i className="bi bi-quote fs-60 text-base-color opacity-3 position-absolute top-20px left-20px d-none d-md-block"></i>
-                  <h3 className="fw-600 mb-0 lh-45 d-inline-block">
+                  <h4 className="fw-600 mb-0 lh-45 d-inline-block ls-minus-1px">
                     We don't bring you more leads. We bring you the <span className="text-base-color fw-700 text-decoration-line-bottom border-2 border-color-base-color">right ones.</span>
-                  </h3>
+                  </h4>
                   <i className="bi bi-quote fs-60 text-base-color opacity-3 position-absolute bottom-20px right-20px rotate-180 d-none d-md-block"></i>
                 </div>
               </div>
