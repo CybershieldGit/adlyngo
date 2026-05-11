@@ -7,7 +7,24 @@ import { useState, useEffect } from 'react';
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [admin, setAdmin] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+        const res = await fetch(`${apiUrl}/auth/me`);
+        const data = await res.json();
+        if (data.success) {
+          setAdmin(data.data.admin);
+        }
+      } catch (err) {
+        console.error("Failed to fetch profile", err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   // Close sidebar when route changes on mobile
   useEffect(() => {
@@ -30,7 +47,7 @@ export default function DashboardLayout({ children }) {
   const menuItems = [
     { label: 'Dashboard', path: '/admin/dashboard', icon: 'bi-speedometer2' },
     { label: 'Manage Reels', path: '/admin/dashboard/reels', icon: 'bi-play-btn-fill' },
-    { label: 'Manage Projects', path: '/admin/dashboard/projects', icon: 'bi-briefcase-fill' },
+    { label: 'Manage Case Studies', path: '/admin/dashboard/case-studies', icon: 'bi-briefcase-fill' },
     { label: 'Manage Blogs', path: '/admin/dashboard/blogs', icon: 'bi-journal-richtext' },
     { label: 'Categories', path: '/admin/dashboard/categories', icon: 'bi-collection-fill' },
   ];
@@ -87,13 +104,31 @@ export default function DashboardLayout({ children }) {
         </ul>
 
         <div className="mt-auto pt-4 border-top border-white-10">
-          <button
-            onClick={handleLogout}
-            className="btn btn-link text-white-50 text-decoration-none w-100 d-flex align-items-center justify-content-center hover-text-white"
-            style={{ transition: 'all 0.2s ease' }}
-          >
-            <i className="bi bi-box-arrow-right me-2"></i> <span>Logout</span>
-          </button>
+          {admin && (
+            <div className="px-3 mb-3 d-flex align-items-center gap-2">
+              <div className="bg-admin-primary rounded-circle d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px', minWidth: '32px' }}>
+                <span className="text-white fw-700 fs-12">{admin.email.charAt(0).toUpperCase()}</span>
+              </div>
+              <div className="overflow-hidden">
+                <div className="text-white-50 fs-10 text-uppercase fw-700 ls-1">Logged in as</div>
+                <div className="text-white fs-13 text-truncate fw-500" title={admin.email}>{admin.email}</div>
+              </div>
+            </div>
+          )}
+          <div className="d-flex align-items-center justify-content-center gap-2 mt-2">
+            <span className="fw-500 text-nowrap mb-0">Logout</span>
+
+            <button
+              onClick={handleLogout}
+              className="nav-link d-flex align-items-center justify-content-center rounded-3 px-3 py-2 text-white hover-bg-dark-gray"
+              style={{ transition: 'all 0.25s ease' }}
+            >
+              <i
+                className="bi bi-box-arrow-right fs-5 text-admin-primary"
+                style={{ opacity: 0.9 }}
+              ></i>
+            </button>
+          </div>
         </div>
       </aside>
 

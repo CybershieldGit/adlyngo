@@ -23,9 +23,12 @@ export async function POST(request) {
     
     // Set HTTP-only cookie
     const cookieStore = await cookies();
+    const isProduction = env.NODE_ENV === "production";
+    const isSecureRequest = request.url.startsWith('https://');
+
     cookieStore.set(COOKIE_NAME, token, {
       httpOnly: true,
-      secure: env.NODE_ENV === "production",
+      secure: isProduction && isSecureRequest, // Only secure if production AND using https
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
       path: "/",

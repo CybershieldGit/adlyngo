@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -16,14 +14,18 @@ export default function AdminLogin() {
     setLoading(true);
     setError('');
 
+    const formData = new FormData(e.target);
+    const loginEmail = formData.get('email');
+    const loginPassword = formData.get('password');
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       
       const response = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Crucial for cross-port cookie storage
-        body: JSON.stringify({ email, password }),
+        credentials: 'include',
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
       });
 
       const data = await response.json();
@@ -60,10 +62,9 @@ export default function AdminLogin() {
           <div className="mb-3">
             <label className="form-label text-dark-gray fw-500 fs-14">Email address</label>
             <input 
+              name="email"
               type="email" 
               className="form-control" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               required 
               disabled={loading}
             />
@@ -71,12 +72,12 @@ export default function AdminLogin() {
           <div className="mb-4">
             <label className="form-label text-dark-gray fw-500 fs-14">Password</label>
             <input 
+              name="password"
               type="password" 
               className="form-control" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               required 
               disabled={loading}
+              autoComplete="current-password"
             />
           </div>
           <button 

@@ -21,18 +21,27 @@ export default function ManageReels() {
   const [formData, setFormData] = useState({ title: '', reelUrl: '', category: '', published: true });
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchData = async () => {
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalDocs, setTotalDocs] = useState(0);
+
+  const fetchData = async (targetPage = page) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const [reelsRes, catsRes] = await Promise.all([
-        fetch(`${apiUrl}/reels`),
+        fetch(`${apiUrl}/reels?page=${targetPage}&limit=10`),
         fetch(`${apiUrl}/categories?type=reel`)
       ]);
 
       const reelsData = await reelsRes.json();
       const catsData = await catsRes.json();
 
-      if (reelsData.success) setReels(reelsData.data.reels);
+      if (reelsData.success) {
+        setReels(reelsData.data.reels || []);
+        setTotalPages(reelsData.data.meta.totalPages);
+        setTotalDocs(reelsData.data.meta.totalDocs);
+      }
       if (catsData.success) {
         console.log(`Loaded ${catsData.data.categories.length} reel categories`);
         setCategories(catsData.data.categories);
@@ -46,7 +55,7 @@ export default function ManageReels() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
 
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this reel?')) return;
@@ -121,7 +130,7 @@ export default function ManageReels() {
 
       if (response.ok && data.success) {
         if (isEditing) {
-          setReels(reels.map(r => r._id === editingId ? data.data.reel : r));
+          setReels(reels?.map(r => r._id === editingId ? data.data.reel : r));
           setSuccess('Reel updated successfully!');
         } else {
           setReels([data.data.reel, ...reels]);
@@ -234,22 +243,22 @@ export default function ManageReels() {
       <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
         <div className="table-responsive">
           <table className="table table-hover align-middle mb-0">
-            <thead className="bg-light text-muted fs-14 text-uppercase">
+            <thead className="text-muted fs-14 text-uppercase">
               <tr>
                 <th className="ps-4 py-3 fw-600 border-0">Title</th>
                 <th className="py-3 fw-600 border-0">Category</th>
                 <th className="py-3 fw-600 border-0">Status</th>
                 <th className="py-3 fw-600 border-0">Date</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light actions-column">Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {reels.length === 0 ? (
+              {(!Array.isArray(reels) || reels.length === 0) ? (
                 <tr>
                   <td colSpan="5" className="text-center py-5 text-muted">No reels found. Create one above!</td>
                 </tr>
               ) : (
-                reels.map(reel => (
+                reels?.map(reel => (
                   <tr key={reel._id}>
                     <td className="ps-4 py-3 fw-500">{reel.title}</td>
                     <td className="py-3">{reel.category?.name || 'Unknown'}</td>
@@ -261,8 +270,8 @@ export default function ManageReels() {
                     <td className="py-3 fs-14 text-muted">
                       {new Date(reel.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="pe-4 py-3 text-end sticky-column-end actions-column">
-                      <div className="d-flex justify-content-end gap-2">
+                    <td className="pe-4 py-3 text-center sticky-column-end actions-column">
+                      <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(reel)}
@@ -292,6 +301,37 @@ export default function ManageReels() {
             </tbody>
           </table>
         </div>
+        
+        {/* Pagination Footer */}
+        {totalPages > 1 && (
+          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
+            <div className="text-muted fs-13 fw-500">
+              Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> reels
+            </div>
+            <nav className="admin-pagination">
+              <ul className="pagination pagination-sm mb-0">
+                <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => setPage(p => Math.max(1, p - 1))}>
+                    <i className="bi bi-chevron-left"></i>
+                  </button>
+                </li>
+                {[...Array(totalPages)].map((_, i) => (
+                  <li key={i} className={`page-item ${page === i + 1 ? 'active' : ''}`}>
+                    <button 
+                      className="page-link" onClick={() => setPage(i + 1)} >
+                      {i + 1}
+                    </button>
+                  </li>
+                ))}
+                <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => setPage(p => Math.min(totalPages, p + 1))}>
+                    <i className="bi bi-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
       </div>
       {/* View Modal */}
       {isViewing && viewingReel && (

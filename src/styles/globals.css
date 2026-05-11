@@ -263,6 +263,7 @@
 
 :root {
   --admin-primary: #FF5A35;
+  --admin-primary-rgb: 255, 90, 53;
   --admin-sidebar-bg: #141414;
   --admin-sidebar-hover: rgba(255, 90, 53, 0.1);
 }
@@ -284,7 +285,8 @@
 }
 
 .bg-admin-primary {
-  background-color: var(--admin-primary) !important;
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--admin-primary-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .text-admin-primary {
@@ -297,6 +299,72 @@
 
 .border-white-10 {
   border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.hover-translate-y {
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.hover-translate-y:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+.transition-all {
+  transition: all 0.3s ease !important;
+}
+
+.admin-dashboard-fade {
+  animation: fadeInDashboard 0.6s ease-out;
+}
+
+@keyframes fadeInDashboard {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ls-1 {
+  letter-spacing: 1px;
+}
+
+.fw-800 {
+  font-weight: 800;
+}
+
+.fs-16 {
+  font-size: 16px;
+}
+
+.fs-11 {
+  font-size: 11px;
+}
+
+.fs-12 {
+  font-size: 12px;
+}
+
+.border-radius-15px {
+  border-radius: 15px !important;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.summary-item span {
+    white-space: nowrap;
+}
+
+.dashboard-card {
+    height: 100%;
+}
+
+.analytics-card,
+.summary-card {
+    height: 100%;
 }
 
 .admin-main {
@@ -397,13 +465,59 @@
   box-shadow: -5px 0 10px rgba(0, 0, 0, 0.02);
 }
 
-.bg-light.sticky-column-end {
-  background-color: #f8f9fa !important;
+.table thead th {
+  background-color: #fff !important;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
 
 /* Ensure hover effect works with sticky background */
 .table-hover tbody tr:hover td.sticky-column-end {
   background-color: #f8f9fa !important;
+}
+
+/* Admin Pagination Styling */
+.admin-pagination .pagination {
+  gap: 6px;
+}
+
+.admin-pagination .page-link {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  color: #6c757d;
+  background: #fff;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.admin-pagination .page-item.active .page-link {
+  background-color: var(--admin-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(255, 90, 53, 0.25) !important;
+}
+
+.admin-pagination .page-item.disabled .page-link {
+  opacity: 0.5;
+  background: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.admin-pagination .page-link:hover:not(.active) {
+  background-color: #f8f9fa;
+  color: var(--admin-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Custom scrollbar for sidebar */

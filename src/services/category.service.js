@@ -1,6 +1,7 @@
 import Category from "../models/Category.js";
 import ApiError from "../utils/ApiError.js";
-import { slugify, uniqueSlug } from "../utils/slugify.js";
+import { uniqueSlug } from "../utils/slugify.js";
+import { parsePagination, buildPaginationMeta } from "../utils/pagination.js";
 
 /**
  * Create a new category.
@@ -21,7 +22,18 @@ export const getCategories = async (query = {}) => {
   if (query.type) {
     filter.type = query.type;
   }
-  return Category.find(filter).sort("name");
+  
+  const { page, limit, skip } = parsePagination(query);
+
+  const [categories, totalDocs] = await Promise.all([
+    Category.find(filter).sort("name").skip(skip).limit(limit),
+    Category.countDocuments(filter),
+  ]);
+
+  return {
+    categories,
+    meta: buildPaginationMeta(page, limit, totalDocs),
+  };
 };
 
 /**

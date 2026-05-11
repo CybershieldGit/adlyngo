@@ -19,6 +19,11 @@ export default function ManageBlogs() {
   const [viewingBlog, setViewingBlog] = useState(null);
   const [editingId, setEditingId] = useState(null);
 
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalDocs, setTotalDocs] = useState(0);
+
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -31,18 +36,22 @@ export default function ManageBlogs() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async (targetPage = page) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const [blogRes, catRes] = await Promise.all([
-        fetch(`${apiUrl}/blogs`),
+        fetch(`${apiUrl}/blogs?page=${targetPage}&limit=10`),
         fetch(`${apiUrl}/categories?type=blog`)
       ]);
 
       const blogData = await blogRes.json();
       const catData = await catRes.json();
 
-      if (blogData.success) setBlogs(blogData.data.blogs);
+      if (blogData.success) {
+        setBlogs(blogData.data.blogs || []);
+        setTotalPages(blogData.data.meta.totalPages);
+        setTotalDocs(blogData.data.meta.totalDocs);
+      }
       if (catData.success) {
         console.log(`Loaded ${catData.data.categories.length} blog categories`);
         setCategories(catData.data.categories);
@@ -56,7 +65,7 @@ export default function ManageBlogs() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,7 +86,7 @@ export default function ManageBlogs() {
       const data = await response.json();
       if (data.success) {
         if (isEditing) {
-          setBlogs(blogs.map(b => b._id === editingId ? data.data.blog : b));
+          setBlogs(blogs?.map(b => b._id === editingId ? data.data.blog : b));
           setSuccess('Blog post updated!');
         } else {
           setBlogs([data.data.blog, ...blogs]);
@@ -298,20 +307,20 @@ export default function ManageBlogs() {
       <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
         <div className="table-responsive">
           <table className="table table-hover align-middle mb-0">
-            <thead className="bg-light text-muted fs-14 text-uppercase">
+            <thead className=" text-muted fs-14 text-uppercase">
               <tr>
                 <th className="ps-4 py-3 fw-600 border-0" style={{ width: '120px', whiteSpace: 'nowrap' }}>Image</th>
                 <th className="py-3 fw-600 border-0 ps-3" style={{ whiteSpace: 'nowrap' }}>Article Title</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Category</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Status</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {blogs.length === 0 ? (
+              {(!Array.isArray(blogs) || blogs.length === 0) ? (
                 <tr><td colSpan="5" className="text-center py-5">No articles yet. Start writing!</td></tr>
               ) : (
-                blogs.map(b => (
+                blogs?.map(b => (
                   <tr key={b._id}>
                     <td className="ps-4 py-3">
                       <div className="rounded-3 border overflow-hidden bg-light d-flex align-items-center justify-content-center" style={{ width: '50px', height: '50px' }}>
@@ -330,8 +339,8 @@ export default function ManageBlogs() {
                         {b.published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-end sticky-column-end actions-column">
-                      <div className="d-flex justify-content-end gap-2">
+                    <td className="pe-4 py-3 text-center sticky-column-end actions-column">
+                      <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(b)}
@@ -361,6 +370,35 @@ export default function ManageBlogs() {
             </tbody>
           </table>
         </div>
+        
+        {/* Pagination Footer */}
+        {totalPages > 1 && (
+          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
+            <div className="text-muted fs-13 fw-500">
+              Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> articles
+            </div>
+            <nav className="admin-pagination">
+              <ul className="pagination pagination-sm mb-0">
+                <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => setPage(p => Math.max(1, p - 1))}>
+                    <i className="bi bi-chevron-left"></i>
+                  </button>
+                </li>
+                {[...Array(totalPages)].map((_, i) => (
+                  <li key={i} className={`page-item ${page === i + 1 ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => setPage(i + 1)}>{i + 1}
+                    </button>
+                  </li>
+                ))}
+                <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => setPage(p => Math.min(totalPages, p + 1))}>
+                    <i className="bi bi-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
       </div>
     </div>
   );

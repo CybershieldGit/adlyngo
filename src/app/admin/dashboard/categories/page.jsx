@@ -19,14 +19,21 @@ export default function ManageCategories() {
   const [formData, setFormData] = useState({ name: '', slug: '', type: 'blog', description: '' });
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchCategories = async () => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/categories`);
-      const data = await response.json();
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalDocs, setTotalDocs] = useState(0);
 
+  const fetchData = async (targetPage = page) => {
+    try {
+      setLoading(true);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const res = await fetch(`${apiUrl}/categories?page=${targetPage}&limit=10`);
+      const data = await res.json();
       if (data.success) {
-        setCategories(data.data.categories);
+        setCategories(data.data.categories || []);
+        setTotalPages(data.data.meta?.totalPages || 1);
+        setTotalDocs(data.data.meta?.totalDocs || 0);
       } else {
         throw new Error(data.message || 'Failed to fetch categories');
       }
@@ -38,8 +45,8 @@ export default function ManageCategories() {
   };
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    fetchData();
+  }, [page]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -95,6 +102,20 @@ export default function ManageCategories() {
     } catch (err) {
       setError('Network error while deleting');
     }
+  };
+
+  const handleView = (cat) => {
+    setViewingCategory(cat);
+    setIsViewing(true);
+  };
+
+  const closeModals = () => {
+    setIsCreating(false);
+    setIsEditing(false);
+    setIsViewing(false);
+    setViewingCategory(null);
+    setEditingId(null);
+    setFormData({ name: '', slug: '', type: 'blog', description: '' });
   };
 
   if (loading) return <div>Loading categories...</div>;
@@ -196,21 +217,21 @@ export default function ManageCategories() {
       <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
         <div className="table-responsive">
           <table className="table table-hover align-middle mb-0">
-            <thead className="bg-light text-muted fs-14 text-uppercase">
+            <thead className=" text-muted fs-14 text-uppercase">
               <tr>
                 <th className="ps-4 py-3 fw-600 border-0">Name</th>
                 <th className="py-3 fw-600 border-0">Slug</th>
                 <th className="py-3 fw-600 border-0">Type</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light actions-column">Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {categories.length === 0 ? (
+              {(!Array.isArray(categories) || categories.length === 0) ? (
                 <tr>
                   <td colSpan="4" className="text-center py-5 text-muted">No categories found.</td>
                 </tr>
               ) : (
-                categories.map(cat => (
+                categories?.map(cat => (
                   <tr key={cat._id}>
                     <td className="ps-4 py-3 fw-500">{cat.name}</td>
                     <td className="py-3 text-muted">{cat.slug}</td>
@@ -221,8 +242,8 @@ export default function ManageCategories() {
                         {cat.type.toUpperCase()}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-end sticky-column-end actions-column">
-                      <div className="d-flex justify-content-end gap-2">
+                    <td className="pe-4 py-3 text-center sticky-column-end actions-column">
+                      <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(cat)}
@@ -245,7 +266,37 @@ export default function ManageCategories() {
             </tbody>
           </table>
         </div>
+        
+        {/* Pagination Footer */}
+        {totalPages > 1 && (
+          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
+            <div className="text-muted fs-13 fw-500">
+              Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> categories
+            </div>
+            <nav className="admin-pagination">
+              <ul className="pagination pagination-sm mb-0">
+                <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => setPage(p => Math.max(1, p - 1))}>
+                    <i className="bi bi-chevron-left"></i>
+                  </button>
+                </li>
+                {[...Array(totalPages)].map((_, i) => (
+                  <li key={i} className={`page-item ${page === i + 1 ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => setPage(i + 1)}>{i + 1}
+                    </button>
+                  </li>
+                ))}
+                <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => setPage(p => Math.min(totalPages, p + 1))}>
+                    <i className="bi bi-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
       </div>
+
       {/* View Modal */}
       {isViewing && viewingCategory && (
         <Modal

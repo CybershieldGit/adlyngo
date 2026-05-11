@@ -10,10 +10,10 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const query = Object.fromEntries(searchParams);
     
-    const categories = await categoryService.getCategories(query);
+    const result = await categoryService.getCategories(query);
     
     return NextResponse.json(
-      new ApiResponse(200, { categories }, "Categories fetched successfully"),
+      new ApiResponse(200, result, "Categories fetched successfully"),
       { status: 200 }
     );
   } catch (error) {
