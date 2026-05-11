@@ -12,7 +12,11 @@ export default function ManageCategories() {
 
   // Form State
   const [isCreating, setIsCreating] = useState(false);
-  const [formData, setFormData] = useState({ name: '', slug: '', type: 'reel', description: '' });
+  const [isEditing, setIsEditing] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
+  const [viewingCategory, setViewingCategory] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({ name: '', slug: '', type: 'blog', description: '' });
   const [submitting, setSubmitting] = useState(false);
 
   const fetchCategories = async () => {
@@ -218,7 +222,14 @@ export default function ManageCategories() {
                       </span>
                     </td>
                     <td className="pe-4 py-3 text-end sticky-column-end actions-column">
-                      <div className="d-flex justify-content-end">
+                      <div className="d-flex justify-content-end gap-2">
+                        <button
+                          className="btn btn-icon btn-light-gray btn-sm"
+                          onClick={() => handleView(cat)}
+                          title="View"
+                        >
+                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                        </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
                           onClick={() => handleDelete(cat._id)}
@@ -235,6 +246,32 @@ export default function ManageCategories() {
           </table>
         </div>
       </div>
+      {/* View Modal */}
+      {isViewing && viewingCategory && (
+        <Modal
+          isOpen={isViewing}
+          onClose={closeModals}
+          title="Category Details"
+          size="md"
+        >
+          <div className="view-details">
+            <div className="mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Category Name</label>
+              <h5 className="fw-600 text-dark-gray">{viewingCategory.name}</h5>
+            </div>
+            <div className="mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Slug</label>
+              <p className="fw-500 font-monospace">{viewingCategory.slug}</p>
+            </div>
+            <div className="mb-0">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Type</label>
+              <span className="badge bg-admin-primary text-white px-3 py-2">
+                {viewingCategory.type.toUpperCase()}
+              </span>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

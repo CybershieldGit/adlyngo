@@ -14,6 +14,8 @@ export default function ManageProjects() {
 
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
+  const [viewingProject, setViewingProject] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -30,6 +32,8 @@ export default function ManageProjects() {
   const closeModals = () => {
     setIsCreating(false);
     setIsEditing(false);
+    setIsViewing(false);
+    setViewingProject(null);
     setEditingId(null);
     setFormData({
       title: '',
@@ -58,6 +62,11 @@ export default function ManageProjects() {
     setIsEditing(true);
     setError('');
     setSuccess('');
+  };
+
+  const handleView = (project) => {
+    setViewingProject(project);
+    setIsViewing(true);
   };
 
   const fetchData = async () => {
@@ -243,7 +252,8 @@ export default function ManageProjects() {
           <table className="table table-hover align-middle mb-0">
             <thead className="bg-light text-muted fs-14 text-uppercase">
               <tr>
-                <th className="ps-4 py-3 fw-600 border-0">Project</th>
+                <th className="ps-4 py-3 fw-600 border-0" style={{ width: '120px', whiteSpace: 'nowrap' }}>Image</th>
+                <th className="py-3 fw-600 border-0 ps-3">Project</th>
                 <th className="py-3 fw-600 border-0">Category</th>
                 <th className="py-3 fw-600 border-0">Status</th>
                 <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light actions-column">Actions</th>
@@ -251,12 +261,21 @@ export default function ManageProjects() {
             </thead>
             <tbody>
               {projects.length === 0 ? (
-                <tr><td colSpan="4" className="text-center py-5">No projects yet.</td></tr>
+                <tr><td colSpan="5" className="text-center py-5">No projects yet.</td></tr>
               ) : (
                 projects.map(p => (
                   <tr key={p._id}>
-                    <td className="ps-4 py-3 fw-500">{p.title}</td>
-                    <td className="py-3 text-muted">{p.category?.name || 'Uncategorized'}</td>
+                    <td className="ps-4 py-3">
+                      <div className="rounded-3 border overflow-hidden bg-light d-flex align-items-center justify-content-center" style={{ width: '50px', height: '50px' }}>
+                        {p.coverImage?.url ? (
+                          <img src={p.coverImage.url} alt="" className="w-100 h-100 object-fit-cover" />
+                        ) : (
+                          <i className="bi bi-image text-muted fs-18"></i>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-3 fw-600 text-dark-gray ps-3">{p.title}</td>
+                    <td className="py-3 text-dark-gray opacity-75">{p.category?.name || 'Uncategorized'}</td>
                     <td className="py-3">
                       {p.featured && <span className="badge bg-warning bg-opacity-10 text-warning me-2">Featured</span>}
                       <span className={`badge ${p.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${p.published ? 'success' : 'secondary'}`}>
@@ -265,6 +284,13 @@ export default function ManageProjects() {
                     </td>
                     <td className="pe-4 py-3 text-end sticky-column-end actions-column">
                       <div className="d-flex justify-content-end gap-2">
+                        <button
+                          className="btn btn-icon btn-light-gray btn-sm"
+                          onClick={() => handleView(p)}
+                          title="View"
+                        >
+                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                        </button>
                         <button
                           className="btn btn-icon btn-primary-light btn-sm"
                           onClick={() => handleEdit(p)}
@@ -288,6 +314,66 @@ export default function ManageProjects() {
           </table>
         </div>
       </div>
+      {/* View Modal */}
+      {isViewing && viewingProject && (
+        <Modal
+          isOpen={isViewing}
+          onClose={closeModals}
+          title="Project Details"
+          size="lg"
+        >
+          <div className="view-details row">
+            <div className="col-md-6 mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Cover Image</label>
+              <div className="border-radius-10px overflow-hidden border">
+                <img src={viewingProject.coverImage?.url} alt={viewingProject.title} className="img-fluid w-100" />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-4">
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Project Title</label>
+                <h5 className="fw-600 text-dark-gray">{viewingProject.title}</h5>
+              </div>
+              <div className="mb-4">
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Category</label>
+                <span className="badge bg-light text-dark-gray px-3 py-2 border">
+                  {viewingProject.category?.name || 'Uncategorized'}
+                </span>
+              </div>
+              <div className="row">
+                <div className="col-6 mb-4">
+                  <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Status</label>
+                  <span className={`badge ${viewingProject.published ? 'bg-success-light text-success' : 'bg-warning-light text-warning'} px-3 py-2`}>
+                    {viewingProject.published ? 'Published' : 'Draft'}
+                  </span>
+                </div>
+                <div className="col-6 mb-4">
+                  <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Featured</label>
+                  <span className={`badge ${viewingProject.featured ? 'bg-primary-light text-primary' : 'bg-light text-muted'} px-3 py-2 border`}>
+                    {viewingProject.featured ? 'Yes' : 'No'}
+                  </span>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Client Name</label>
+                <p className="fw-500">{viewingProject.clientName || 'N/A'}</p>
+              </div>
+              <div className="mb-0">
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Live URL</label>
+                {viewingProject.liveUrl ? (
+                  <a href={viewingProject.liveUrl} target="_blank" rel="noopener noreferrer" className="text-admin-primary fw-600">
+                    {viewingProject.liveUrl} <i className="bi bi-box-arrow-up-right ms-1"></i>
+                  </a>
+                ) : 'N/A'}
+              </div>
+            </div>
+            <div className="col-12 mt-4 pt-4 border-top">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-2 d-block">Description</label>
+              <div className="text-muted fs-15 lh-26" dangerouslySetInnerHTML={{ __html: viewingProject.description }}></div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

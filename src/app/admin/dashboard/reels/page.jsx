@@ -15,6 +15,8 @@ export default function ManageReels() {
   // Form State
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
+  const [viewingReel, setViewingReel] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ title: '', reelUrl: '', category: '', published: true });
   const [submitting, setSubmitting] = useState(false);
@@ -83,9 +85,16 @@ export default function ManageReels() {
     setSuccess('');
   };
 
+  const handleView = (reel) => {
+    setViewingReel(reel);
+    setIsViewing(true);
+  };
+
   const closeModals = () => {
     setIsCreating(false);
     setIsEditing(false);
+    setIsViewing(false);
+    setViewingReel(null);
     setEditingId(null);
     setFormData({ title: '', reelUrl: '', category: '', published: true });
   };
@@ -255,6 +264,13 @@ export default function ManageReels() {
                     <td className="pe-4 py-3 text-end sticky-column-end actions-column">
                       <div className="d-flex justify-content-end gap-2">
                         <button
+                          className="btn btn-icon btn-light-gray btn-sm"
+                          onClick={() => handleView(reel)}
+                          title="View"
+                        >
+                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                        </button>
+                        <button
                           className="btn btn-icon btn-primary-light btn-sm"
                           onClick={() => handleEdit(reel)}
                           title="Edit"
@@ -277,6 +293,40 @@ export default function ManageReels() {
           </table>
         </div>
       </div>
+      {/* View Modal */}
+      {isViewing && viewingReel && (
+        <Modal
+          isOpen={isViewing}
+          onClose={closeModals}
+          title="Reel Details"
+          size="md"
+        >
+          <div className="view-details">
+            <div className="mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Title</label>
+              <h5 className="fw-600 text-dark-gray">{viewingReel.title}</h5>
+            </div>
+            <div className="mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Category</label>
+              <span className="badge bg-light text-dark-gray px-3 py-2 border">
+                {viewingReel.category?.name || 'Uncategorized'}
+              </span>
+            </div>
+            <div className="mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Status</label>
+              <span className={`badge ${viewingReel.published ? 'bg-success-light text-success' : 'bg-warning-light text-warning'} px-3 py-2`}>
+                {viewingReel.published ? 'Published' : 'Draft'}
+              </span>
+            </div>
+            <div className="mb-0">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Video URL</label>
+              <a href={viewingReel.reelUrl} target="_blank" rel="noopener noreferrer" className="text-admin-primary fw-600">
+                {viewingReel.reelUrl} <i className="bi bi-box-arrow-up-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
