@@ -11,7 +11,7 @@ export default function ManageReels() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   // Form State
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -26,10 +26,10 @@ export default function ManageReels() {
         fetch(`${apiUrl}/reels`),
         fetch(`${apiUrl}/categories?type=reel`)
       ]);
-      
+
       const reelsData = await reelsRes.json();
       const catsData = await catsRes.json();
-      
+
       if (reelsData.success) setReels(reelsData.data.reels);
       if (catsData.success) {
         console.log(`Loaded ${catsData.data.categories.length} reel categories`);
@@ -50,14 +50,14 @@ export default function ManageReels() {
     if (!confirm('Are you sure you want to delete this reel?')) return;
     setError('');
     setSuccess('');
-    
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const response = await fetch(`${apiUrl}/reels/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      
+
       if (response.ok) {
         setReels(reels.filter(r => r._id !== id));
         setSuccess('Reel deleted successfully.');
@@ -95,21 +95,21 @@ export default function ManageReels() {
     setSubmitting(true);
     setError('');
     setSuccess('');
-    
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const url = isEditing ? `${apiUrl}/reels/${editingId}` : `${apiUrl}/reels`;
       const method = isEditing ? 'PUT' : 'POST';
-      
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(formData),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         if (isEditing) {
           setReels(reels.map(r => r._id === editingId ? data.data.reel : r));
@@ -135,13 +135,13 @@ export default function ManageReels() {
     <div>
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
         <h3 className="fw-700 text-dark-gray mb-0">Manage Reels</h3>
-        <button 
+        <button
           className="btn btn-dark-gray btn-small btn-rounded px-4"
           onClick={() => {
             closeModals();
             setIsCreating(true);
           }}
-          style={{ width: 'fit-content' }}
+          style={{ width: 'fit-content', whiteSpace: 'nowrap' }}
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
@@ -175,20 +175,20 @@ export default function ManageReels() {
           <div className="row g-3">
             <div className="col-md-12">
               <label className="form-label fs-14 fw-500">Title</label>
-              <input 
-                type="text" 
-                className="form-control" 
+              <input
+                type="text"
+                className="form-control"
                 value={formData.title}
-                onChange={e => setFormData({...formData, title: e.target.value})}
-                required 
+                onChange={e => setFormData({ ...formData, title: e.target.value })}
+                required
               />
             </div>
             <div className="col-12">
               <label className="form-label fs-14 fw-500">Reel Video (Drag & Drop)</label>
-              <FileUpload 
+              <FileUpload
                 type="video"
                 folder="adlyngo/reels"
-                onUploadSuccess={(result) => setFormData({...formData, reelUrl: result.url})} 
+                onUploadSuccess={(result) => setFormData({ ...formData, reelUrl: result.url })}
                 currentUrl={formData.reelUrl}
               />
             </div>
@@ -203,11 +203,11 @@ export default function ManageReels() {
             </div>
             <div className="col-md-12">
               <div className="form-check form-switch fs-14 mt-2">
-                <input 
-                  className="form-check-input" 
-                  type="checkbox" 
+                <input
+                  className="form-check-input"
+                  type="checkbox"
                   checked={formData.published}
-                  onChange={e => setFormData({...formData, published: e.target.checked})}
+                  onChange={e => setFormData({ ...formData, published: e.target.checked })}
                 />
                 <label className="form-check-label fw-500">Published</label>
               </div>
@@ -231,7 +231,7 @@ export default function ManageReels() {
                 <th className="py-3 fw-600 border-0">Category</th>
                 <th className="py-3 fw-600 border-0">Status</th>
                 <th className="py-3 fw-600 border-0">Date</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light">Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light actions-column">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -252,14 +252,23 @@ export default function ManageReels() {
                     <td className="py-3 fs-14 text-muted">
                       {new Date(reel.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="pe-4 py-3 text-end sticky-column-end">
-                      <button 
-                        className="btn btn-link text-primary p-0 me-3 text-decoration-none"
-                        onClick={() => handleEdit(reel)}
-                      >
-                        <i className="bi bi-pencil"></i>
-                      </button>
-                      <button className="btn btn-link text-danger p-0 text-decoration-none" onClick={() => handleDelete(reel._id)}><i className="bi bi-trash"></i></button>
+                    <td className="pe-4 py-3 text-end sticky-column-end actions-column">
+                      <div className="d-flex justify-content-end gap-2">
+                        <button
+                          className="btn btn-icon btn-primary-light btn-sm"
+                          onClick={() => handleEdit(reel)}
+                          title="Edit"
+                        >
+                          <img src="/images/edit.png" alt="Edit" />
+                        </button>
+                        <button
+                          className="btn btn-icon btn-danger-light btn-sm"
+                          onClick={() => handleDelete(reel._id)}
+                          title="Delete"
+                        >
+                          <img src="/images/trash.png" alt="Delete" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

@@ -9,7 +9,7 @@ export default function ManageCategories() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   // Form State
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({ name: '', slug: '', type: 'reel', description: '' });
@@ -20,7 +20,7 @@ export default function ManageCategories() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const response = await fetch(`${apiUrl}/categories`);
       const data = await response.json();
-      
+
       if (data.success) {
         setCategories(data.data.categories);
       } else {
@@ -42,7 +42,7 @@ export default function ManageCategories() {
     setSubmitting(true);
     setError('');
     setSuccess('');
-    
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const response = await fetch(`${apiUrl}/categories`, {
@@ -51,9 +51,9 @@ export default function ManageCategories() {
         credentials: 'include',
         body: JSON.stringify(formData),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         setCategories([data.data.category, ...categories]);
         setSuccess('Category created successfully!');
@@ -73,14 +73,14 @@ export default function ManageCategories() {
     if (!confirm('Are you sure? This may affect items linked to this category.')) return;
     setError('');
     setSuccess('');
-    
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const response = await fetch(`${apiUrl}/categories/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      
+
       if (response.ok) {
         setCategories(categories.filter(c => c._id !== id));
         setSuccess('Category deleted.');
@@ -99,14 +99,14 @@ export default function ManageCategories() {
     <div>
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
         <h3 className="fw-700 text-dark-gray mb-0">Manage Categories</h3>
-        <button 
+        <button
           className="btn btn-dark-gray btn-small btn-rounded px-4"
           onClick={() => {
             setIsCreating(!isCreating);
             setError('');
             setSuccess('');
           }}
-          style={{ width: 'fit-content' }}
+          style={{ width: 'fit-content', whiteSpace: 'nowrap' }}
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
@@ -140,22 +140,22 @@ export default function ManageCategories() {
           <div className="row g-3">
             <div className="col-md-4">
               <label className="form-label fs-14 fw-500">Name</label>
-              <input 
-                type="text" 
-                className="form-control" 
+              <input
+                type="text"
+                className="form-control"
                 value={formData.name}
-                onChange={e => setFormData({...formData, name: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-')})}
-                required 
+                onChange={e => setFormData({ ...formData, name: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-') })}
+                required
               />
             </div>
             <div className="col-md-4">
               <label className="form-label fs-14 fw-500">Slug</label>
-              <input 
-                type="text" 
-                className="form-control" 
+              <input
+                type="text"
+                className="form-control"
                 value={formData.slug}
-                onChange={e => setFormData({...formData, slug: e.target.value})}
-                required 
+                onChange={e => setFormData({ ...formData, slug: e.target.value })}
+                required
               />
             </div>
             <div className="col-md-4">
@@ -172,11 +172,11 @@ export default function ManageCategories() {
             </div>
             <div className="col-12">
               <label className="form-label fs-14 fw-500">Description</label>
-              <textarea 
-                className="form-control" 
+              <textarea
+                className="form-control"
                 rows="2"
                 value={formData.description}
-                onChange={e => setFormData({...formData, description: e.target.value})}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
               ></textarea>
             </div>
             <div className="col-12 mt-4 text-end">
@@ -197,7 +197,7 @@ export default function ManageCategories() {
                 <th className="ps-4 py-3 fw-600 border-0">Name</th>
                 <th className="py-3 fw-600 border-0">Slug</th>
                 <th className="py-3 fw-600 border-0">Type</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light">Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light actions-column">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -211,15 +211,22 @@ export default function ManageCategories() {
                     <td className="ps-4 py-3 fw-500">{cat.name}</td>
                     <td className="py-3 text-muted">{cat.slug}</td>
                     <td className="py-3">
-                      <span className={`badge bg-opacity-10 px-2 py-1 ${
-                        cat.type === 'reel' ? 'bg-primary text-primary' : 
+                      <span className={`badge bg-opacity-10 px-2 py-1 ${cat.type === 'reel' ? 'bg-primary text-primary' :
                         cat.type === 'project' ? 'bg-success text-success' : 'bg-warning text-warning'
-                      }`}>
+                        }`}>
                         {cat.type.toUpperCase()}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-end sticky-column-end">
-                      <button className="btn btn-link text-danger p-0 text-decoration-none" onClick={() => handleDelete(cat._id)}><i className="bi bi-trash"></i></button>
+                    <td className="pe-4 py-3 text-end sticky-column-end actions-column">
+                      <div className="d-flex justify-content-end">
+                        <button
+                          className="btn btn-icon btn-danger-light btn-sm"
+                          onClick={() => handleDelete(cat._id)}
+                          title="Delete"
+                        >
+                          <img src="/images/trash.png" alt="Delete" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

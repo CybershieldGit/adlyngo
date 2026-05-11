@@ -133,8 +133,8 @@ export default function FileUpload({ onUploadSuccess, currentUrl = '', type = 'v
       
       <style jsx>{`
         .file-upload-dropzone:hover {
-          border-color: #556ee6 !important;
-          background-color: rgba(85, 110, 230, 0.05);
+          border-color: var(--admin-primary) !important;
+          background-color: rgba(255, 90, 53, 0.05);
         }
       `}</style>
     </div>

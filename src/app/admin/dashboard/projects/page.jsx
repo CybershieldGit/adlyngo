@@ -11,16 +11,16 @@ export default function ManageProjects() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ 
-    title: '', 
-    description: '', 
-    category: '', 
-    clientName: '', 
-    liveUrl: '', 
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: '',
+    clientName: '',
+    liveUrl: '',
     coverImage: { url: '', publicId: '' },
     published: true,
     featured: false
@@ -31,12 +31,12 @@ export default function ManageProjects() {
     setIsCreating(false);
     setIsEditing(false);
     setEditingId(null);
-    setFormData({ 
-      title: '', 
-      description: '', 
-      category: '', 
-      clientName: '', 
-      liveUrl: '', 
+    setFormData({
+      title: '',
+      description: '',
+      category: '',
+      clientName: '',
+      liveUrl: '',
       coverImage: { url: '', publicId: '' },
       published: true,
       featured: false
@@ -67,10 +67,10 @@ export default function ManageProjects() {
         fetch(`${apiUrl}/projects`),
         fetch(`${apiUrl}/categories?type=project`)
       ]);
-      
+
       const projData = await projRes.json();
       const catData = await catRes.json();
-      
+
       if (projData.success) setProjects(projData.data.projects);
       if (catData.success) {
         console.log(`Loaded ${catData.data.categories.length} project categories`);
@@ -129,9 +129,9 @@ export default function ManageProjects() {
     setSuccess('');
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/projects/${id}`, { 
+      const response = await fetch(`${apiUrl}/projects/${id}`, {
         method: 'DELETE',
-        credentials: 'include' 
+        credentials: 'include'
       });
       if (response.ok) {
         setProjects(projects.filter(p => p._id !== id));
@@ -150,13 +150,13 @@ export default function ManageProjects() {
     <div>
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 mt-2 mt-lg-0">
         <h3 className="fw-700 text-dark-gray mb-0">Manage Projects</h3>
-        <button 
-          className="btn btn-dark-gray btn-small btn-rounded px-4" 
+        <button
+          className="btn btn-dark-gray btn-small btn-rounded px-4"
           onClick={() => {
             closeModals();
             setIsCreating(true);
           }}
-          style={{ width: 'fit-content' }}
+          style={{ width: 'fit-content', whiteSpace: 'nowrap' }}
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
@@ -190,7 +190,7 @@ export default function ManageProjects() {
           <div className="row g-3">
             <div className="col-md-6">
               <label className="form-label fs-14 fw-500">Project Title</label>
-              <input type="text" className="form-control" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
+              <input type="text" className="form-control" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
             </div>
             <div className="col-md-6">
               <CustomSelect
@@ -203,28 +203,28 @@ export default function ManageProjects() {
             </div>
             <div className="col-12">
               <label className="form-label fs-14 fw-500">Short Description</label>
-              <textarea className="form-control" rows="3" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required></textarea>
+              <textarea className="form-control" rows="3" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required></textarea>
             </div>
             <div className="col-md-6">
               <label className="form-label fs-14 fw-500">Client Name</label>
-              <input type="text" className="form-control" value={formData.clientName} onChange={e => setFormData({...formData, clientName: e.target.value})} />
+              <input type="text" className="form-control" value={formData.clientName} onChange={e => setFormData({ ...formData, clientName: e.target.value })} />
             </div>
             <div className="col-md-6">
               <label className="form-label fs-14 fw-500">Live URL (Optional)</label>
-              <input type="text" className="form-control" value={formData.liveUrl} onChange={e => setFormData({...formData, liveUrl: e.target.value})} placeholder="https://..." />
+              <input type="text" className="form-control" value={formData.liveUrl} onChange={e => setFormData({ ...formData, liveUrl: e.target.value })} placeholder="https://..." />
             </div>
             <div className="col-12">
               <label className="form-label fs-14 fw-500">Cover Image (Drag & Drop)</label>
-              <FileUpload 
+              <FileUpload
                 type="image"
                 folder="adlyngo/projects"
-                onUploadSuccess={(result) => setFormData({...formData, coverImage: result})} 
+                onUploadSuccess={(result) => setFormData({ ...formData, coverImage: result })}
                 currentUrl={formData.coverImage.url}
               />
             </div>
             <div className="col-md-6">
               <div className="form-check form-switch mt-2">
-                <input className="form-check-input" type="checkbox" checked={formData.featured} onChange={e => setFormData({...formData, featured: e.target.checked})} />
+                <input className="form-check-input" type="checkbox" checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} />
                 <label className="form-check-label fw-500">Featured on Home</label>
               </div>
             </div>
@@ -246,7 +246,7 @@ export default function ManageProjects() {
                 <th className="ps-4 py-3 fw-600 border-0">Project</th>
                 <th className="py-3 fw-600 border-0">Category</th>
                 <th className="py-3 fw-600 border-0">Status</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light">Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light actions-column">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -263,14 +263,23 @@ export default function ManageProjects() {
                         {p.published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-end sticky-column-end">
-                      <button 
-                        className="btn btn-link text-primary p-0 me-3 text-decoration-none"
-                        onClick={() => handleEdit(p)}
-                      >
-                        <i className="bi bi-pencil"></i>
-                      </button>
-                      <button className="btn btn-link text-danger p-0" onClick={() => handleDelete(p._id)}><i className="bi bi-trash"></i></button>
+                    <td className="pe-4 py-3 text-end sticky-column-end actions-column">
+                      <div className="d-flex justify-content-end gap-2">
+                        <button
+                          className="btn btn-icon btn-primary-light btn-sm"
+                          onClick={() => handleEdit(p)}
+                          title="Edit"
+                        >
+                          <img src="/images/edit.png" alt="Edit" />
+                        </button>
+                        <button
+                          className="btn btn-icon btn-danger-light btn-sm"
+                          onClick={() => handleDelete(p._id)}
+                          title="Delete"
+                        >
+                          <img src="/images/trash.png" alt="Delete" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

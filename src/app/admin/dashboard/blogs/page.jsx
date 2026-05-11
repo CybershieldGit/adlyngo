@@ -151,7 +151,10 @@ export default function ManageBlogs() {
   return (
     <div>
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
-        <h3 className="fw-700 text-dark-gray mb-0">Manage Blog Posts</h3>
+        <h5 className="fw-700 text-dark-gray mb-0 text-nowrap">
+          Manage Blog Posts
+        </h5>
+
         <button
           className="btn btn-dark-gray btn-small btn-rounded px-4"
           onClick={() => {
@@ -159,7 +162,7 @@ export default function ManageBlogs() {
             setError('');
             setSuccess('');
           }}
-          style={{ width: 'fit-content' }}
+          style={{ width: 'fit-content', whiteSpace: 'nowrap' }}
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
@@ -257,10 +260,10 @@ export default function ManageBlogs() {
             <div className="row g-4">
               {viewingBlog.thumbnail?.url && (
                 <div className="col-12">
-                  <img 
-                    src={viewingBlog.thumbnail.url} 
-                    alt={viewingBlog.title} 
-                    className="img-fluid rounded-4 mb-3 border" 
+                  <img
+                    src={viewingBlog.thumbnail.url}
+                    alt={viewingBlog.title}
+                    className="img-fluid rounded-4 mb-3 border"
                     style={{ maxHeight: '400px', width: '100%', objectFit: 'cover' }}
                   />
                 </div>
@@ -281,9 +284,9 @@ export default function ManageBlogs() {
                 </div>
                 <div className="content-preview">
                   <h6 className="fw-600 mb-3 fs-14 text-uppercase text-muted border-bottom pb-2">Content Preview</h6>
-                  <div 
-                    className="ql-editor p-0" 
-                    dangerouslySetInnerHTML={{ __html: viewingBlog.content }} 
+                  <div
+                    className="ql-editor p-0"
+                    dangerouslySetInnerHTML={{ __html: viewingBlog.content }}
                   />
                 </div>
               </div>
@@ -301,7 +304,7 @@ export default function ManageBlogs() {
                 <th className="py-3 fw-600 border-0 ps-3" style={{ whiteSpace: 'nowrap' }}>Article Title</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Category</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Status</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-end" style={{ whiteSpace: 'nowrap' }}>Actions</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-end sticky-column-end bg-light actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -327,28 +330,28 @@ export default function ManageBlogs() {
                         {b.published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-end">
+                    <td className="pe-4 py-3 text-end sticky-column-end actions-column">
                       <div className="d-flex justify-content-end gap-2">
-                        <button 
-                          className="btn btn-icon btn-light-gray btn-small" 
+                        <button
+                          className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(b)}
                           title="View"
                         >
-                          <i className="bi bi-eye"></i>
+                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
                         </button>
-                        <button 
-                          className="btn btn-icon btn-primary-light btn-small" 
+                        <button
+                          className="btn btn-icon btn-primary-light btn-sm"
                           onClick={() => handleEdit(b)}
                           title="Edit"
                         >
-                          <i className="bi bi-pencil"></i>
+                          <img src="/images/edit.png" alt="Edit" />
                         </button>
-                        <button 
-                          className="btn btn-icon btn-danger-light btn-small" 
+                        <button
+                          className="btn btn-icon btn-danger-light btn-sm"
                           onClick={() => handleDelete(b._id)}
                           title="Delete"
                         >
-                          <i className="bi bi-trash"></i>
+                          <img src="/images/trash.png" alt="Delete" />
                         </button>
                       </div>
                     </td>
