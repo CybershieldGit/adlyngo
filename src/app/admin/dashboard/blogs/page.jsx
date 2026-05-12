@@ -40,8 +40,8 @@ export default function ManageBlogs() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const [blogRes, catRes] = await Promise.all([
-        fetch(`${apiUrl}/blogs?page=${targetPage}&limit=10`),
-        fetch(`${apiUrl}/categories?type=blog`)
+        fetch(`${apiUrl}/blogs?page=${targetPage}&limit=10`, { cache: 'no-store' }),
+        fetch(`${apiUrl}/categories?type=blog`, { cache: 'no-store' })
       ]);
 
       const blogData = await blogRes.json();
@@ -85,13 +85,8 @@ export default function ManageBlogs() {
       });
       const data = await response.json();
       if (data.success) {
-        if (isEditing) {
-          setBlogs(blogs?.map(b => b._id === editingId ? data.data.blog : b));
-          setSuccess('Blog post updated!');
-        } else {
-          setBlogs([data.data.blog, ...blogs]);
-          setSuccess('Blog post published!');
-        }
+        setSuccess(isEditing ? 'Blog post updated!' : 'Blog post published!');
+        await fetchData(); // Re-fetch to ensure all data (like categories, dates) is perfectly in sync
         closeModals();
       } else {
         setError(data.message || `Failed to ${isEditing ? 'update' : 'publish'} blog`);

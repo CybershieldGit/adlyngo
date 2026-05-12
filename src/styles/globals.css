@@ -323,6 +323,24 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Glassmorphism Utilities */
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.hover-bg-white-opacity:hover {
+  background: rgba(255, 255, 255, 0.4) !important;
+}
+
+.animate-fade-in {
+  animation: glassFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes glassFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .ls-1 {
   letter-spacing: 1px;
 }
@@ -547,19 +565,21 @@
   display: flex;
   align-items: center;
   padding: 0.6rem 1rem;
-  background: #fff;
-  border: 1px solid #dee2e6;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   min-height: 45px;
   color: #333;
 }
 
 .custom-select-trigger:hover {
   border-color: var(--admin-primary);
-  background-color: #fff;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .custom-select-trigger.open {
@@ -572,20 +592,22 @@
   top: calc(100% + 5px);
   left: 0;
   right: 0;
-  background: #fff;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 12px;
   z-index: 1050;
   max-height: 250px;
   overflow-y: auto;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  animation: selectFadeIn 0.2s ease-out;
+  animation: selectFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .custom-select-option {
   padding: 10px 14px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   display: flex;
@@ -600,7 +622,7 @@
 }
 
 .custom-select-option:hover {
-  background: rgba(255, 90, 53, 0.05);
+  background: rgba(255, 255, 255, 0.5);
   color: var(--admin-primary);
 }
 
@@ -618,6 +640,10 @@
 }
 
 @keyframes selectFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);

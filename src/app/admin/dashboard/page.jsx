@@ -14,6 +14,7 @@ import {
   PieChart,
   Pie
 } from 'recharts';
+import CustomSelect from '@/components/admin/CustomSelect';
 
 export default function DashboardOverview() {
   const [admin, setAdmin] = useState(null);
@@ -212,17 +213,17 @@ export default function DashboardOverview() {
             )}
             <div className="d-flex align-items-center justify-content-between mb-5">
               <h5 className="fw-700 mb-0">Content Analytics</h5>
-              <div className="dropdown">
-                <select
-                  className="form-select form-select-sm rounded-pill px-3 fs-12 fw-600 border-0 bg-light"
+              <div style={{ minWidth: '150px' }}>
+                <CustomSelect
+                  options={[
+                    { label: 'Last 7 Days', value: 7 },
+                    { label: 'Last 30 Days', value: 30 },
+                    { label: 'All Time', value: 0 }
+                  ]}
                   value={timeRange}
-                  onChange={(e) => setTimeRange(parseInt(e.target.value))}
-                  style={{ width: 'auto', cursor: 'pointer' }}
-                >
-                  <option value={7}>Last 7 Days</option>
-                  <option value={30}>Last 30 Days</option>
-                  <option value={0}>All Time</option>
-                </select>
+                  onChange={(val) => setTimeRange(val)}
+                  placeholder="Select Range"
+                />
               </div>
             </div>
             <div style={{ height: '420px', width: '100%' }}>

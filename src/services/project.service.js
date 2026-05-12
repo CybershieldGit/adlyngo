@@ -36,7 +36,7 @@ export const getProjectBySlug = async (slug) => {
 export const createProject = async (projectData) => {
   const slug = await uniqueSlug(projectData.title, Project);
   const project = await Project.create({ ...projectData, slug });
-  return project;
+  return project.populate("category", "name slug");
 };
 
 export const updateProject = async (id, updateData) => {
@@ -65,7 +65,7 @@ export const updateProject = async (id, updateData) => {
   Object.assign(project, updateData);
   await project.save();
 
-  return project;
+  return project.populate("category", "name slug");
 };
 
 export const deleteProject = async (id) => {

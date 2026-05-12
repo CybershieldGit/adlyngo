@@ -54,8 +54,12 @@ export const createBlog = async (blogData, authorId) => {
     seoTitle,
     seoDescription
   });
+
+  const populatedBlog = await Blog.findById(blog._id)
+    .populate("category", "name slug")
+    .populate("author", "name");
   
-  return blog;
+  return populatedBlog;
 };
 
 export const updateBlog = async (id, updateData) => {
@@ -75,7 +79,11 @@ export const updateBlog = async (id, updateData) => {
   Object.assign(blog, updateData);
   await blog.save();
 
-  return blog;
+  const populatedBlog = await Blog.findById(blog._id)
+    .populate("category", "name slug")
+    .populate("author", "name");
+
+  return populatedBlog;
 };
 
 export const deleteBlog = async (id) => {

@@ -60,6 +60,7 @@ export const metadata = {
 };
 
 import ThemeInitializer from "@/components/ThemeInitializer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function RootLayout({ children }) {
   return (
@@ -89,9 +90,7 @@ export default function RootLayout({ children }) {
         {/* Progressive blur removed as requested */}
         
         
-        <a href="https://wa.me/91XXXXXXXXXX" className="wa-float-btn" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-          <i className="bi bi-whatsapp"></i>
-        </a>
+        <WhatsAppButton />
 
         <Script src="/js/jquery.js" strategy="beforeInteractive" />
         <Script src="/js/vendors.min.js" strategy="beforeInteractive" />

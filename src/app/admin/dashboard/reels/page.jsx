@@ -30,8 +30,8 @@ export default function ManageReels() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const [reelsRes, catsRes] = await Promise.all([
-        fetch(`${apiUrl}/reels?page=${targetPage}&limit=10`),
-        fetch(`${apiUrl}/categories?type=reel`)
+        fetch(`${apiUrl}/reels?page=${targetPage}&limit=10`, { cache: 'no-store' }),
+        fetch(`${apiUrl}/categories?type=reel`, { cache: 'no-store' })
       ]);
 
       const reelsData = await reelsRes.json();
@@ -129,13 +129,8 @@ export default function ManageReels() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        if (isEditing) {
-          setReels(reels?.map(r => r._id === editingId ? data.data.reel : r));
-          setSuccess('Reel updated successfully!');
-        } else {
-          setReels([data.data.reel, ...reels]);
-          setSuccess('New reel added!');
-        }
+        setSuccess(isEditing ? 'Reel updated successfully!' : 'New reel added!');
+        await fetchData(); // Re-fetch to ensure all data (like categories) is perfectly in sync
         closeModals();
       } else {
         setError(data.message || `Failed to ${isEditing ? 'update' : 'create'} reel`);
