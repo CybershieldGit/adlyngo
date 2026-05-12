@@ -19,7 +19,7 @@ const envSchema = z.object({
   CLOUDINARY_API_KEY: z.string().min(1, "CLOUDINARY_API_KEY is required"),
   CLOUDINARY_API_SECRET: z.string().min(1, "CLOUDINARY_API_SECRET is required"),
 
-  CLIENT_URL: z.string().url().default("http://localhost:3000"),
+  CLIENT_URL: z.string().default("http://localhost:3000"),
   
   // Admin Seed Credentials
   ADMIN_EMAIL: z.string().email().optional(),

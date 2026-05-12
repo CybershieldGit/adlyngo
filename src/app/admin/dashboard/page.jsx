@@ -33,8 +33,8 @@ export default function DashboardOverview() {
 
         const [authRes, totalStatsRes, analyticsRes] = await Promise.all([
           fetch(`${apiUrl}/auth/me`, { credentials: 'include' }),
-          fetch(`${apiUrl}/stats`),
-          fetch(`${apiUrl}/stats?days=${timeRange}`)
+          fetch(`${apiUrl}/stats`, { credentials: 'include' }),
+          fetch(`${apiUrl}/stats?days=${timeRange}`, { credentials: 'include' })
         ]);
 
         const authData = await authRes.json();
@@ -74,7 +74,7 @@ export default function DashboardOverview() {
       setAnalyticsLoading(true);
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-        const res = await fetch(`${apiUrl}/stats?days=${timeRange}`);
+        const res = await fetch(`${apiUrl}/stats?days=${timeRange}`, { credentials: 'include' });
         const data = await res.json();
         if (res.ok && data.success) {
           setStats(data.data);

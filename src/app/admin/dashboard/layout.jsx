@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }) {
     const fetchProfile = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-        const res = await fetch(`${apiUrl}/auth/me`);
+        const res = await fetch(`${apiUrl}/auth/me`, { credentials: 'include' });
         const data = await res.json();
         if (data.success) {
           setAdmin(data.data.admin);
