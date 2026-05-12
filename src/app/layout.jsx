@@ -17,7 +17,7 @@ export const metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/images/favicon.png",
+    icon: "/images/favicon.svg",
     apple: [
       { url: "/images/apple-touch-icon-57x57.png", sizes: "57x57" },
       { url: "/images/apple-touch-icon-72x72.png", sizes: "72x72" },

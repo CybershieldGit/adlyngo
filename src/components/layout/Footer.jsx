@@ -17,11 +17,11 @@ export default function Footer() {
           <div className="col-xl-3 col-md-12 lg-mb-30px d-flex justify-content-center justify-content-xl-start">
             <Link href="/" className="d-inline-block" aria-label="Adlyngo Logo">
               <Image
-                src="/images/footer-logo.svg"
+                src="/images/favicon.svg"
                 alt="Adlyngo Footer Logo"
                 width={200}
                 height={265}
-                className="block w-36 md:w-48 h-auto mb-6 transition-03"
+                className="block w-28 md:w-36 h-auto mt-[-22px] mb-6 transition-03"
               />
             </Link>
           </div>

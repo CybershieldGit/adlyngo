@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
   Cell,
   PieChart,
   Pie
@@ -29,7 +29,7 @@ export default function DashboardOverview() {
     const fetchData = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-        
+
         const [authRes, totalStatsRes, analyticsRes] = await Promise.all([
           fetch(`${apiUrl}/auth/me`, { credentials: 'include' }),
           fetch(`${apiUrl}/stats`),
@@ -68,7 +68,7 @@ export default function DashboardOverview() {
 
   useEffect(() => {
     if (loading) return;
-    
+
     const fetchAnalytics = async () => {
       setAnalyticsLoading(true);
       try {
@@ -115,7 +115,7 @@ export default function DashboardOverview() {
           <p className="text-muted mb-0 fs-16">Welcome back, <span className="text-admin-primary fw-600">{admin?.name || 'Admin'}</span>. Here's your site's performance at a glance.</p>
         </div>
         <div className="d-flex align-items-center gap-3">
-           <div className="text-end d-none d-lg-block">
+          <div className="text-end d-none d-lg-block">
             <div className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1">Last Updated</div>
             <div className="fw-600 fs-14">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
           </div>
@@ -125,7 +125,7 @@ export default function DashboardOverview() {
           </div>
         </div>
       </div>
-      
+
       {/* Quick Metrics */}
       <div className="row g-4 mb-5">
         <div className="col-sm-6 col-xl-3">
@@ -153,7 +153,7 @@ export default function DashboardOverview() {
                 <i className="bi bi-briefcase-fill fs-4"></i>
               </div>
               <div className="text-end">
-                <div className="text-muted fs-12 fw-700 text-uppercase">Projects</div>
+                <div className="text-muted fs-12 fw-700 text-uppercase">Case Studies</div>
                 <h2 className="mb-0 fw-800">{totalStats.projects}</h2>
               </div>
             </div>
@@ -213,8 +213,8 @@ export default function DashboardOverview() {
             <div className="d-flex align-items-center justify-content-between mb-5">
               <h5 className="fw-700 mb-0">Content Analytics</h5>
               <div className="dropdown">
-                <select 
-                  className="form-select form-select-sm rounded-pill px-3 fs-12 fw-600 border-0 bg-light" 
+                <select
+                  className="form-select form-select-sm rounded-pill px-3 fs-12 fw-600 border-0 bg-light"
                   value={timeRange}
                   onChange={(e) => setTimeRange(parseInt(e.target.value))}
                   style={{ width: 'auto', cursor: 'pointer' }}
@@ -229,21 +229,21 @@ export default function DashboardOverview() {
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{fill: '#888', fontSize: 12, fontWeight: 500}} 
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#888', fontSize: 12, fontWeight: 500 }}
                     interval={0}
-                    dy={15} 
+                    dy={15}
                   />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{fill: '#888', fontSize: 13, fontWeight: 500}} 
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#888', fontSize: 13, fontWeight: 500 }}
                   />
-                  <Tooltip 
-                    cursor={{fill: '#fcfcfc'}}
+                  <Tooltip
+                    cursor={{ fill: '#fcfcfc' }}
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', padding: '12px' }}
                     itemStyle={{ fontWeight: 600, fontSize: '14px' }}
                   />
@@ -262,7 +262,7 @@ export default function DashboardOverview() {
         <div className="col-lg-4">
           <div className="card summary-card border-0 shadow-sm border-radius-15px p-4 bg-white h-100">
             <h5 className="fw-700 mb-4 text-center">Summary</h5>
-            
+
             <div className="position-relative d-flex justify-content-center align-items-center mb-4" style={{ minHeight: '220px' }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -279,7 +279,7 @@ export default function DashboardOverview() {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip 
+                  <Tooltip
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
                   />
                 </PieChart>
