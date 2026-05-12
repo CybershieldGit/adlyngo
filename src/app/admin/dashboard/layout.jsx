@@ -49,6 +49,7 @@ export default function DashboardLayout({ children }) {
     { label: 'Manage Reels', path: '/admin/dashboard/reels', icon: 'bi-play-btn-fill' },
     { label: 'Manage Case Studies', path: '/admin/dashboard/case-studies', icon: 'bi-briefcase-fill' },
     { label: 'Manage Blogs', path: '/admin/dashboard/blogs', icon: 'bi-journal-richtext' },
+    { label: 'Creative Gallery', path: '/admin/dashboard/creative-gallery', icon: 'bi-images' },
     { label: 'Categories', path: '/admin/dashboard/categories', icon: 'bi-collection-fill' },
   ];
 

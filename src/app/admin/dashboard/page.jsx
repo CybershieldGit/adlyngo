@@ -21,8 +21,8 @@ export default function DashboardOverview() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const [stats, setStats] = useState({ reels: 0, projects: 0, blogs: 0, categories: 0 });
-  const [totalStats, setTotalStats] = useState({ reels: 0, projects: 0, blogs: 0, categories: 0 });
+  const [stats, setStats] = useState({ reels: 0, projects: 0, blogs: 0, categories: 0, gallery: 0 });
+  const [totalStats, setTotalStats] = useState({ reels: 0, projects: 0, blogs: 0, categories: 0, gallery: 0 });
   const [timeRange, setTimeRange] = useState(7);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
 
@@ -103,10 +103,11 @@ export default function DashboardOverview() {
     { name: 'Reels', count: stats.reels, color: '#FF5A35' },
     { name: 'Projects', count: stats.projects, color: '#198754' },
     { name: 'Blogs', count: stats.blogs, color: '#ffc107' },
+    { name: 'Gallery', count: stats.gallery, color: '#6610f2' },
     { name: 'Categories', count: stats.categories, color: '#0dcaf0' },
   ];
 
-  const totalContent = stats.reels + stats.projects + stats.blogs + stats.categories;
+  const totalContent = stats.reels + stats.projects + stats.blogs + stats.categories + stats.gallery;
 
   return (
     <div className="admin-dashboard-fade">
@@ -129,7 +130,7 @@ export default function DashboardOverview() {
 
       {/* Quick Metrics */}
       <div className="row g-4 mb-5">
-        <div className="col-sm-6 col-xl-3">
+        <div className="col-sm-6 col-lg-4 col-xl">
           <div className="card dashboard-card border-0 shadow-sm border-radius-15px p-4 bg-white hover-translate-y transition-all">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <div className="bg-admin-primary bg-opacity-10 text-admin-primary rounded-3 p-3">
@@ -141,13 +142,13 @@ export default function DashboardOverview() {
               </div>
             </div>
             <div className="progress mb-2" style={{ height: '6px' }}>
-              <div className="progress-bar bg-admin-primary" style={{ width: totalContent ? `${(totalStats.reels / (totalStats.reels + totalStats.projects + totalStats.blogs + totalStats.categories)) * 100}%` : '0%' }}></div>
+              <div className="progress-bar bg-admin-primary" style={{ width: totalContent ? `${(totalStats.reels / totalContent) * 100}%` : '0%' }}></div>
             </div>
             <span className="text-muted fs-12 fw-500">Live on homepage</span>
           </div>
         </div>
 
-        <div className="col-sm-6 col-xl-3">
+        <div className="col-sm-6 col-lg-4 col-xl">
           <div className="card dashboard-card border-0 shadow-sm border-radius-15px p-4 bg-white hover-translate-y transition-all">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <div className="bg-success bg-opacity-10 text-success rounded-3 p-3">
@@ -159,13 +160,13 @@ export default function DashboardOverview() {
               </div>
             </div>
             <div className="progress mb-2" style={{ height: '6px' }}>
-              <div className="progress-bar bg-success" style={{ width: totalContent ? `${(totalStats.projects / (totalStats.reels + totalStats.projects + totalStats.blogs + totalStats.categories)) * 100}%` : '0%' }}></div>
+              <div className="progress-bar bg-success" style={{ width: totalContent ? `${(totalStats.projects / totalContent) * 100}%` : '0%' }}></div>
             </div>
             <span className="text-muted fs-12 fw-500">Portfolio case studies</span>
           </div>
         </div>
 
-        <div className="col-sm-6 col-xl-3">
+        <div className="col-sm-6 col-lg-4 col-xl">
           <div className="card dashboard-card border-0 shadow-sm border-radius-15px p-4 bg-white hover-translate-y transition-all">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <div className="bg-warning bg-opacity-10 text-warning rounded-3 p-3">
@@ -177,13 +178,31 @@ export default function DashboardOverview() {
               </div>
             </div>
             <div className="progress mb-2" style={{ height: '6px' }}>
-              <div className="progress-bar bg-warning" style={{ width: totalContent ? `${(totalStats.blogs / (totalStats.reels + totalStats.projects + totalStats.blogs + totalStats.categories)) * 100}%` : '0%' }}></div>
+              <div className="progress-bar bg-warning" style={{ width: totalContent ? `${(totalStats.blogs / totalContent) * 100}%` : '0%' }}></div>
             </div>
             <span className="text-muted fs-12 fw-500">Published articles</span>
           </div>
         </div>
 
-        <div className="col-sm-6 col-xl-3">
+        <div className="col-sm-6 col-lg-4 col-xl">
+          <div className="card dashboard-card border-0 shadow-sm border-radius-15px p-4 bg-white hover-translate-y transition-all">
+            <div className="d-flex align-items-center justify-content-between mb-3">
+              <div className="bg-purple bg-opacity-10 text-purple rounded-3 p-3" style={{ color: '#6610f2', backgroundColor: 'rgba(102, 16, 242, 0.1)' }}>
+                <i className="bi bi-images fs-4"></i>
+              </div>
+              <div className="text-end">
+                <div className="text-muted fs-12 fw-700 text-uppercase">Gallery</div>
+                <h2 className="mb-0 fw-800">{totalStats.gallery}</h2>
+              </div>
+            </div>
+            <div className="progress mb-2" style={{ height: '6px' }}>
+              <div className="progress-bar bg-purple" style={{ width: totalContent ? `${(totalStats.gallery / totalContent) * 100}%` : '0%', backgroundColor: '#6610f2' }}></div>
+            </div>
+            <span className="text-muted fs-12 fw-500">Creative showcase</span>
+          </div>
+        </div>
+
+        <div className="col-sm-6 col-lg-4 col-xl">
           <div className="card dashboard-card border-0 shadow-sm border-radius-15px p-4 bg-white hover-translate-y transition-all">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <div className="bg-info bg-opacity-10 text-info rounded-3 p-3">
@@ -195,7 +214,7 @@ export default function DashboardOverview() {
               </div>
             </div>
             <div className="progress mb-2" style={{ height: '6px' }}>
-              <div className="progress-bar bg-info" style={{ width: totalContent ? `${(totalStats.categories / (totalStats.reels + totalStats.projects + totalStats.blogs + totalStats.categories)) * 100}%` : '0%' }}></div>
+              <div className="progress-bar bg-info" style={{ width: totalContent ? `${(totalStats.categories / totalContent) * 100}%` : '0%' }}></div>
             </div>
             <span className="text-muted fs-12 fw-500">Content taxonomies</span>
           </div>

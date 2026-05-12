@@ -1,0 +1,69 @@
+import Gallery from "../models/Gallery.js";
+import ApiError from "../utils/ApiError.js";
+
+/**
+ * Get all gallery items with pagination and filtering
+ */
+export const getGalleryItems = async (query = {}) => {
+  const page = parseInt(query.page) || 1;
+  const limit = parseInt(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const filter = {};
+  if (query.published) filter.published = query.published === "true";
+
+  const items = await Gallery.find(filter)
+    .populate("category", "name slug")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const total = await Gallery.countDocuments(filter);
+
+  return {
+    items,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+/**
+ * Create a new gallery item
+ */
+export const createGalleryItem = async (data) => {
+  const item = await Gallery.create(data);
+  return item.populate("category", "name slug");
+};
+
+/**
+ * Update a gallery item
+ */
+export const updateGalleryItem = async (id, data) => {
+  const item = await Gallery.findByIdAndUpdate(id, data, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!item) {
+    throw new ApiError(404, "Gallery item not found");
+  }
+
+  return item.populate("category", "name slug");
+};
+
+/**
+ * Delete a gallery item
+ */
+export const deleteGalleryItem = async (id) => {
+  const item = await Gallery.findByIdAndDelete(id);
+
+  if (!item) {
+    throw new ApiError(404, "Gallery item not found");
+  }
+
+  return item.populate("category", "name slug");
+};

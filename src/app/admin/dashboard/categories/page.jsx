@@ -189,7 +189,8 @@ export default function ManageCategories() {
                 options={[
                   { value: 'reel', label: 'Reel (Video)' },
                   { value: 'blog', label: 'Blog (Article)' },
-                  { value: 'project', label: 'Project (Case Study)' }
+                  { value: 'project', label: 'Project (Case Study)' },
+                  { value: 'gallery', label: 'Gallery (Creative)' }
                 ]}
                 value={formData.type}
                 onChange={val => setFormData({ ...formData, type: val })}
@@ -237,8 +238,9 @@ export default function ManageCategories() {
                     <td className="py-3 text-muted">{cat.slug}</td>
                     <td className="py-3">
                       <span className={`badge bg-opacity-10 px-2 py-1 ${cat.type === 'reel' ? 'bg-primary text-primary' :
-                        cat.type === 'project' ? 'bg-success text-success' : 'bg-warning text-warning'
-                        }`}>
+                        cat.type === 'project' ? 'bg-success text-success' : 
+                        cat.type === 'gallery' ? 'bg-purple text-purple' : 'bg-warning text-warning'
+                        }`} style={cat.type === 'gallery' ? { color: '#6610f2', backgroundColor: 'rgba(102, 16, 242, 0.1)' } : {}}>
                         {cat.type.toUpperCase()}
                       </span>
                     </td>

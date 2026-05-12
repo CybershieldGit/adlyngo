@@ -21,7 +21,7 @@ const categorySchema = new mongoose.Schema(
       required: [true, "Category type is required"],
       enum: {
         values: Object.values(CATEGORY_TYPES),
-        message: "Type must be one of: reel, blog, project",
+        message: `Type must be one of: ${Object.values(CATEGORY_TYPES).join(", ")}`,
       },
       index: true,
     },

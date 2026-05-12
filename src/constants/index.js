@@ -16,6 +16,7 @@ export const CLOUDINARY_FOLDERS = {
   BLOGS: "adlyngo/blogs",
   REELS: "adlyngo/reels",
   PROJECTS: "adlyngo/projects",
+  GALLERY: "adlyngo/gallery",
   GENERAL: "adlyngo/uploads",
 };
 
@@ -23,6 +24,7 @@ export const CATEGORY_TYPES = {
   REEL: "reel",
   BLOG: "blog",
   PROJECT: "project",
+  GALLERY: "gallery",
 };
 
 export const RATE_LIMIT = {

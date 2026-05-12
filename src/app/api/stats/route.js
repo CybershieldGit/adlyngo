@@ -4,6 +4,7 @@ import Blog from "../../../models/Blog.js";
 import Project from "../../../models/Project.js";
 import Reel from "../../../models/Reel.js";
 import Category from "../../../models/Category.js";
+import Gallery from "../../../models/Gallery.js";
 
 export async function GET(request) {
   try {
@@ -19,11 +20,12 @@ export async function GET(request) {
       query = { createdAt: { $gte: date } };
     }
 
-    const [blogsCount, projectsCount, reelsCount, categoriesCount] = await Promise.all([
+    const [blogsCount, projectsCount, reelsCount, categoriesCount, galleryCount] = await Promise.all([
       Blog.countDocuments(query),
       Project.countDocuments(query),
       Reel.countDocuments(query),
       Category.countDocuments(query),
+      Gallery.countDocuments(query),
     ]);
 
     return NextResponse.json({
@@ -33,6 +35,7 @@ export async function GET(request) {
         projects: projectsCount,
         reels: reelsCount,
         categories: categoriesCount,
+        gallery: galleryCount,
       }
     });
   } catch (error) {
