@@ -4,7 +4,7 @@ import { jwtVerify } from 'jose';
 const COOKIE_NAME = 'adlyngo_token';
 
 // Protect API Routes (POST, PUT, DELETE only for CMS) and /admin routes
-export async function middleware(request) {
+export async function proxy(request) {
   const { pathname } = request.nextUrl;
   
   // Define public API paths that don't need auth
