@@ -45,9 +45,9 @@ export default function FileUpload({ onUploadSuccess, currentUrl = '', type = 'v
       return;
     }
 
-    // Limit check (e.g., 100MB just to be safe, user asked for 50MB)
-    if (file.size > 100 * 1024 * 1024) {
-      setError('File size too large. Max 100MB allowed.');
+    // Limit check (50MB as requested)
+    if (file.size > 50 * 1024 * 1024) {
+      setError('File size too large. Max 50MB allowed.');
       return;
     }
 

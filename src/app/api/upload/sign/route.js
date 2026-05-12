@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import cloudinary from "../../../lib/cloudinary.js";
-import env from "../../../config/env.js";
+import cloudinary from "../../../../lib/cloudinary.js";
+import env from "../../../../config/env.js";
 
 export async function POST(request) {
   try {
