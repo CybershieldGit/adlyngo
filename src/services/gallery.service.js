@@ -1,4 +1,5 @@
 import Gallery from "../models/Gallery.js";
+import Category from "../models/Category.js";
 import ApiError from "../utils/ApiError.js";
 
 /**
