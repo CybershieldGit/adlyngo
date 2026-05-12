@@ -73,7 +73,7 @@ export default async function SingleBlogPage({ params }) {
                   </div>
                 )}
 
-                <div className="blog-content fs-18 lh-32 text-medium-gray" 
+                <div className="blog-content tiptap-content fs-18 lh-32 text-medium-gray" 
                      dangerouslySetInnerHTML={{ __html: blog.content }}>
                 </div>
 

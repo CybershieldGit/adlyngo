@@ -777,101 +777,136 @@
 }
 
 /* ========================================
-   Rich Text Editor (Quill) Custom Styling
+   Tiptap Rich Text Editor Custom Styling
    ======================================== */
 
-.rich-text-editor .ql-container {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  border: 1px solid #dee2e6 !important;
-  font-family: inherit;
-  font-size: 15px;
+.tiptap-editor-wrapper {
+  margin-bottom: 2rem;
+}
+
+.tiptap-container {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
   transition: all 0.3s ease;
 }
 
-.rich-text-editor .ql-toolbar {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  border: 1px solid #dee2e6 !important;
-  border-bottom: none !important;
-  background: #fdfdfd;
-  padding: 12px 15px !important;
+.tiptap-container:focus-within {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 4px rgba(255, 90, 53, 0.05);
 }
 
-.rich-text-editor .ql-editor {
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 15px;
+  background: #fdfdfd;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  align-items: center;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 4px;
+  padding-right: 8px;
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.toolbar-group:last-child {
+  border-right: none;
+}
+
+.tiptap-toolbar button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tiptap-toolbar button:hover {
+  background: rgba(255, 90, 53, 0.08);
+  color: var(--admin-primary);
+}
+
+.tiptap-toolbar button.is-active {
+  background: var(--admin-primary);
+  color: #fff;
+}
+
+.tiptap-toolbar button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.tiptap-content {
   min-height: 250px;
   max-height: 500px;
   overflow-y: auto;
   padding: 20px;
   line-height: 1.6;
+  outline: none;
+  font-size: 15px;
+  color: #333;
 }
 
-.rich-text-editor {
-  margin-bottom: 2rem;
-}
-
-.rich-text-editor .ql-editor.ql-blank::before {
-  font-style: normal;
+.tiptap-content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
   color: #adb5bd;
-  left: 20px;
+  pointer-events: none;
+  height: 0;
 }
 
-/* Hover & Focus States */
-.rich-text-editor:hover .ql-toolbar,
-.rich-text-editor:hover .ql-container {
-  border-color: #ced4da !important;
+/* Content Typography */
+.tiptap-content h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; }
+.tiptap-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.8rem; }
+.tiptap-content h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.6rem; }
+.tiptap-content blockquote {
+  border-left: 4px solid var(--admin-primary);
+  padding-left: 1rem;
+  margin-left: 0;
+  font-style: italic;
+  color: #666;
+}
+.tiptap-content code {
+  background-color: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+.tiptap-content pre {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+.tiptap-content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+.tiptap-content ul, .tiptap-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.tiptap-content a {
+  color: var(--admin-primary);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-.rich-text-editor .ql-container.ql-focus,
-.rich-text-editor .ql-container:focus-within {
-  border-color: var(--admin-primary) !important;
-  box-shadow: 0 0 0 4px rgba(255, 90, 53, 0.05);
-}
-
-.rich-text-editor .ql-toolbar.ql-focus,
-.rich-text-editor:focus-within .ql-toolbar {
-  border-color: var(--admin-primary) !important;
-}
-
-/* Toolbar Button Styling */
-.rich-text-editor .ql-snow.ql-toolbar button:hover,
-.rich-text-editor .ql-snow.ql-toolbar button.ql-active,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-label:hover,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-label.ql-active,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-item:hover,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-item.ql-selected {
-  color: var(--admin-primary) !important;
-}
-
-.rich-text-editor .ql-snow.ql-toolbar button:hover .ql-stroke,
-.rich-text-editor .ql-snow.ql-toolbar button.ql-active .ql-stroke,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke {
-  stroke: var(--admin-primary) !important;
-}
-
-.rich-text-editor .ql-snow.ql-toolbar button:hover .ql-fill,
-.rich-text-editor .ql-snow.ql-toolbar button.ql-active .ql-fill,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill,
-.rich-text-editor .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill {
-  fill: var(--admin-primary) !important;
-}
-
-/* Customizing Pickers */
-.rich-text-editor .ql-picker {
-  font-weight: 500;
-}
-
-.rich-text-editor .ql-picker-options {
-  border-radius: 8px !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
-  padding: 8px !important;
-}
 
 /* ========================================
    Action Button Utilities

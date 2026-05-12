@@ -289,7 +289,7 @@ export default function ManageBlogs() {
                 <div className="content-preview">
                   <h6 className="fw-600 mb-3 fs-14 text-uppercase text-muted border-bottom pb-2">Content Preview</h6>
                   <div
-                    className="ql-editor p-0"
+                    className="tiptap-content p-0"
                     dangerouslySetInnerHTML={{ __html: viewingBlog.content }}
                   />
                 </div>
