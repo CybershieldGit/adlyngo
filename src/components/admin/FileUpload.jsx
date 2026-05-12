@@ -45,30 +45,66 @@ export default function FileUpload({ onUploadSuccess, currentUrl = '', type = 'v
       return;
     }
 
+    // Limit check (e.g., 100MB just to be safe, user asked for 50MB)
+    if (file.size > 100 * 1024 * 1024) {
+      setError('File size too large. Max 100MB allowed.');
+      return;
+    }
+
     setUploading(true);
     setError('');
-    
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('folder', folder);
 
     try {
-      const response = await fetch('/api/upload', {
+      // 1. Get Signature from our API
+      const timestamp = Math.round(new Date().getTime() / 1000);
+      const paramsToSign = {
+        timestamp,
+        folder,
+      };
+
+      const signResponse = await fetch('/api/upload/sign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paramsToSign }),
+      });
+
+      const signData = await signResponse.json();
+      if (!signResponse.ok || !signData.success) {
+        throw new Error(signData.message || 'Failed to get upload signature');
+      }
+
+      const { signature, apiKey, cloudName } = signData;
+
+      // 2. Upload directly to Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('api_key', apiKey);
+      formData.append('timestamp', timestamp);
+      formData.append('signature', signature);
+      formData.append('folder', folder);
+
+      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${type}/upload`;
+      
+      const response = await fetch(cloudinaryUrl, {
         method: 'POST',
         body: formData,
       });
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
-        const result = data.data; // { url, publicId }
+      if (response.ok) {
+        const result = {
+          url: data.secure_url,
+          publicId: data.public_id,
+        };
         setPreview(result.url);
         onUploadSuccess(result);
       } else {
-        setError(data.message || 'Upload failed');
+        setError(data.error?.message || 'Upload failed');
       }
     } catch (err) {
-      setError('Network error during upload');
+      console.error('Upload Error:', err);
+      setError(err.message || 'Network error during upload');
     } finally {
       setUploading(false);
     }
