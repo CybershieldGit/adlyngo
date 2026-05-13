@@ -237,10 +237,25 @@ export default function ManageBlogs() {
                 onChange={val => setFormData({ ...formData, content: val })}
               />
             </div>
-            <div className="col-md-6">
-              <div className="d-flex align-items-center gap-2 form-check form-switch">
-                <input className="form-check-input" type="checkbox" checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} />
-                <label className="form-check-label fw-500 mt-3s">Feature this post</label>
+            <div className="col-md-6 mt-3">
+              <div className="d-flex align-items-center gap-2">
+                <div className="form-check form-switch mb-0">
+                  <input
+                    className="form-check-input mt-0"
+                    type="checkbox"
+                    id="blogFeaturedSwitch"
+                    checked={formData.featured}
+                    onChange={e => setFormData({ ...formData, featured: e.target.checked })}
+                    style={{ cursor: 'pointer', width: '36px', height: '18px' }}
+                  />
+                </div>
+                <label 
+                  className="fs-14 fw-500 text-dark-gray mb-0" 
+                  htmlFor="blogFeaturedSwitch" 
+                  style={{ cursor: 'pointer', userSelect: 'none', marginLeft: '5px' }}
+                >
+                  Featured on Home
+                </label>
               </div>
             </div>
             <div className="col-12 text-end">
