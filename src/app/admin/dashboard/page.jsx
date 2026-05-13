@@ -247,15 +247,17 @@ export default function DashboardOverview() {
             </div>
             <div style={{ height: '420px', width: '100%' }}>
               <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 30 }}>
+                <BarChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 60 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                   <XAxis
                     dataKey="name"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: '#888', fontSize: 12, fontWeight: 500 }}
+                    tick={{ fill: '#888', fontSize: 11, fontWeight: 500 }}
                     interval={0}
-                    dy={15}
+                    dy={10}
+                    angle={-45}
+                    textAnchor="end"
                   />
                   <YAxis
                     axisLine={false}

@@ -162,10 +162,12 @@ export default function ManageProjects() {
 
   return (
     <div>
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 mt-2 mt-lg-0">
-        <h3 className="fw-700 text-dark-gray mb-0">Manage Case Studies</h3>
+      <div className="d-flex flex-row justify-content-between align-items-center gap-2 mb-4 mt-2 mt-lg-0">
+        <h5 className="fw-700 text-dark-gray mb-0 text-truncate" style={{ flex: 1, minWidth: 0 }}>
+          Manage Case Studies
+        </h5>
         <button
-          className="btn btn-dark-gray btn-small btn-rounded px-4"
+          className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
           onClick={() => {
             closeModals();
             setIsCreating(true);
@@ -174,7 +176,7 @@ export default function ManageProjects() {
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
-              <i className="bi bi-plus-lg me-2"></i> Add Case Study
+              <i className="bi bi-plus-lg me-1"></i> Add Case Study
             </span>
           )}
         </button>
@@ -257,11 +259,11 @@ export default function ManageProjects() {
           <table className="table table-hover align-middle mb-0">
             <thead className=" text-muted fs-14 text-uppercase">
               <tr>
-                <th className="ps-4 py-3 fw-600 border-0" style={{ width: '120px', whiteSpace: 'nowrap' }}>Image</th>
-                <th className="py-3 fw-600 border-0 ps-3">Case Study</th>
-                <th className="py-3 fw-600 border-0">Category</th>
-                <th className="py-3 fw-600 border-0">Status</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column">Actions</th>
+                <th className="ps-4 py-3 fw-600 border-0" style={{ minWidth: '80px', whiteSpace: 'nowrap' }}>Image</th>
+                <th className="py-3 fw-600 border-0 ps-3" style={{ minWidth: '150px', whiteSpace: 'nowrap' }}>Case Study</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Category</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -270,7 +272,7 @@ export default function ManageProjects() {
               ) : (
                 projects?.map(p => (
                   <tr key={p._id}>
-                    <td className="ps-4 py-3">
+                    <td className="ps-4 py-3" style={{ whiteSpace: 'nowrap' }}>
                       <div className="rounded-3 border overflow-hidden bg-light d-flex align-items-center justify-content-center" style={{ width: '50px', height: '50px' }}>
                         {p.coverImage?.url ? (
                           <img src={p.coverImage.url} alt="" className="w-100 h-100 object-fit-cover" />
@@ -279,9 +281,9 @@ export default function ManageProjects() {
                         )}
                       </div>
                     </td>
-                    <td className="py-3 fw-600 text-dark-gray ps-3">{p.title}</td>
-                    <td className="py-3 text-dark-gray opacity-75">{p.category?.name || 'Uncategorized'}</td>
-                    <td className="py-3">
+                    <td className="py-3 fw-600 text-dark-gray ps-3" style={{ minWidth: '150px', whiteSpace: 'nowrap' }}>{p.title}</td>
+                    <td className="py-3 text-dark-gray opacity-75" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>{p.category?.name || 'Uncategorized'}</td>
+                    <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>
                       {p.featured && <span className="badge bg-warning bg-opacity-10 text-warning me-2">Featured</span>}
                       <span className={`badge ${p.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${p.published ? 'success' : 'secondary'}`}>
                         {p.published ? 'Published' : 'Draft'}

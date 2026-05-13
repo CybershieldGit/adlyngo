@@ -154,13 +154,13 @@ export default function ManageBlogs() {
 
   return (
     <div>
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
-        <h5 className="fw-700 text-dark-gray mb-0 text-nowrap">
+      <div className="d-flex flex-row justify-content-between align-items-center gap-2 mb-5 mt-2 mt-lg-0">
+        <h5 className="fw-700 text-dark-gray mb-0 text-truncate" style={{ flex: 1, minWidth: 0 }}>
           Manage Blog Posts
         </h5>
 
         <button
-          className="btn btn-dark-gray btn-small btn-rounded px-4"
+          className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
           onClick={() => {
             setIsCreating(!isCreating);
             setError('');
@@ -170,7 +170,7 @@ export default function ManageBlogs() {
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
-              <i className="bi bi-plus-lg me-2"></i> New Post
+              <i className="bi bi-plus-lg me-1"></i> New Post
             </span>
           )}
         </button>
@@ -299,15 +299,15 @@ export default function ManageBlogs() {
         )}
       </Modal>
 
-      <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
-        <div className="table-responsive">
+      <div className="card admin-table-card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
+        <div className="admin-table-wrapper">
           <table className="table table-hover align-middle mb-0">
             <thead className=" text-muted fs-14 text-uppercase">
               <tr>
-                <th className="ps-4 py-3 fw-600 border-0" style={{ width: '120px', whiteSpace: 'nowrap' }}>Image</th>
-                <th className="py-3 fw-600 border-0 ps-3" style={{ whiteSpace: 'nowrap' }}>Article Title</th>
-                <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Category</th>
-                <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Status</th>
+                <th className="py-3 fw-600 border-0 ps-3" style={{ minWidth: '80px', whiteSpace: 'nowrap' }}>Image</th>
+                <th className="py-3 fw-600 border-0 ps-3" style={{ minWidth: '150px', whiteSpace: 'nowrap' }}>Article Title</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Category</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
                 <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
@@ -317,7 +317,7 @@ export default function ManageBlogs() {
               ) : (
                 blogs?.map(b => (
                   <tr key={b._id}>
-                    <td className="ps-4 py-3">
+                    <td className="ps-4 py-3" style={{ whiteSpace: 'nowrap' }}>
                       <div className="rounded-3 border overflow-hidden bg-light d-flex align-items-center justify-content-center" style={{ width: '50px', height: '50px' }}>
                         {b.thumbnail?.url ? (
                           <img src={b.thumbnail.url} alt="" className="w-100 h-100 object-fit-cover" />
@@ -326,9 +326,9 @@ export default function ManageBlogs() {
                         )}
                       </div>
                     </td>
-                    <td className="py-3 fw-600 text-dark-gray ps-3">{b.title}</td>
-                    <td className="py-3 text-dark-gray opacity-75">{b.category?.name || 'Uncategorized'}</td>
-                    <td className="py-3">
+                    <td className="py-3 fw-600 text-dark-gray ps-3" style={{ minWidth: '150px', whiteSpace: 'nowrap' }}>{b.title}</td>
+                    <td className="py-3 text-dark-gray opacity-75" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>{b.category?.name || 'Uncategorized'}</td>
+                    <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>
                       {b.featured && <span className="badge bg-warning bg-opacity-10 text-warning me-2">Featured</span>}
                       <span className={`badge ${b.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${b.published ? 'success' : 'secondary'}`}>
                         {b.published ? 'Published' : 'Draft'}
@@ -368,7 +368,7 @@ export default function ManageBlogs() {
 
         {/* Pagination Footer */}
         {totalPages > 1 && (
-          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
+          <div className="admin-table-pagination d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
             <div className="text-muted fs-13 fw-500">
               Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> articles
             </div>

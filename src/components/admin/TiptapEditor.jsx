@@ -180,7 +180,10 @@ export default function TiptapEditor({ value, onChange, label }) {
   // Update content if value prop changes externally (e.g. on edit load)
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value);
+      // Only set content if the editor is not focused to avoid infinite loops during typing
+      if (!editor.isFocused) {
+        editor.commands.setContent(value);
+      }
     }
   }, [value, editor]);
 

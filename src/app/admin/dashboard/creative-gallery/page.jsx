@@ -177,14 +177,17 @@ export default function ManageGallery() {
 
   return (
     <div className="container-fluid">
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5">
-        <h3 className="fw-700 text-dark-gray mb-0">Creative Gallery</h3>
+      <div className="d-flex flex-row justify-content-between align-items-center gap-2 mb-5">
+        <h5 className="fw-700 text-dark-gray mb-0 text-truncate" style={{ flex: 1, minWidth: 0 }}>
+          Creative Gallery
+        </h5>
         <button
-          className="btn btn-dark-gray btn-small btn-rounded px-4"
+          className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
           onClick={() => setIsCreating(true)}
+          style={{ width: 'fit-content', whiteSpace: 'nowrap' }}
         >
           <span className="d-flex align-items-center">
-            <i className="bi bi-plus-lg me-2"></i> Add New Image
+            <i className="bi bi-plus-lg me-1"></i> Add New Image
           </span>
         </button>
       </div>
@@ -201,16 +204,16 @@ export default function ManageGallery() {
         </div>
       )}
 
-      <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
-        <div className="table-responsive">
+      <div className="card admin-table-card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
+        <div className="admin-table-wrapper">
           <table className="table table-hover align-middle mb-0">
             <thead className="text-muted fs-14 text-uppercase">
               <tr>
-                <th className="ps-4 py-3 fw-600 border-0">Image</th>
-                <th className="py-3 fw-600 border-0">Title</th>
-                <th className="py-3 fw-600 border-0">Category</th>
-                <th className="py-3 fw-600 border-0">Status</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column">Actions</th>
+                <th className="ps-4 py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Image</th>
+                <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap', minWidth: '150px' }}>Title</th>
+                <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Category</th>
+                <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Status</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -221,7 +224,7 @@ export default function ManageGallery() {
               ) : (
                 items.map((item) => (
                   <tr key={item._id}>
-                    <td className="ps-4 py-3">
+                    <td className="ps-4 py-3" style={{ whiteSpace: 'nowrap' }}>
                       <img 
                         src={item.imageUrl} 
                         alt={item.title} 
@@ -229,18 +232,18 @@ export default function ManageGallery() {
                         style={{ width: '60px', height: '40px', objectFit: 'cover' }}
                       />
                     </td>
-                    <td className="py-3 fw-600 text-dark-gray">{item.title}</td>
-                    <td className="py-3">
+                    <td className="py-3 fw-600 text-dark-gray" style={{ whiteSpace: 'nowrap' }}>{item.title}</td>
+                    <td className="py-3" style={{ whiteSpace: 'nowrap' }}>
                       <span className="badge bg-purple bg-opacity-10 text-purple px-2 py-1" style={{ color: '#6610f2', backgroundColor: 'rgba(102, 16, 242, 0.1)' }}>
                         {item.category?.name || 'Uncategorized'}
                       </span>
                     </td>
-                    <td className="py-3">
+                    <td className="py-3" style={{ whiteSpace: 'nowrap' }}>
                       <span className={`badge bg-opacity-10 px-2 py-1 ${item.published ? 'bg-success text-success' : 'bg-danger text-danger'}`}>
                         {item.published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-center sticky-column-end actions-column">
+                    <td className="pe-4 py-3 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>
                       <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
@@ -274,7 +277,7 @@ export default function ManageGallery() {
 
         {/* Pagination Footer */}
         {totalPages > 1 && (
-          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
+          <div className="admin-table-pagination d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
             <div className="text-muted fs-13 fw-500">
               Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> items
             </div>
@@ -345,19 +348,24 @@ export default function ManageGallery() {
               />
             </div>
 
-            <div className="mb-4 d-flex align-items-center">
-              <div className="form-check form-switch">
+            <div className="mb-4 d-flex align-items-center gap-2">
+              <div className="form-check form-switch mb-0">
                 <input
-                  className="form-check-input"
+                  className="form-check-input mt-0"
                   type="checkbox"
                   id="publishedSwitch"
                   checked={formData.published}
                   onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                  style={{ cursor: 'pointer', width: '36px', height: '18px' }}
                 />
-                <label className="form-check-label fs-14 fw-500 text-dark-gray ms-2" htmlFor="publishedSwitch">
-                  Publish publicly
-                </label>
               </div>
+              <label 
+                className="fs-14 fw-500 text-dark-gray mb-0" 
+                htmlFor="publishedSwitch" 
+                style={{ cursor: 'pointer', userSelect: 'none', marginLeft: '5px' }}
+              >
+                Published
+              </label>
             </div>
 
             <div className="d-flex gap-2 mt-4 pt-3 border-top">
