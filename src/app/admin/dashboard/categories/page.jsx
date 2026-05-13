@@ -104,6 +104,52 @@ export default function ManageCategories() {
     }
   };
 
+  const handleEdit = (cat) => {
+    setEditingId(cat._id);
+    setFormData({
+      name: cat.name,
+      slug: cat.slug,
+      type: cat.type,
+      description: cat.description || ''
+    });
+    setIsEditing(true);
+    setError('');
+    setSuccess('');
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/categories/${editingId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setCategories(categories.map(c => c._id === editingId ? data.data.category : c));
+        setSuccess('Category updated successfully!');
+        setIsEditing(false);
+        setEditingId(null);
+        setFormData({ name: '', slug: '', type: 'blog', description: '' });
+      } else {
+        setError(data.message || 'Failed to update category');
+      }
+    } catch (err) {
+      setError('Network error while updating');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleView = (cat) => {
     setViewingCategory(cat);
     setIsViewing(true);
@@ -156,12 +202,12 @@ export default function ManageCategories() {
       )}
 
       <Modal
-        isOpen={isCreating}
-        onClose={() => setIsCreating(false)}
-        title="Create New Category"
+        isOpen={isCreating || isEditing}
+        onClose={closeModals}
+        title={isEditing ? "Edit Category" : "Create New Category"}
         size="lg"
       >
-        <form onSubmit={handleCreate}>
+        <form onSubmit={isEditing ? handleUpdate : handleCreate}>
           <div className="row g-3">
             <div className="col-md-4">
               <label className="form-label fs-14 fw-500">Name</label>
@@ -206,9 +252,9 @@ export default function ManageCategories() {
               ></textarea>
             </div>
             <div className="col-12 mt-4 text-end">
-              <button type="button" className="btn btn-light btn-small btn-rounded me-2" onClick={() => setIsCreating(false)}>Cancel</button>
+              <button type="button" className="btn btn-light btn-small btn-rounded me-2" onClick={closeModals}>Cancel</button>
               <button type="submit" className="btn btn-primary btn-small btn-rounded" disabled={submitting}>
-                {submitting ? 'Saving...' : 'Save Category'}
+                {submitting ? 'Saving...' : (isEditing ? 'Update Category' : 'Save Category')}
               </button>
             </div>
           </div>
@@ -223,6 +269,7 @@ export default function ManageCategories() {
                 <th className="ps-4 py-3 fw-600 border-0">Name</th>
                 <th className="py-3 fw-600 border-0">Slug</th>
                 <th className="py-3 fw-600 border-0">Type</th>
+                <th className="py-3 fw-600 border-0">Description</th>
                 <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column">Actions</th>
               </tr>
             </thead>
@@ -244,6 +291,9 @@ export default function ManageCategories() {
                         {cat.type.toUpperCase()}
                       </span>
                     </td>
+                    <td className="py-3 text-muted fs-13 text-truncate" style={{ maxWidth: '150px' }}>
+                      {cat.description || '-'}
+                    </td>
                     <td className="pe-4 py-3 text-center sticky-column-end actions-column">
                       <div className="d-flex justify-content-center gap-2">
                         <button
@@ -252,6 +302,13 @@ export default function ManageCategories() {
                           title="View"
                         >
                           <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                        </button>
+                        <button
+                          className="btn btn-icon btn-light-gray btn-sm"
+                          onClick={() => handleEdit(cat)}
+                          title="Edit"
+                        >
+                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
@@ -316,12 +373,18 @@ export default function ManageCategories() {
               <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Slug</label>
               <p className="fw-500 font-monospace">{viewingCategory.slug}</p>
             </div>
-            <div className="mb-0">
+            <div className="mb-4">
               <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Type</label>
               <span className="badge bg-admin-primary text-white px-3 py-2">
                 {viewingCategory.type.toUpperCase()}
               </span>
             </div>
+            {viewingCategory.description && (
+              <div className="mb-0">
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Description</label>
+                <p className="fw-500">{viewingCategory.description}</p>
+              </div>
+            )}
           </div>
         </Modal>
       )}

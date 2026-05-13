@@ -166,6 +166,7 @@ export default function TiptapEditor({ value, onChange, label }) {
       }),
     ],
     content: value,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },

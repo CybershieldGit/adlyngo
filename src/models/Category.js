@@ -25,6 +25,11 @@ const categorySchema = new mongoose.Schema(
       },
       index: true,
     },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: [200, "Description cannot exceed 200 characters"],
+    },
   },
   {
     timestamps: true,
@@ -35,6 +40,11 @@ const categorySchema = new mongoose.Schema(
 
 // Compound index: unique name per type
 categorySchema.index({ name: 1, type: 1 }, { unique: true });
+
+// Force schema refresh in development to avoid missing fields like 'description'
+if (process.env.NODE_ENV === "development") {
+  delete mongoose.models.Category;
+}
 
 const Category = mongoose.models.Category || mongoose.model("Category", categorySchema);
 

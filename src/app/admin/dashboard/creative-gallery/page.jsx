@@ -15,6 +15,8 @@ export default function ManageGallery() {
   // Form State
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
+  const [viewingItem, setViewingItem] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -69,6 +71,8 @@ export default function ManageGallery() {
   const closeModals = () => {
     setIsCreating(false);
     setIsEditing(false);
+    setIsViewing(false);
+    setViewingItem(null);
     setEditingId(null);
     setFormData({
       title: '',
@@ -79,6 +83,11 @@ export default function ManageGallery() {
     });
     setError('');
     setSuccess('');
+  };
+
+  const handleView = (item) => {
+    setViewingItem(item);
+    setIsViewing(true);
   };
 
   const handleEdit = (item) => {
@@ -234,18 +243,25 @@ export default function ManageGallery() {
                     <td className="pe-4 py-3 text-center sticky-column-end actions-column">
                       <div className="d-flex justify-content-center gap-2">
                         <button
-                          className="btn btn-icon btn-primary-light btn-sm"
+                          className="btn btn-icon btn-light-gray btn-sm"
+                          onClick={() => handleView(item)}
+                          title="View"
+                        >
+                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                        </button>
+                        <button
+                          className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleEdit(item)}
                           title="Edit"
                         >
-                          <i className="bi bi-pencil-fill" style={{ fontSize: '14px' }}></i>
+                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
                           onClick={() => handleDelete(item._id)}
                           title="Delete"
                         >
-                          <i className="bi bi-trash-fill" style={{ fontSize: '14px' }}></i>
+                          <img src="/images/trash.png" alt="Delete" />
                         </button>
                       </div>
                     </td>
@@ -368,6 +384,39 @@ export default function ManageGallery() {
               </button>
             </div>
           </form>
+        </Modal>
+      )}
+      {/* View Modal */}
+      {isViewing && viewingItem && (
+        <Modal
+          isOpen={isViewing}
+          onClose={closeModals}
+          title="Creative Details"
+          size="md"
+        >
+          <div className="view-details">
+            <div className="mb-4 text-center">
+              <div className="border-radius-10px overflow-hidden border bg-light d-inline-block">
+                <img src={viewingItem.imageUrl} alt={viewingItem.title} className="img-fluid" style={{ maxHeight: '300px' }} />
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Title</label>
+              <h5 className="fw-600 text-dark-gray">{viewingItem.title}</h5>
+            </div>
+            <div className="mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Category</label>
+              <span className="badge bg-purple bg-opacity-10 text-purple px-3 py-2">
+                {viewingItem.category?.name || 'Uncategorized'}
+              </span>
+            </div>
+            <div className="mb-0">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Status</label>
+              <span className={`badge ${viewingItem.published ? 'bg-success' : 'bg-danger'} bg-opacity-10 text-${viewingItem.published ? 'success' : 'danger'} px-3 py-2`}>
+                {viewingItem.published ? 'Published' : 'Draft'}
+              </span>
+            </div>
+          </div>
         </Modal>
       )}
     </div>
