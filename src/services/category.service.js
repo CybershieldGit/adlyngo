@@ -7,10 +7,10 @@ import { parsePagination, buildPaginationMeta } from "../utils/pagination.js";
  * Create a new category.
  */
 export const createCategory = async (categoryData) => {
-  const { name, type } = categoryData;
+  const { name, type, description } = categoryData;
   const slug = await uniqueSlug(name, Category);
 
-  const category = await Category.create({ name, slug, type });
+  const category = await Category.create({ name, slug, type, description });
   return category;
 };
 
@@ -45,17 +45,20 @@ export const updateCategory = async (id, updateData) => {
     throw new ApiError(404, "Category not found");
   }
 
-  if (updateData.name && updateData.name !== category.name) {
-    category.name = updateData.name;
-    category.slug = await uniqueSlug(updateData.name, Category, category._id);
+  const updates = { ...updateData };
+
+  // Re-slugify if name changed
+  if (updates.name && updates.name !== category.name) {
+    updates.slug = await uniqueSlug(updates.name, Category, category._id);
   }
 
-  if (updateData.type) {
-    category.type = updateData.type;
-  }
+  const updatedCategory = await Category.findByIdAndUpdate(
+    id,
+    { $set: updates },
+    { new: true, runValidators: true }
+  );
 
-  await category.save();
-  return category;
+  return updatedCategory;
 };
 
 /**

@@ -11,6 +11,7 @@ export const createCategorySchema = z.object({
     required_error: "Category type is required",
     invalid_type_error: `Type must be one of: ${Object.values(CATEGORY_TYPES).join(", ")}`,
   }),
+  description: z.string().max(200).optional(),
 });
 
 export const updateCategorySchema = z.object({
@@ -23,4 +24,5 @@ export const updateCategorySchema = z.object({
   type: z
     .enum(Object.values(CATEGORY_TYPES))
     .optional(),
+  description: z.string().max(200).optional(),
 });

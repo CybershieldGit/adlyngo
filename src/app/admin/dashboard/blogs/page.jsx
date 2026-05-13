@@ -238,9 +238,9 @@ export default function ManageBlogs() {
               />
             </div>
             <div className="col-md-6">
-              <div className="form-check form-switch mt-2">
+              <div className="d-flex align-items-center gap-2 form-check form-switch">
                 <input className="form-check-input" type="checkbox" checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} />
-                <label className="form-check-label fw-500">Feature this post</label>
+                <label className="form-check-label fw-500 mt-3s">Feature this post</label>
               </div>
             </div>
             <div className="col-12 text-end">
@@ -365,7 +365,7 @@ export default function ManageBlogs() {
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination Footer */}
         {totalPages > 1 && (
           <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
