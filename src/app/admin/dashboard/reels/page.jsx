@@ -146,10 +146,12 @@ export default function ManageReels() {
 
   return (
     <div>
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
-        <h3 className="fw-700 text-dark-gray mb-0">Manage Reels</h3>
+      <div className="d-flex flex-row justify-content-between align-items-center gap-2 mb-5 mt-2 mt-lg-0">
+        <h5 className="fw-700 text-dark-gray mb-0 text-truncate" style={{ flex: 1, minWidth: 0 }}>
+          Manage Reels
+        </h5>
         <button
-          className="btn btn-dark-gray btn-small btn-rounded px-4"
+          className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
           onClick={() => {
             closeModals();
             setIsCreating(true);
@@ -158,7 +160,7 @@ export default function ManageReels() {
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
-              <i className="bi bi-plus-lg me-2"></i> Add New Reel
+              <i className="bi bi-plus-lg me-1"></i> Add New Reel
             </span>
           )}
         </button>
@@ -214,15 +216,25 @@ export default function ManageReels() {
                 placeholder="Select Category"
               />
             </div>
-            <div className="col-md-12">
-              <div className="form-check form-switch fs-14 mt-2">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  checked={formData.published}
-                  onChange={e => setFormData({ ...formData, published: e.target.checked })}
-                />
-                <label className="form-check-label fw-500">Published</label>
+            <div className="col-md-12 mt-2">
+              <div className="d-flex align-items-center gap-2">
+                <div className="form-check form-switch mb-0">
+                  <input
+                    className="form-check-input mt-0"
+                    type="checkbox"
+                    id="reelPublishedSwitch"
+                    checked={formData.published}
+                    onChange={e => setFormData({ ...formData, published: e.target.checked })}
+                    style={{ cursor: 'pointer', width: '36px', height: '18px' }}
+                  />
+                </div>
+                <label 
+                  className="fs-14 fw-500 text-dark-gray mb-0" 
+                  htmlFor="reelPublishedSwitch" 
+                  style={{ cursor: 'pointer', userSelect: 'none', marginLeft: '5px' }}
+                >
+                  Published
+                </label>
               </div>
             </div>
             <div className="col-12 mt-4 text-end">
@@ -235,16 +247,16 @@ export default function ManageReels() {
         </form>
       </Modal>
 
-      <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
-        <div className="table-responsive">
+      <div className="card admin-table-card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
+        <div className="admin-table-wrapper">
           <table className="table table-hover align-middle mb-0">
             <thead className="text-muted fs-14 text-uppercase">
               <tr>
-                <th className="ps-4 py-3 fw-600 border-0">Title</th>
-                <th className="py-3 fw-600 border-0">Category</th>
-                <th className="py-3 fw-600 border-0">Status</th>
-                <th className="py-3 fw-600 border-0">Date</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column">Actions</th>
+                <th className="ps-4 py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Title</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Category</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Date</th>
+                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -255,17 +267,17 @@ export default function ManageReels() {
               ) : (
                 reels?.map(reel => (
                   <tr key={reel._id}>
-                    <td className="ps-4 py-3 fw-500">{reel.title}</td>
-                    <td className="py-3">{reel.category?.name || 'Unknown'}</td>
-                    <td className="py-3">
+                    <td className="ps-4 py-3 fw-500" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>{reel.title}</td>
+                    <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>{reel.category?.name || 'Unknown'}</td>
+                    <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>
                       <span className={`badge ${reel.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${reel.published ? 'success' : 'secondary'} px-2 py-1`}>
                         {reel.published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="py-3 fs-14 text-muted">
+                    <td className="py-3 fs-14 text-muted" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>
                       {new Date(reel.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="pe-4 py-3 text-center sticky-column-end actions-column">
+                    <td className="pe-4 py-3 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>
                       <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
@@ -296,10 +308,10 @@ export default function ManageReels() {
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination Footer */}
         {totalPages > 1 && (
-          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
+          <div className="admin-table-pagination d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
             <div className="text-muted fs-13 fw-500">
               Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> reels
             </div>
@@ -312,7 +324,7 @@ export default function ManageReels() {
                 </li>
                 {[...Array(totalPages)].map((_, i) => (
                   <li key={i} className={`page-item ${page === i + 1 ? 'active' : ''}`}>
-                    <button 
+                    <button
                       className="page-link" onClick={() => setPage(i + 1)} >
                       {i + 1}
                     </button>

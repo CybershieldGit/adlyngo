@@ -274,7 +274,7 @@
   height: 100vh;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1050;
   transition: all 0.3s ease;
   flex-shrink: 0 !important;
   background-color: var(--admin-sidebar-bg) !important;
@@ -411,8 +411,11 @@
   .admin-sidebar {
     position: fixed;
     left: -280px;
-    top: 0;
+    top: 70px !important;
     bottom: 0;
+    height: calc(100vh - 70px) !important;
+    z-index: 1000;
+    padding-top: 10px !important;
   }
 
   .admin-sidebar.open {
@@ -424,8 +427,13 @@
   }
 
   .admin-main {
-    padding: 1.25rem !important;
+    padding: 10px 8px !important;
     margin-top: 70px;
+  }
+  
+  .admin-main .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
   
   .card {
@@ -448,9 +456,54 @@
 }
 
 /* Modal Mobile Adjustments */
+/* Sticky Table Layout */
+.admin-table-card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 180px);
+  min-height: 400px;
+}
+
+.admin-table-wrapper {
+  overflow-y: auto;
+  overflow-x: auto;
+  flex: 1;
+}
+
+.admin-table-wrapper thead th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: #fff !important;
+  box-shadow: inset 0 -1px 0 #eee;
+}
+
+.admin-table-pagination {
+  position: sticky;
+  bottom: 0;
+  background-color: #fff;
+  z-index: 20;
+  border-top: 1px solid #eee;
+  padding: 15px 20px;
+}
+
+@media (max-width: 991.98px) {
+  .admin-table-card {
+    max-height: calc(100vh - 160px);
+    margin-bottom: 0;
+  }
+}
+
+/* Modal Mobile Adjustments */
 @media (max-width: 767.98px) {
+  .card {
+    border-radius: 8px !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
   .modal-overlay {
-    padding: 15px;
+    padding: 5px !important;
   }
   
   .modal-header {
@@ -462,8 +515,11 @@
   }
   
   .modal-container {
-    max-height: 92vh;
-    border-radius: 12px;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 98vh;
+    border-radius: 8px;
+    margin: 0;
   }
 }
 

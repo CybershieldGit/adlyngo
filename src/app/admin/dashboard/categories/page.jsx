@@ -168,10 +168,12 @@ export default function ManageCategories() {
 
   return (
     <div>
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-5 mt-2 mt-lg-0">
-        <h3 className="fw-700 text-dark-gray mb-0">Manage Categories</h3>
+      <div className="d-flex flex-row justify-content-between align-items-center gap-2 mb-5 mt-2 mt-lg-0">
+        <h5 className="fw-700 text-dark-gray mb-0 text-truncate" style={{ flex: 1, minWidth: 0 }}>
+          Manage Categories
+        </h5>
         <button
-          className="btn btn-dark-gray btn-small btn-rounded px-4"
+          className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
           onClick={() => {
             setIsCreating(!isCreating);
             setError('');
@@ -181,7 +183,7 @@ export default function ManageCategories() {
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
-              <i className="bi bi-plus-lg me-2"></i> Add New Category
+              <i className="bi bi-plus-lg me-1"></i> Add New Category
             </span>
           )}
         </button>
