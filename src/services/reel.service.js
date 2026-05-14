@@ -1,5 +1,6 @@
 import Reel from "../models/Reel.js";
 import Category from "../models/Category.js";
+import Client from "../models/Client.js";
 import ApiError from "../utils/ApiError.js";
 import { uniqueSlug } from "../utils/slugify.js";
 import { buildQuery } from "../utils/queryBuilder.js";
