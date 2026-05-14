@@ -11,12 +11,28 @@ export async function middleware(request) {
   const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
   const allowedOrigins = clientUrl.split(',');
   
+  // Add common local origins in development
+  if (process.env.NODE_ENV === 'development') {
+    const localOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:3001',
+      'http://127.0.0.1:3002'
+    ];
+    localOrigins.forEach(o => {
+      if (!allowedOrigins.includes(o)) allowedOrigins.push(o);
+    });
+  }
+  
   // 1. Handle CORS Preflight (OPTIONS)
   if (request.method === 'OPTIONS') {
     const response = new NextResponse(null, { status: 204 });
     
-    if (allowedOrigins.includes(origin)) {
-      response.headers.set('Access-Control-Allow-Origin', origin);
+    // Always allow in development for easier testing, otherwise check allowedOrigins
+    if (process.env.NODE_ENV === 'development' || allowedOrigins.includes(origin)) {
+      response.headers.set('Access-Control-Allow-Origin', origin || '*');
       response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-id');
       response.headers.set('Access-Control-Allow-Credentials', 'true');
@@ -93,8 +109,8 @@ export async function middleware(request) {
   }
 
   // 3. Apply CORS headers to the final response
-  if (allowedOrigins.includes(origin)) {
-    response.headers.set('Access-Control-Allow-Origin', origin);
+  if (process.env.NODE_ENV === 'development' || allowedOrigins.includes(origin)) {
+    response.headers.set('Access-Control-Allow-Origin', origin || '*');
     response.headers.set('Access-Control-Allow-Credentials', 'true');
   }
 
