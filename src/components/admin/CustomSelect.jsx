@@ -10,7 +10,7 @@ import { useState, useRef, useEffect } from 'react';
  * @param {string} placeholder - Text to show when no value is selected.
  * @param {string} label - Optional label for the field.
  */
-export default function CustomSelect({ options, value, onChange, placeholder = 'Select Option', label }) {
+export default function CustomSelect({ options, value, onChange, placeholder = 'Select Option', label, direction = 'down' }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -47,7 +47,7 @@ export default function CustomSelect({ options, value, onChange, placeholder = '
       </div>
       
       {isOpen && (
-        <div className="custom-select-options">
+        <div className={`custom-select-options ${direction === 'up' ? 'up' : ''}`}>
           {options.length === 0 ? (
             <div className="custom-select-no-options">No options available</div>
           ) : (

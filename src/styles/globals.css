@@ -663,6 +663,23 @@
   animation: selectFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.custom-select-options.up {
+  top: auto;
+  bottom: calc(100% + 5px);
+  animation: selectFadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes selectFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .custom-select-option {
   padding: 10px 14px;
   border-radius: 4px;

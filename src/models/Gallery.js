@@ -26,6 +26,11 @@ const gallerySchema = new mongoose.Schema(
       ref: "Category",
       required: [true, "Category is required"],
     },
+    client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Client",
+      index: true,
+    },
   },
   {
     timestamps: true,

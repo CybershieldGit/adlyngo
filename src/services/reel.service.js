@@ -13,6 +13,7 @@ export const getReels = async (queryData) => {
   const [reels, totalDocs] = await Promise.all([
     Reel.find(filter)
       .populate("category", "name slug")
+      .populate("client", "name slug logo")
       .sort(sort)
       .skip(skip)
       .limit(limit),
@@ -30,7 +31,10 @@ export const createReel = async (reelData) => {
   const order = reelData.order ?? (await Reel.countDocuments()) + 1;
 
   const reel = await Reel.create({ ...reelData, slug, order });
-  return reel.populate("category", "name slug");
+  return reel.populate([
+    { path: "category", select: "name slug" },
+    { path: "client", select: "name slug logo" }
+  ]);
 };
 
 export const updateReel = async (id, updateData) => {
@@ -53,7 +57,10 @@ export const updateReel = async (id, updateData) => {
   Object.assign(reel, updateData);
   await reel.save();
 
-  return reel.populate("category", "name slug");
+  return reel.populate([
+    { path: "category", select: "name slug" },
+    { path: "client", select: "name slug logo" }
+  ]);
 };
 
 export const deleteReel = async (id) => {

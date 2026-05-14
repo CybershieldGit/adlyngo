@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import CustomSelect from '@/components/admin/CustomSelect';
 import Modal from '@/components/admin/Modal';
+import FileUpload from '@/components/admin/FileUpload';
 
-export default function ManageCategories() {
-  const [categories, setCategories] = useState([]);
+export default function ManageClients() {
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -14,9 +14,14 @@ export default function ManageCategories() {
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isViewing, setIsViewing] = useState(false);
-  const [viewingCategory, setViewingCategory] = useState(null);
+  const [viewingClient, setViewingClient] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ name: '', slug: '', type: 'blog', description: '' });
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    slug: '', 
+    logo: { url: '', publicId: '' }, 
+    description: ''
+  });
   const [submitting, setSubmitting] = useState(false);
 
   // Pagination State
@@ -28,14 +33,14 @@ export default function ManageCategories() {
     try {
       setLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const res = await fetch(`${apiUrl}/categories?page=${targetPage}&limit=10`);
+      const res = await fetch(`${apiUrl}/clients?page=${targetPage}&limit=10`);
       const data = await res.json();
       if (data.success) {
-        setCategories(data.data.categories || []);
+        setClients(data.data.clients || []);
         setTotalPages(data.data.meta?.totalPages || 1);
         setTotalDocs(data.data.meta?.totalDocs || 0);
       } else {
-        throw new Error(data.message || 'Failed to fetch categories');
+        throw new Error(data.message || 'Failed to fetch clients');
       }
     } catch (err) {
       setError(err.message);
@@ -56,7 +61,7 @@ export default function ManageCategories() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/categories`, {
+      const response = await fetch(`${apiUrl}/clients`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -66,12 +71,12 @@ export default function ManageCategories() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setCategories([data.data.category, ...categories]);
-        setSuccess('Category created successfully!');
+        setClients([data.data.client, ...clients]);
+        setSuccess('Client created successfully!');
         setIsCreating(false);
-        setFormData({ name: '', slug: '', type: 'reel', description: '' });
+        resetForm();
       } else {
-        setError(data.message || 'Failed to create category');
+        setError(data.message || 'Failed to create client');
       }
     } catch (err) {
       setError('Network error while creating');
@@ -81,20 +86,20 @@ export default function ManageCategories() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure? This may affect items linked to this category.')) return;
+    if (!confirm('Are you sure you want to delete this client?')) return;
     setError('');
     setSuccess('');
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/categories/${id}`, {
+      const response = await fetch(`${apiUrl}/clients/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
 
       if (response.ok) {
-        setCategories(categories.filter(c => c._id !== id));
-        setSuccess('Category deleted.');
+        setClients(clients.filter(c => c._id !== id));
+        setSuccess('Client deleted.');
       } else {
         const data = await response.json();
         setError(data.message || 'Failed to delete');
@@ -104,13 +109,14 @@ export default function ManageCategories() {
     }
   };
 
-  const handleEdit = (cat) => {
-    setEditingId(cat._id);
+  const handleEdit = (client) => {
+    setEditingId(client._id);
     setFormData({
-      name: cat.name,
-      slug: cat.slug,
-      type: cat.type,
-      description: cat.description || ''
+      name: client.name,
+      slug: client.slug,
+      logo: client.logo || { url: '', publicId: '' },
+      description: client.description || '',
+      website: client.website || ''
     });
     setIsEditing(true);
     setError('');
@@ -125,8 +131,8 @@ export default function ManageCategories() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const response = await fetch(`${apiUrl}/categories/${editingId}`, {
-        method: 'PUT',
+      const response = await fetch(`${apiUrl}/clients/${editingId}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(formData),
@@ -135,13 +141,13 @@ export default function ManageCategories() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setCategories(categories.map(c => c._id === editingId ? data.data.category : c));
-        setSuccess('Category updated successfully!');
+        setClients(clients.map(c => c._id === editingId ? data.data.client : c));
+        setSuccess('Client updated successfully!');
         setIsEditing(false);
         setEditingId(null);
-        setFormData({ name: '', slug: '', type: 'blog', description: '' });
+        resetForm();
       } else {
-        setError(data.message || 'Failed to update category');
+        setError(data.message || 'Failed to update client');
       }
     } catch (err) {
       setError('Network error while updating');
@@ -150,27 +156,36 @@ export default function ManageCategories() {
     }
   };
 
-  const handleView = (cat) => {
-    setViewingCategory(cat);
+  const handleView = (client) => {
+    setViewingClient(client);
     setIsViewing(true);
+  };
+
+  const resetForm = () => {
+    setFormData({ 
+      name: '', 
+      slug: '', 
+      logo: { url: '', publicId: '' }, 
+      description: ''
+    });
   };
 
   const closeModals = () => {
     setIsCreating(false);
     setIsEditing(false);
     setIsViewing(false);
-    setViewingCategory(null);
+    setViewingClient(null);
     setEditingId(null);
-    setFormData({ name: '', slug: '', type: 'blog', description: '' });
+    resetForm();
   };
 
-  if (loading) return <div>Loading categories...</div>;
+  if (loading) return <div>Loading clients...</div>;
 
   return (
     <div>
       <div className="d-flex flex-row justify-content-between align-items-center gap-2 mb-5 mt-2 mt-lg-0">
         <h5 className="fw-700 text-dark-gray mb-0 text-truncate" style={{ flex: 1, minWidth: 0 }}>
-          Manage Categories
+          Manage Clients
         </h5>
         <button
           className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
@@ -183,7 +198,7 @@ export default function ManageCategories() {
         >
           {isCreating ? 'Cancel' : (
             <span className="d-flex align-items-center">
-              <i className="bi bi-plus-lg me-1"></i> Add New Category
+              <i className="bi bi-plus-lg me-1"></i> Add New Client
             </span>
           )}
         </button>
@@ -206,49 +221,40 @@ export default function ManageCategories() {
       <Modal
         isOpen={isCreating || isEditing}
         onClose={closeModals}
-        title={isEditing ? "Edit Category" : "Create New Category"}
+        title={isEditing ? "Edit Client" : "Create New Client"}
         size="lg"
       >
         <form onSubmit={isEditing ? handleUpdate : handleCreate}>
           <div className="row g-3">
-            <div className="col-md-4">
-              <label className="form-label fs-14 fw-500">Name</label>
+            <div className="col-md-12">
+              <label className="form-label fs-14 fw-500">Name <span className="text-danger">*</span></label>
               <input
                 type="text"
                 className="form-control"
                 value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-') })}
+                onChange={e => setFormData({ 
+                  ...formData, 
+                  name: e.target.value, 
+                  slug: e.target.value.toLowerCase().trim().replace(/[^a-z0-9]/g, '-') 
+                })}
                 required
               />
             </div>
-            <div className="col-md-4">
-              <label className="form-label fs-14 fw-500">Slug</label>
-              <input
-                type="text"
-                className="form-control"
-                value={formData.slug}
-                onChange={e => setFormData({ ...formData, slug: e.target.value })}
-                required
-              />
-            </div>
-            <div className="col-md-4">
-              <CustomSelect
-                label="Type"
-                options={[
-                  { value: 'reel', label: 'Reel (Video)' },
-                  { value: 'blog', label: 'Blog (Article)' },
-                  { value: 'project', label: 'Case Study' },
-                  { value: 'gallery', label: 'Gallery (Creative)' }
-                ]}
-                value={formData.type}
-                onChange={val => setFormData({ ...formData, type: val })}
+            <div className="col-md-12">
+              <label className="form-label fs-14 fw-500">Logo</label>
+              <FileUpload
+                type="image"
+                onUploadSuccess={(result) => setFormData({ ...formData, logo: { url: result.url, publicId: result.publicId } })}
+                onRemove={() => setFormData({ ...formData, logo: { url: '', publicId: '' } })}
+                currentUrl={formData.logo?.url}
+                folder="adlyngo/clients"
               />
             </div>
             <div className="col-12">
               <label className="form-label fs-14 fw-500">Description</label>
               <textarea
                 className="form-control"
-                rows="2"
+                rows="3"
                 value={formData.description}
                 onChange={e => setFormData({ ...formData, description: e.target.value })}
               ></textarea>
@@ -256,7 +262,7 @@ export default function ManageCategories() {
             <div className="col-12 mt-4 text-end">
               <button type="button" className="btn btn-light btn-small btn-rounded me-2" onClick={closeModals}>Cancel</button>
               <button type="submit" className="btn btn-primary btn-small btn-rounded" disabled={submitting}>
-                {submitting ? 'Saving...' : (isEditing ? 'Update Category' : 'Save Category')}
+                {submitting ? 'Saving...' : (isEditing ? 'Update Client' : 'Save Client')}
               </button>
             </div>
           </div>
@@ -268,53 +274,50 @@ export default function ManageCategories() {
           <table className="table table-hover align-middle mb-0">
             <thead className=" text-muted fs-14 text-uppercase">
               <tr>
-                <th className="ps-4 py-3 fw-600 border-0">Name</th>
-                <th className="py-3 fw-600 border-0">Slug</th>
-                <th className="py-3 fw-600 border-0">Type</th>
+                <th className="ps-4 py-3 fw-600 border-0">Logo</th>
+                <th className="py-3 fw-600 border-0">Name</th>
                 <th className="py-3 fw-600 border-0">Description</th>
                 <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {(!Array.isArray(categories) || categories.length === 0) ? (
+              {(!Array.isArray(clients) || clients.length === 0) ? (
                 <tr>
-                  <td colSpan="4" className="text-center py-5 text-muted">No categories found.</td>
+                  <td colSpan="5" className="text-center py-5 text-muted">No clients found.</td>
                 </tr>
               ) : (
-                categories?.map(cat => (
-                  <tr key={cat._id}>
-                    <td className="ps-4 py-3 fw-500">{cat.name}</td>
-                    <td className="py-3 text-muted">{cat.slug}</td>
-                    <td className="py-3">
-                      <span className={`badge bg-opacity-10 px-2 py-1 ${cat.type === 'reel' ? 'bg-primary text-primary' :
-                        cat.type === 'project' ? 'bg-success text-success' : 
-                        cat.type === 'gallery' ? 'bg-purple text-purple' : 'bg-warning text-warning'
-                        }`} style={cat.type === 'gallery' ? { color: '#6610f2', backgroundColor: 'rgba(102, 16, 242, 0.1)' } : {}}>
-                        {cat.type === 'project' ? 'CASE STUDY' : cat.type.toUpperCase()}
-                      </span>
+                clients?.map(client => (
+                  <tr key={client._id}>
+                    <td className="ps-4 py-3">
+                      {client.logo?.url ? (
+                        <img src={client.logo.url} alt={client.name} style={{ height: '30px', maxWidth: '60px', objectFit: 'contain' }} />
+                      ) : (
+                        <div className="bg-light rounded d-flex align-items-center justify-content-center text-muted fs-10" style={{ width: '40px', height: '30px' }}>No Logo</div>
+                      )}
                     </td>
-                    <td className="py-3 text-muted fs-13 text-truncate" style={{ maxWidth: '150px' }}>
-                      {cat.description || '-'}
+                    <td className="py-3 fw-500">{client.name}</td>
+                    <td className="py-3 text-muted fs-13 text-truncate" style={{ maxWidth: '200px' }}>
+                      {client.description || '-'}
                     </td>
                     <td className="pe-4 py-3 text-center sticky-column-end actions-column">
                       <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
-                          onClick={() => handleView(cat)}
+                          onClick={() => handleView(client)}
                           title="View"
                         >
                           <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
                         </button>
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
-                          onClick={() => handleEdit(cat)}
+                          onClick={() => handleEdit(client)}
                           title="Edit"
                         >
                           <img src="/images/edit.png" alt="Edit" style={{ width: '14px' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
-                          onClick={() => handleDelete(cat._id)}
+                          onClick={() => handleDelete(client._id)}
                           title="Delete"
                         >
                           <img src="/images/trash.png" alt="Delete" />
@@ -332,7 +335,7 @@ export default function ManageCategories() {
         {totalPages > 1 && (
           <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
             <div className="text-muted fs-13 fw-500">
-              Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> categories
+              Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> clients
             </div>
             <nav className="admin-pagination">
               <ul className="pagination pagination-sm mb-0">
@@ -359,34 +362,31 @@ export default function ManageCategories() {
       </div>
 
       {/* View Modal */}
-      {isViewing && viewingCategory && (
+      {isViewing && viewingClient && (
         <Modal
           isOpen={isViewing}
           onClose={closeModals}
-          title="Category Details"
+          title="Client Details"
           size="md"
         >
-          <div className="view-details">
-            <div className="mb-4">
-              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Category Name</label>
-              <h5 className="fw-600 text-dark-gray">{viewingCategory.name}</h5>
-            </div>
-            <div className="mb-4">
-              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Slug</label>
-              <p className="fw-500 font-monospace">{viewingCategory.slug}</p>
-            </div>
-            <div className="mb-4">
-              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Type</label>
-              <span className="badge bg-admin-primary text-white px-3 py-2">
-                {viewingCategory.type.toUpperCase()}
-              </span>
-            </div>
-            {viewingCategory.description && (
-              <div className="mb-0">
-                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Description</label>
-                <p className="fw-500">{viewingCategory.description}</p>
+          <div className="view-details text-center">
+            {viewingClient.logo?.url && (
+              <div className="mb-4">
+                <img src={viewingClient.logo.url} alt={viewingClient.name} style={{ maxHeight: '80px', maxWidth: '100%' }} />
               </div>
             )}
+            <div className="text-start">
+              <div className="mb-4">
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Client Name</label>
+                <h5 className="fw-600 text-dark-gray">{viewingClient.name}</h5>
+              </div>
+              {viewingClient.description && (
+                <div className="mb-0">
+                  <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Description</label>
+                  <p className="fw-500">{viewingClient.description}</p>
+                </div>
+              )}
+            </div>
           </div>
         </Modal>
       )}

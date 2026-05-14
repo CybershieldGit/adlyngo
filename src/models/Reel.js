@@ -29,6 +29,11 @@ const reelSchema = new mongoose.Schema(
       required: [true, "Category is required"],
       index: true,
     },
+    client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Client",
+      index: true,
+    },
     featured: {
       type: Boolean,
       default: false,
