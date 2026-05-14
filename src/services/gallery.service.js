@@ -13,6 +13,7 @@ export const getGalleryItems = async (query = {}) => {
 
   const filter = {};
   if (query.published) filter.published = query.published === "true";
+  if (query.client) filter.client = query.client;
 
   const items = await Gallery.find(filter)
     .populate("category", "name slug")

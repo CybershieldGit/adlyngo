@@ -3,6 +3,7 @@ export const buildQuery = (query, searchFields = []) => {
   
   // Basic filtering
   if (query.category) filter.category = query.category;
+  if (query.client) filter.client = query.client;
   if (query.published !== undefined) filter.published = query.published === 'true' || query.published === true;
   if (query.featured !== undefined) filter.featured = query.featured === 'true' || query.featured === true;
 
