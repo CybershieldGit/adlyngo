@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import * as clientService from "../../../services/client.service.js";
-import connectDB from "../../../lib/mongodb.js";
-import ApiResponse from "../../../utils/ApiResponse.js";
-import { updateClientSchema } from "../../../schemas/client.validation.js";
+import * as clientService from "../../../../services/client.service.js";
+import connectDB from "../../../../lib/mongodb.js";
+import ApiResponse from "../../../../utils/ApiResponse.js";
+import { updateClientSchema } from "../../../../schemas/client.validation.js";
 
 export async function GET(request, { params }) {
   try {
