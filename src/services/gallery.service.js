@@ -15,6 +15,7 @@ export const getGalleryItems = async (query = {}) => {
 
   const items = await Gallery.find(filter)
     .populate("category", "name slug")
+    .populate("client", "name slug")
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
@@ -37,7 +38,10 @@ export const getGalleryItems = async (query = {}) => {
  */
 export const createGalleryItem = async (data) => {
   const item = await Gallery.create(data);
-  return item.populate("category", "name slug");
+  return item.populate([
+    { path: "category", select: "name slug" },
+    { path: "client", select: "name slug" }
+  ]);
 };
 
 /**
@@ -53,7 +57,10 @@ export const updateGalleryItem = async (id, data) => {
     throw new ApiError(404, "Gallery item not found");
   }
 
-  return item.populate("category", "name slug");
+  return item.populate([
+    { path: "category", select: "name slug" },
+    { path: "client", select: "name slug" }
+  ]);
 };
 
 /**
@@ -66,5 +73,8 @@ export const deleteGalleryItem = async (id) => {
     throw new ApiError(404, "Gallery item not found");
   }
 
-  return item.populate("category", "name slug");
+  return item.populate([
+    { path: "category", select: "name slug" },
+    { path: "client", select: "name slug" }
+  ]);
 };

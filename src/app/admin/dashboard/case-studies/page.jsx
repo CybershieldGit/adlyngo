@@ -8,6 +8,7 @@ import Modal from '@/components/admin/Modal';
 export default function ManageProjects() {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -28,10 +29,12 @@ export default function ManageProjects() {
     description: '',
     category: '',
     clientName: '',
+    client: '',
     liveUrl: '',
     coverImage: { url: '', publicId: '' },
     published: true,
-    featured: false
+    featured: false,
+    socialLinks: []
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -46,10 +49,12 @@ export default function ManageProjects() {
       description: '',
       category: '',
       clientName: '',
+      client: '',
       liveUrl: '',
       coverImage: { url: '', publicId: '' },
       published: true,
-      featured: false
+      featured: false,
+      socialLinks: []
     });
   };
 
@@ -60,10 +65,12 @@ export default function ManageProjects() {
       description: project.description || '',
       category: project.category?._id || project.category || '',
       clientName: project.clientName || '',
+      client: project.client?._id || project.client || '',
       liveUrl: project.liveUrl || '',
       coverImage: project.coverImage || { url: '', publicId: '' },
       published: project.published ?? true,
-      featured: project.featured ?? false
+      featured: project.featured ?? false,
+      socialLinks: Array.isArray(project.socialLinks) ? project.socialLinks : []
     });
     setIsEditing(true);
     setError('');
@@ -78,13 +85,15 @@ export default function ManageProjects() {
   const fetchData = async (targetPage = page) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const [projRes, catRes] = await Promise.all([
+      const [projRes, catRes, clientRes] = await Promise.all([
         fetch(`${apiUrl}/projects?page=${targetPage}&limit=10`, { cache: 'no-store' }),
-        fetch(`${apiUrl}/categories?type=project`, { cache: 'no-store' })
+        fetch(`${apiUrl}/categories?type=project`, { cache: 'no-store' }),
+        fetch(`${apiUrl}/clients`, { cache: 'no-store' })
       ]);
 
       const projData = await projRes.json();
       const catData = await catRes.json();
+      const clientData = await clientRes.json();
 
       if (projData.success) {
         setProjects(projData.data.projects || []);
@@ -92,8 +101,10 @@ export default function ManageProjects() {
         setTotalDocs(projData.data.meta.totalDocs);
       }
       if (catData.success) {
-        console.log(`Loaded ${catData.data.categories.length} project categories`);
         setCategories(catData.data.categories);
+      }
+      if (clientData.success) {
+        setClients(clientData.data.clients || []);
       }
     } catch (err) {
       setError(err.message);
@@ -205,7 +216,7 @@ export default function ManageProjects() {
         <form onSubmit={handleSubmit}>
           <div className="row g-3">
             <div className="col-md-6">
-              <label className="form-label fs-14 fw-500">Project Title</label>
+              <label className="form-label fs-14 fw-500">Case Study Title</label>
               <input type="text" className="form-control" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
             </div>
             <div className="col-md-6">
@@ -222,11 +233,17 @@ export default function ManageProjects() {
               <textarea className="form-control" rows="3" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required></textarea>
             </div>
             <div className="col-md-6">
-              <label className="form-label fs-14 fw-500">Client Name</label>
-              <input type="text" className="form-control" value={formData.clientName} onChange={e => setFormData({ ...formData, clientName: e.target.value })} />
+              <CustomSelect
+                label="Client (Optional)"
+                options={clients.map(c => ({ value: c._id, label: c.name }))}
+                value={formData.client}
+                onChange={val => setFormData({ ...formData, client: val })}
+                placeholder="Select Client"
+              />
             </div>
             <div className="col-md-6">
-              <label className="form-label fs-14 fw-500">Live URL (Optional)</label>
+              <label className="form-label fs-14 fw-500">
+                website URL (Optional)</label>
               <input type="text" className="form-control" value={formData.liveUrl} onChange={e => setFormData({ ...formData, liveUrl: e.target.value })} placeholder="https://..." />
             </div>
             <div className="col-12">
@@ -250,19 +267,97 @@ export default function ManageProjects() {
                     style={{ cursor: 'pointer', width: '36px', height: '18px' }}
                   />
                 </div>
-                <label 
-                  className="fs-14 fw-500 text-dark-gray mb-0" 
-                  htmlFor="projectFeaturedSwitch" 
+                <label
+                  className="fs-14 fw-500 text-dark-gray mb-0"
+                  htmlFor="projectFeaturedSwitch"
                   style={{ cursor: 'pointer', userSelect: 'none', marginLeft: '5px' }}
                 >
                   Featured on Home
                 </label>
               </div>
             </div>
+
+            {/* Social Media Links Section */}
+            <div className="col-12 mt-4 pt-3 border-top">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="fs-15 fw-700 text-dark-gray mb-0"><i className="bi bi-share me-2"></i>Social Media Links (Optional)</h6>
+                <button 
+                  type="button" 
+                  className="btn btn-outline-dark-gray btn-sm btn-rounded py-1"
+                  onClick={() => setFormData({ ...formData, socialLinks: [...formData.socialLinks, { platform: 'Facebook', url: '' }] })}
+                >
+                  <i className="bi bi-plus-lg me-1"></i> Add Link
+                </button>
+              </div>
+              
+              {formData.socialLinks.length === 0 ? (
+                <div className="text-center py-3 border rounded-3 bg-light bg-opacity-50 text-muted fs-13">
+                  No social links added yet.
+                </div>
+              ) : (
+                <div className="row g-3">
+                  {formData.socialLinks.map((link, index) => (
+                    <div key={index} className="col-12 p-3 border rounded-3 bg-light bg-opacity-10">
+                      <div className="row g-2 align-items-center">
+                        <div className="col-6 col-md-3">
+                          <CustomSelect
+                            options={[
+                              { value: 'Facebook', label: 'Facebook' },
+                              { value: 'Instagram', label: 'Instagram' },
+                              { value: 'X (Twitter)', label: 'X (Twitter)' },
+                              { value: 'LinkedIn', label: 'LinkedIn' },
+                              { value: 'Reddit', label: 'Reddit' },
+                              { value: 'YouTube', label: 'YouTube' },
+                              { value: 'TikTok', label: 'TikTok' },
+                              { value: 'Website', label: 'Website' },
+                              { value: 'Other', label: 'Other' },
+                            ]}
+                            value={link.platform}
+                            onChange={(val) => {
+                              const newLinks = [...formData.socialLinks];
+                              newLinks[index].platform = val;
+                              setFormData({ ...formData, socialLinks: newLinks });
+                            }}
+                            placeholder="Platform"
+                            className="mb-0"
+                            direction="up"
+                          />
+                        </div>
+                        <div className="col-12 col-md-8 order-3 order-md-2">
+                          <input 
+                            type="text" 
+                            className="form-control" 
+                            placeholder="Enter URL (https://...)" 
+                            value={link.url} 
+                            onChange={(e) => {
+                              const newLinks = [...formData.socialLinks];
+                              newLinks[index].url = e.target.value;
+                              setFormData({ ...formData, socialLinks: newLinks });
+                            }}
+                          />
+                        </div>
+                        <div className="col-6 col-md-1 order-2 order-md-3 text-end">
+                          <button 
+                            type="button" 
+                            className="btn btn-danger-light btn-icon"
+                            onClick={() => {
+                              const newLinks = formData.socialLinks.filter((_, i) => i !== index);
+                              setFormData({ ...formData, socialLinks: newLinks });
+                            }}
+                          >
+                            <i className="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="col-12 text-end">
               <button type="button" className="btn btn-light btn-small btn-rounded mt-3 me-2" onClick={closeModals}>Cancel</button>
               <button type="submit" className="btn btn-primary btn-small btn-rounded mt-3" disabled={submitting}>
-                {submitting ? 'Saving...' : (isEditing ? 'Update Project' : 'Save Project')}
+                {submitting ? 'Saving...' : (isEditing ? 'Update Case Study' : 'Save Case Study')}
               </button>
             </div>
           </div>
@@ -277,6 +372,7 @@ export default function ManageProjects() {
                 <th className="ps-4 py-3 fw-600 border-0" style={{ minWidth: '80px', whiteSpace: 'nowrap' }}>Image</th>
                 <th className="py-3 fw-600 border-0 ps-3" style={{ minWidth: '150px', whiteSpace: 'nowrap' }}>Case Study</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Category</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Client</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
                 <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
@@ -298,6 +394,7 @@ export default function ManageProjects() {
                     </td>
                     <td className="py-3 fw-600 text-dark-gray ps-3" style={{ minWidth: '150px', whiteSpace: 'nowrap' }}>{p.title}</td>
                     <td className="py-3 text-dark-gray opacity-75" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>{p.category?.name || 'Uncategorized'}</td>
+                    <td className="py-3 text-muted fs-13" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>{p.client?.name || p.clientName || '-'}</td>
                     <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>
                       {p.featured && <span className="badge bg-warning bg-opacity-10 text-warning me-2">Featured</span>}
                       <span className={`badge ${p.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${p.published ? 'success' : 'secondary'}`}>
@@ -335,7 +432,7 @@ export default function ManageProjects() {
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination Footer */}
         {totalPages > 1 && (
           <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
@@ -351,7 +448,7 @@ export default function ManageProjects() {
                 </li>
                 {[...Array(totalPages)].map((_, i) => (
                   <li key={i} className={`page-item ${page === i + 1 ? 'active' : ''}`}>
-                    <button 
+                    <button
                       className="page-link" onClick={() => setPage(i + 1)} >
                       {i + 1}
                     </button>
@@ -372,7 +469,7 @@ export default function ManageProjects() {
         <Modal
           isOpen={isViewing}
           onClose={closeModals}
-          title="Project Details"
+          title="Case Study Details"
           size="lg"
         >
           <div className="view-details row">
@@ -384,7 +481,7 @@ export default function ManageProjects() {
             </div>
             <div className="col-md-6">
               <div className="mb-4">
-                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Project Title</label>
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Case Study Title</label>
                 <h5 className="fw-600 text-dark-gray">{viewingProject.title}</h5>
               </div>
               <div className="mb-4">
@@ -408,8 +505,8 @@ export default function ManageProjects() {
                 </div>
               </div>
               <div className="mb-4">
-                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Client Name</label>
-                <p className="fw-500">{viewingProject.clientName || 'N/A'}</p>
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Client</label>
+                <p className="fw-500">{viewingProject.client?.name || viewingProject.clientName || 'N/A'}</p>
               </div>
               <div className="mb-0">
                 <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Live URL</label>
@@ -419,6 +516,40 @@ export default function ManageProjects() {
                   </a>
                 ) : 'N/A'}
               </div>
+              {Array.isArray(viewingProject.socialLinks) && viewingProject.socialLinks.length > 0 && (
+                <div className="mt-4">
+                  <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-2 d-block">Social Media</label>
+                  <div className="d-flex gap-2 flex-wrap">
+                    {viewingProject.socialLinks.map((link, idx) => {
+                      let iconClass = "bi-link-45deg";
+                      let colorClass = "text-muted";
+                      const p = link.platform.toLowerCase();
+                      
+                      if (p.includes('facebook')) { iconClass = "bi-facebook"; colorClass = "text-primary"; }
+                      else if (p.includes('instagram')) { iconClass = "bi-instagram"; colorClass = "text-danger"; }
+                      else if (p.includes('twitter') || p === 'x') { iconClass = "bi-twitter-x"; colorClass = "text-dark"; }
+                      else if (p.includes('linkedin')) { iconClass = "bi-linkedin"; colorClass = "text-primary"; }
+                      else if (p.includes('reddit')) { iconClass = "bi-reddit"; colorClass = "text-orange"; }
+                      else if (p.includes('youtube')) { iconClass = "bi-youtube"; colorClass = "text-danger"; }
+                      else if (p.includes('tiktok')) { iconClass = "bi-tiktok"; colorClass = "text-dark"; }
+                      
+                      return (
+                        <a 
+                          key={idx} 
+                          href={link.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="btn btn-outline-light border btn-sm d-flex align-items-center gap-2 px-3"
+                          style={{ borderRadius: '20px' }}
+                        >
+                          <i className={`bi ${iconClass} ${colorClass}`}></i>
+                          <span className="fs-12 fw-600 text-dark-gray">{link.platform}</span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
             <div className="col-12 mt-4 pt-4 border-top">
               <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-2 d-block">Description</label>

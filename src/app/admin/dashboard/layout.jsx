@@ -47,6 +47,7 @@ export default function DashboardLayout({ children }) {
   const menuItems = [
     { label: 'Dashboard', path: '/admin/dashboard', icon: 'bi-speedometer2' },
     { label: 'Manage Reels', path: '/admin/dashboard/reels', icon: 'bi-play-btn-fill' },
+    { label: 'Manage Clients', path: '/admin/dashboard/clients', icon: 'bi-people-fill' },
     { label: 'Manage Case Studies', path: '/admin/dashboard/case-studies', icon: 'bi-briefcase-fill' },
     { label: 'Manage Blogs', path: '/admin/dashboard/blogs', icon: 'bi-journal-richtext' },
     { label: 'Creative Gallery', path: '/admin/dashboard/creative-gallery', icon: 'bi-images' },

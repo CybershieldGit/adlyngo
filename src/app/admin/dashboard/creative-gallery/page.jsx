@@ -8,6 +8,7 @@ import CustomSelect from '@/components/admin/CustomSelect';
 export default function ManageGallery() {
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -23,7 +24,8 @@ export default function ManageGallery() {
     imageUrl: '',
     publicId: '',
     published: true,
-    category: ''
+    category: '',
+    client: ''
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -37,14 +39,16 @@ export default function ManageGallery() {
       setLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       
-      // Fetch Gallery Items and Categories in parallel
-      const [galleryRes, categoriesRes] = await Promise.all([
+      // Fetch Gallery Items, Categories and Clients in parallel
+      const [galleryRes, categoriesRes, clientsRes] = await Promise.all([
         fetch(`${apiUrl}/gallery?page=${targetPage}&limit=10`),
-        fetch(`${apiUrl}/categories?type=gallery&limit=100`)
+        fetch(`${apiUrl}/categories?type=gallery&limit=100`),
+        fetch(`${apiUrl}/clients`)
       ]);
       
       const galleryData = await galleryRes.json();
       const categoriesData = await categoriesRes.json();
+      const clientsData = await clientsRes.json();
       
       if (galleryData.success) {
         setItems(galleryData.data.items || []);
@@ -56,6 +60,10 @@ export default function ManageGallery() {
 
       if (categoriesData.success) {
         setCategories(categoriesData.data.categories || []);
+      }
+
+      if (clientsData.success) {
+        setClients(clientsData.data.clients || []);
       }
     } catch (err) {
       setError(err.message);
@@ -79,7 +87,8 @@ export default function ManageGallery() {
       imageUrl: '',
       publicId: '',
       published: true,
-      category: ''
+      category: '',
+      client: ''
     });
     setError('');
     setSuccess('');
@@ -97,7 +106,8 @@ export default function ManageGallery() {
       imageUrl: item.imageUrl,
       publicId: item.publicId,
       published: item.published,
-      category: item.category?._id || item.category || ''
+      category: item.category?._id || item.category || '',
+      client: item.client?._id || item.client || ''
     });
     setIsEditing(true);
     setError('');
@@ -212,6 +222,7 @@ export default function ManageGallery() {
                 <th className="ps-4 py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Image</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap', minWidth: '150px' }}>Title</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Category</th>
+                <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Client</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Status</th>
                 <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
@@ -237,6 +248,9 @@ export default function ManageGallery() {
                       <span className="badge bg-purple bg-opacity-10 text-purple px-2 py-1" style={{ color: '#6610f2', backgroundColor: 'rgba(102, 16, 242, 0.1)' }}>
                         {item.category?.name || 'Uncategorized'}
                       </span>
+                    </td>
+                    <td className="py-3 text-muted fs-13" style={{ whiteSpace: 'nowrap' }}>
+                      {item.client?.name || '-'}
                     </td>
                     <td className="py-3" style={{ whiteSpace: 'nowrap' }}>
                       <span className={`badge bg-opacity-10 px-2 py-1 ${item.published ? 'bg-success text-success' : 'bg-danger text-danger'}`}>
@@ -316,7 +330,7 @@ export default function ManageGallery() {
         >
           <form onSubmit={handleSubmit}>
             <div className="row g-3 mb-4">
-              <div className="col-md-7">
+              <div className="col-md-4">
                 <label className="form-label fs-14 fw-600 text-dark-gray">Item Title</label>
                 <input
                   type="text"
@@ -327,13 +341,22 @@ export default function ManageGallery() {
                   required
                 />
               </div>
-              <div className="col-md-5">
+              <div className="col-md-4">
                 <CustomSelect
                   label="Category"
                   options={categories.map(c => ({ value: c._id, label: c.name }))}
                   value={formData.category}
                   onChange={(val) => setFormData({ ...formData, category: val })}
                   placeholder="Select Category"
+                />
+              </div>
+              <div className="col-md-4">
+                <CustomSelect
+                  label="Client (Optional)"
+                  options={clients.map(c => ({ value: c._id, label: c.name }))}
+                  value={formData.client}
+                  onChange={(val) => setFormData({ ...formData, client: val })}
+                  placeholder="Select Client"
                 />
               </div>
             </div>
@@ -416,6 +439,12 @@ export default function ManageGallery() {
               <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Category</label>
               <span className="badge bg-purple bg-opacity-10 text-purple px-3 py-2">
                 {viewingItem.category?.name || 'Uncategorized'}
+              </span>
+            </div>
+            <div className="mb-4">
+              <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Client</label>
+              <span className="badge bg-light text-dark-gray px-3 py-2 border">
+                {viewingItem.client?.name || '-'}
               </span>
             </div>
             <div className="mb-0">

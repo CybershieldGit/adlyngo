@@ -44,6 +44,11 @@ const projectSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Client",
+      index: true,
+    },
     liveUrl: {
       type: String,
       default: "",
@@ -58,6 +63,12 @@ const projectSchema = new mongoose.Schema(
       default: false,
       index: true,
     },
+    socialLinks: [
+      {
+        platform: { type: String, required: true },
+        url: { type: String, required: true },
+      },
+    ],
   },
   {
     timestamps: true,

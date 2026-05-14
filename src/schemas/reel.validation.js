@@ -10,9 +10,10 @@ export const createReelSchema = z.object({
     reelUrl: z
       .string({ required_error: "Reel URL is required" })
       .url("Must be a valid URL"),
-    category: z
+     category: z
       .string({ required_error: "Category is required" })
       .min(1, "Category is required"),
+    client: z.string().optional(),
     featured: z.boolean().optional().default(false),
     order: z.number().int().optional().default(0),
     published: z.boolean().optional().default(false),
@@ -23,7 +24,8 @@ export const updateReelSchema = z.object({
   body: z.object({
     title: z.string().min(1).max(120).trim().optional(),
     reelUrl: z.string().url("Must be a valid URL").optional(),
-    category: z.string().min(1).optional(),
+     category: z.string().min(1).optional(),
+    client: z.string().optional(),
     featured: z.boolean().optional(),
     order: z.number().int().optional(),
     published: z.boolean().optional(),

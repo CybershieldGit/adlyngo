@@ -8,6 +8,7 @@ import Modal from '@/components/admin/Modal';
 export default function ManageReels() {
   const [reels, setReels] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -18,7 +19,7 @@ export default function ManageReels() {
   const [isViewing, setIsViewing] = useState(false);
   const [viewingReel, setViewingReel] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ title: '', reelUrl: '', category: '', published: true });
+  const [formData, setFormData] = useState({ title: '', reelUrl: '', category: '', client: '', published: true });
   const [submitting, setSubmitting] = useState(false);
 
   // Pagination State
@@ -29,13 +30,15 @@ export default function ManageReels() {
   const fetchData = async (targetPage = page) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const [reelsRes, catsRes] = await Promise.all([
+      const [reelsRes, catsRes, clientsRes] = await Promise.all([
         fetch(`${apiUrl}/reels?page=${targetPage}&limit=10`, { cache: 'no-store' }),
-        fetch(`${apiUrl}/categories?type=reel`, { cache: 'no-store' })
+        fetch(`${apiUrl}/categories?type=reel`, { cache: 'no-store' }),
+        fetch(`${apiUrl}/clients`, { cache: 'no-store' })
       ]);
 
       const reelsData = await reelsRes.json();
       const catsData = await catsRes.json();
+      const clientsData = await clientsRes.json();
 
       if (reelsData.success) {
         setReels(reelsData.data.reels || []);
@@ -43,8 +46,10 @@ export default function ManageReels() {
         setTotalDocs(reelsData.data.meta.totalDocs);
       }
       if (catsData.success) {
-        console.log(`Loaded ${catsData.data.categories.length} reel categories`);
         setCategories(catsData.data.categories);
+      }
+      if (clientsData.success) {
+        setClients(clientsData.data.clients || []);
       }
     } catch (err) {
       setError(err.message);
@@ -87,6 +92,7 @@ export default function ManageReels() {
       title: reel.title || '',
       reelUrl: reel.reelUrl || '',
       category: reel.category?._id || reel.category || '',
+      client: reel.client?._id || reel.client || '',
       published: reel.published ?? true
     });
     setIsEditing(true);
@@ -105,7 +111,7 @@ export default function ManageReels() {
     setIsViewing(false);
     setViewingReel(null);
     setEditingId(null);
-    setFormData({ title: '', reelUrl: '', category: '', published: true });
+    setFormData({ title: '', reelUrl: '', category: '', client: '', published: true });
   };
 
   const handleSubmit = async (e) => {
@@ -207,13 +213,22 @@ export default function ManageReels() {
                 currentUrl={formData.reelUrl}
               />
             </div>
-            <div className="col-md-12">
+            <div className="col-md-6">
               <CustomSelect
                 label="Category"
                 options={Array.isArray(categories) ? categories.map(c => ({ value: c._id || c.id, label: c.name })) : []}
                 value={formData.category}
                 onChange={val => setFormData({ ...formData, category: val })}
                 placeholder="Select Category"
+              />
+            </div>
+            <div className="col-md-6">
+              <CustomSelect
+                label="Client (Optional)"
+                options={Array.isArray(clients) ? clients.map(c => ({ value: c._id || c.id, label: c.name })) : []}
+                value={formData.client}
+                onChange={val => setFormData({ ...formData, client: val })}
+                placeholder="Select Client"
               />
             </div>
             <div className="col-md-12 mt-2">
@@ -254,6 +269,7 @@ export default function ManageReels() {
               <tr>
                 <th className="ps-4 py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Title</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Category</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Client</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Date</th>
                 <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
@@ -269,6 +285,7 @@ export default function ManageReels() {
                   <tr key={reel._id}>
                     <td className="ps-4 py-3 fw-500" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>{reel.title}</td>
                     <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>{reel.category?.name || 'Unknown'}</td>
+                    <td className="py-3 text-muted fs-13" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>{reel.client?.name || '-'}</td>
                     <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>
                       <span className={`badge ${reel.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${reel.published ? 'success' : 'secondary'} px-2 py-1`}>
                         {reel.published ? 'Published' : 'Draft'}

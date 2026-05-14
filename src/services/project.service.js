@@ -13,6 +13,7 @@ export const getProjects = async (queryData) => {
   const [projects, totalDocs] = await Promise.all([
     Project.find(filter)
       .populate("category", "name slug")
+      .populate("client", "name slug logo")
       .sort(sort)
       .skip(skip)
       .limit(limit),
@@ -26,7 +27,9 @@ export const getProjects = async (queryData) => {
 };
 
 export const getProjectBySlug = async (slug) => {
-  const project = await Project.findOne({ slug }).populate("category", "name slug");
+  const project = await Project.findOne({ slug })
+    .populate("category", "name slug")
+    .populate("client", "name slug logo");
   if (!project) {
     throw new ApiError(404, "Project not found");
   }
@@ -36,7 +39,10 @@ export const getProjectBySlug = async (slug) => {
 export const createProject = async (projectData) => {
   const slug = await uniqueSlug(projectData.title, Project);
   const project = await Project.create({ ...projectData, slug });
-  return project.populate("category", "name slug");
+  return project.populate([
+    { path: "category", select: "name slug" },
+    { path: "client", select: "name slug logo" }
+  ]);
 };
 
 export const updateProject = async (id, updateData) => {
@@ -65,7 +71,10 @@ export const updateProject = async (id, updateData) => {
   Object.assign(project, updateData);
   await project.save();
 
-  return project.populate("category", "name slug");
+  return project.populate([
+    { path: "category", select: "name slug" },
+    { path: "client", select: "name slug logo" }
+  ]);
 };
 
 export const deleteProject = async (id) => {
