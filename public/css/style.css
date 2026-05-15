@@ -19700,3 +19700,12 @@ footer .footer-navbar .nav-item:last-child a {
 .premium-service-card:hover .bg-base-color i {
     transform: rotate(45deg) !important;
 }
+
+/* Custom scrollbar hiding */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -2,10 +2,12 @@
 
 import { useState, useRef } from 'react';
 
-export default function FileUpload({ onUploadSuccess, currentUrl = '', type = 'video', folder = 'adlyngo/others' }) {
+export default function FileUpload({ onUploadSuccess, onFileComplete, onFilesSelected, currentUrl = '', type = 'video', folder = 'adlyngo/others', multiple = false }) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
   const [preview, setPreview] = useState(currentUrl);
+  const [previews, setPreviews] = useState([]);
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
 
@@ -21,16 +23,80 @@ export default function FileUpload({ onUploadSuccess, currentUrl = '', type = 'v
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-    const files = e.dataTransfer.files;
+    const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
-      uploadFile(files[0]);
+      if (multiple) {
+        if (onFilesSelected) onFilesSelected(files);
+        uploadFiles(files);
+      } else {
+        uploadFile(files[0]);
+      }
     }
   };
 
   const handleFileChange = (e) => {
-    const files = e.target.files;
+    const files = Array.from(e.target.files);
     if (files.length > 0) {
-      uploadFile(files[0]);
+      if (multiple) {
+        if (onFilesSelected) onFilesSelected(files);
+        uploadFiles(files);
+      } else {
+        uploadFile(files[0]);
+      }
+    }
+  };
+
+  const uploadFiles = async (files) => {
+    setUploading(true);
+    setError('');
+    setUploadProgress({ current: 0, total: files.length });
+    const results = [];
+    const newPreviews = [];
+
+    try {
+      let count = 0;
+      for (const file of files) {
+        count++;
+        setUploadProgress(prev => ({ ...prev, current: count }));
+        
+        // Validate file type
+        if (type === 'video' && !file.type.startsWith('video/')) {
+          setError(`File ${file.name} is not a valid video.`);
+          continue;
+        }
+        if (type === 'image' && !file.type.startsWith('image/')) {
+          setError(`File ${file.name} is not a valid image.`);
+          continue;
+        }
+
+        // Limit check
+        if (file.size > 100 * 1024 * 1024) { // Increased to 100MB for videos
+          setError(`File ${file.name} is too large. Max 100MB.`);
+          continue;
+        }
+
+        const result = await performUpload(file);
+        if (result) {
+          const uploadedData = { ...result, originalName: file.name };
+          results.push(uploadedData);
+          newPreviews.push(result.url);
+          
+          // Call incremental callback if provided
+          if (onFileComplete) {
+            onFileComplete(uploadedData);
+          }
+        }
+      }
+
+      if (results.length > 0) {
+        setPreviews(newPreviews);
+        if (onUploadSuccess) onUploadSuccess(results);
+      }
+    } catch (err) {
+      setError(err.message || 'Error uploading files');
+    } finally {
+      setUploading(false);
+      setUploadProgress({ current: 0, total: 0 });
     }
   };
 
@@ -55,58 +121,64 @@ export default function FileUpload({ onUploadSuccess, currentUrl = '', type = 'v
     setError('');
 
     try {
-      // 1. Get Signature from our API
-      const timestamp = Math.round(new Date().getTime() / 1000);
-      const paramsToSign = {
-        timestamp,
-        folder,
-      };
-
-      const signResponse = await fetch('/api/upload/sign', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paramsToSign }),
-      });
-
-      const signData = await signResponse.json();
-      if (!signResponse.ok || !signData.success) {
-        throw new Error(signData.message || 'Failed to get upload signature');
-      }
-
-      const { signature, apiKey, cloudName } = signData;
-
-      // 2. Upload directly to Cloudinary
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('api_key', apiKey);
-      formData.append('timestamp', timestamp);
-      formData.append('signature', signature);
-      formData.append('folder', folder);
-
-      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${type}/upload`;
-      
-      const response = await fetch(cloudinaryUrl, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        const result = {
-          url: data.secure_url,
-          publicId: data.public_id,
-        };
+      const result = await performUpload(file);
+      if (result) {
         setPreview(result.url);
         onUploadSuccess(result);
-      } else {
-        setError(data.error?.message || 'Upload failed');
       }
     } catch (err) {
-      console.error('Upload Error:', err);
-      setError(err.message || 'Network error during upload');
+      setError(err.message || 'Upload failed');
     } finally {
       setUploading(false);
+    }
+  };
+
+  const performUpload = async (file) => {
+    // 1. Get Signature from our API
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const paramsToSign = {
+      timestamp,
+      folder,
+    };
+
+    const signResponse = await fetch('/api/upload/sign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ paramsToSign }),
+    });
+
+    const signData = await signResponse.json();
+    if (!signResponse.ok || !signData.success) {
+      throw new Error(signData.message || 'Failed to get upload signature');
+    }
+
+    const { signature, apiKey, cloudName } = signData;
+
+    // 2. Upload directly to Cloudinary
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('api_key', apiKey);
+    formData.append('timestamp', timestamp);
+    formData.append('signature', signature);
+    formData.append('folder', folder);
+
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/${type}/upload`;
+    
+    const response = await fetch(cloudinaryUrl, {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      return {
+        url: data.secure_url,
+        publicId: data.public_id,
+      };
+    } else {
+      throw new Error(data.error?.message || 'Upload failed');
     }
   };
 
@@ -126,14 +198,20 @@ export default function FileUpload({ onUploadSuccess, currentUrl = '', type = 'v
           className="d-none" 
           accept={type === 'video' ? 'video/*' : 'image/*'} 
           onChange={handleFileChange} 
+          multiple={multiple}
         />
+
         
         {uploading ? (
           <div className="py-3">
             <div className="spinner-border spinner-border-sm text-primary mb-2" role="status">
               <span className="visually-hidden">Uploading...</span>
             </div>
-            <p className="mb-0 fs-13 fw-500 text-dark-gray">Uploading to Cloudinary...</p>
+            <p className="mb-0 fs-13 fw-500 text-dark-gray">
+              {uploadProgress.total > 1 
+                ? `Uploading file ${uploadProgress.current} of ${uploadProgress.total}...` 
+                : 'Uploading to Cloudinary...'}
+            </p>
           </div>
         ) : preview ? (
           <div className="py-2">
