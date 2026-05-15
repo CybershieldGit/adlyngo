@@ -10,7 +10,7 @@ import { useState, useRef, useEffect } from 'react';
  * @param {string} placeholder - Text to show when no value is selected.
  * @param {string} label - Optional label for the field.
  */
-export default function CustomSelect({ options, value, onChange, placeholder = 'Select Option', label, direction = 'down' }) {
+export default function CustomSelect({ options, value, onChange, placeholder = 'Select Option', label, direction = 'down', size = 'md', error }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -30,7 +30,7 @@ export default function CustomSelect({ options, value, onChange, placeholder = '
     <div className="custom-select-container" ref={containerRef}>
       {label && <label className="form-label fs-14 fw-500">{label}</label>}
       <div 
-        className={`custom-select-trigger ${isOpen ? 'open' : ''}`} 
+        className={`custom-select-trigger ${isOpen ? 'open' : ''} size-${size} ${error ? 'is-invalid' : ''}`} 
         onClick={() => setIsOpen(!isOpen)}
         tabIndex="0"
         onKeyDown={(e) => {
@@ -45,6 +45,8 @@ export default function CustomSelect({ options, value, onChange, placeholder = '
         </span>
         <i className={`bi bi-chevron-down ms-auto transition-transform ${isOpen ? 'rotate-180' : ''}`} style={{ transition: 'transform 0.3s ease' }}></i>
       </div>
+      
+      {error && <div className="invalid-feedback d-block fs-10 mt-1">{error}</div>}
       
       {isOpen && (
         <div className={`custom-select-options ${direction === 'up' ? 'up' : ''}`}>
@@ -71,6 +73,9 @@ export default function CustomSelect({ options, value, onChange, placeholder = '
       <style jsx>{`
         .rotate-180 {
           transform: rotate(180deg);
+        }
+        .custom-select-trigger.is-invalid {
+          border-color: #dc3545;
         }
       `}</style>
     </div>

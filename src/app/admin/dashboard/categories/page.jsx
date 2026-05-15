@@ -18,6 +18,8 @@ export default function ManageCategories() {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ name: '', slug: '', type: 'blog', description: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   // Pagination State
   const [page, setPage] = useState(1);
@@ -159,34 +161,92 @@ export default function ManageCategories() {
     setIsCreating(false);
     setIsEditing(false);
     setIsViewing(false);
+    setIsBulkDeleting(false);
     setViewingCategory(null);
     setEditingId(null);
     setFormData({ name: '', slug: '', type: 'blog', description: '' });
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    setIsBulkDeleting(true);
+  };
+
+  const confirmBulkDelete = async () => {
+    setSubmitting(true);
+    setError('');
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+
+      for (const id of selectedIds) {
+        await fetch(`${apiUrl}/categories/${id}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+      }
+
+      await fetchData();
+      setSelectedIds([]);
+      
+      setTimeout(() => {
+        closeModals();
+        setSubmitting(false);
+      }, 1500);
+    } catch (err) {
+      setError('Network error while performing bulk delete');
+      setSubmitting(false);
+    }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === categories.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(categories.map(c => c._id));
+    }
   };
 
   if (loading) return <div>Loading categories...</div>;
 
   return (
     <div>
-      <div className="d-flex flex-row justify-content-between align-items-center gap-2 mb-5 mt-2 mt-lg-0">
-        <h5 className="fw-700 text-dark-gray mb-0 text-truncate" style={{ flex: 1, minWidth: 0 }}>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-5 mt-2 mt-lg-0">
+        <h5 className="fw-700 text-dark-gray mb-0 text-truncate">
           Manage Categories
         </h5>
-        <button
-          className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
-          onClick={() => {
-            setIsCreating(!isCreating);
-            setError('');
-            setSuccess('');
-          }}
-          style={{ width: 'fit-content', whiteSpace: 'nowrap' }}
-        >
-          {isCreating ? 'Cancel' : (
-            <span className="d-flex align-items-center">
-              <i className="bi bi-plus-lg me-1"></i> Add New Category
-            </span>
+        <div className="d-flex gap-2 w-100 w-md-auto justify-content-md-end">
+          {selectedIds.length > 0 && (
+            <button
+              className="btn btn-danger btn-small btn-rounded px-3 flex-shrink-0"
+              onClick={handleBulkDelete}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              <i className="bi bi-trash3-fill me-1"></i> Delete ({selectedIds.length})
+            </button>
           )}
-        </button>
+          <button
+            className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
+            onClick={() => {
+              setIsCreating(!isCreating);
+              setError('');
+              setSuccess('');
+            }}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            {isCreating ? 'Cancel' : (
+              <>
+                <i className="bi bi-plus-lg me-1"></i> Add New Category
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -263,12 +323,22 @@ export default function ManageCategories() {
         </form>
       </Modal>
 
-      <div className="card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
-        <div className="table-responsive">
-          <table className="table table-hover align-middle mb-0">
+      <div className="card admin-table-card border-0 box-shadow-small border-radius-10px bg-white overflow-hidden">
+        <div className="admin-table-wrapper">
+          <table className="table table-hover align-middle mb-0" style={{ minWidth: '900px' }}>
             <thead className=" text-muted fs-14 text-uppercase">
               <tr>
-                <th className="ps-4 py-3 fw-600 border-0">Name</th>
+                <th className="py-3 border-0 sticky-column-header-start text-center" style={{ width: '70px' }}>
+                  <div className="d-flex justify-content-center align-items-center h-100">
+                    <input 
+                      className="admin-checkbox" 
+                      type="checkbox" 
+                      checked={categories.length > 0 && selectedIds.length === categories.length}
+                      onChange={toggleSelectAll}
+                    />
+                  </div>
+                </th>
+                <th className="py-3 fw-600 border-0">Name</th>
                 <th className="py-3 fw-600 border-0">Slug</th>
                 <th className="py-3 fw-600 border-0">Type</th>
                 <th className="py-3 fw-600 border-0">Description</th>
@@ -278,12 +348,22 @@ export default function ManageCategories() {
             <tbody>
               {(!Array.isArray(categories) || categories.length === 0) ? (
                 <tr>
-                  <td colSpan="4" className="text-center py-5 text-muted">No categories found.</td>
+                  <td colSpan="6" className="text-center py-5 text-muted">No categories found.</td>
                 </tr>
               ) : (
                 categories?.map(cat => (
-                  <tr key={cat._id}>
-                    <td className="ps-4 py-3 fw-500">{cat.name}</td>
+                  <tr key={cat._id} className={selectedIds.includes(cat._id) ? 'bg-light-gray' : ''}>
+                    <td className="py-3 sticky-column-start text-center">
+                      <div className="d-flex justify-content-center align-items-center h-100">
+                        <input 
+                          className="admin-checkbox" 
+                          type="checkbox" 
+                          checked={selectedIds.includes(cat._id)}
+                          onChange={() => toggleSelect(cat._id)}
+                        />
+                      </div>
+                    </td>
+                    <td className="py-3 fw-500">{cat.name}</td>
                     <td className="py-3 text-muted">{cat.slug}</td>
                     <td className="py-3">
                       <span className={`badge bg-opacity-10 px-2 py-1 ${cat.type === 'reel' ? 'bg-primary text-primary' :
@@ -387,6 +467,54 @@ export default function ManageCategories() {
                 <p className="fw-500">{viewingCategory.description}</p>
               </div>
             )}
+          </div>
+        </Modal>
+      )}
+      {/* Bulk Delete Confirmation Modal */}
+      {isBulkDeleting && (
+        <Modal
+          isOpen={isBulkDeleting}
+          onClose={closeModals}
+          title="Confirm Bulk Delete"
+          size="sm"
+        >
+          <div className="text-center py-3">
+            <div className="mb-4 text-danger">
+              <i className="bi bi-exclamation-octagon fs-1"></i>
+            </div>
+            <h5 className="fw-700 mb-2">Bulk Delete?</h5>
+            <p className="text-muted fs-14 mb-4">
+              You are about to delete <span className="fw-700 text-dark">{selectedIds.length} categories</span>. This action cannot be undone and may affect linked items.
+            </p>
+            
+            {error && (
+              <div className="alert alert-danger py-2 fs-12 mb-4">
+                <i className="bi bi-exclamation-circle me-2"></i>{error}
+              </div>
+            )}
+
+            <div className="d-flex gap-3 mt-2">
+              <button 
+                className="btn btn-light btn-rounded flex-grow-1" 
+                onClick={closeModals}
+                disabled={submitting}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-danger btn-rounded flex-grow-1 position-relative" 
+                onClick={confirmBulkDelete}
+                disabled={submitting}
+                style={{ minWidth: '120px' }}
+              >
+                <span className={submitting ? 'invisible' : ''}>Delete All</span>
+                {submitting && (
+                  <div className="position-absolute top-50 start-50 translate-middle">
+                    <span className="spinner-border spinner-border-sm" role="status"></span>
+                  </div>
+                )}
+              </button>
+            </div>
           </div>
         </Modal>
       )}
