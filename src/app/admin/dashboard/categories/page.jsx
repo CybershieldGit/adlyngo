@@ -20,6 +20,8 @@ export default function ManageCategories() {
   const [submitting, setSubmitting] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   // Pagination State
   const [page, setPage] = useState(1);
@@ -30,7 +32,7 @@ export default function ManageCategories() {
     try {
       setLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const res = await fetch(`${apiUrl}/categories?page=${targetPage}&limit=10`);
+      const res = await fetch(`${apiUrl}/categories?page=${targetPage}&limit=10&search=${searchTerm}`);
       const data = await res.json();
       if (data.success) {
         setCategories(data.data.categories || []);
@@ -48,7 +50,16 @@ export default function ManageCategories() {
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, [page, debouncedSearch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setPage(1); // Reset to first page on search
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -218,34 +229,49 @@ export default function ManageCategories() {
   return (
     <div>
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-5 mt-2 mt-lg-0">
-        <h5 className="fw-700 text-dark-gray mb-0 text-truncate">
+        <h5 className="fw-700 text-dark-gray mb-0 text-nowrap">
           Manage Categories
         </h5>
-        <div className="d-flex gap-2 w-100 w-md-auto justify-content-md-end">
-          {selectedIds.length > 0 && (
+
+        <div className="d-flex flex-column flex-sm-row gap-3 w-100 w-md-auto align-items-sm-center">
+          <div className="position-relative flex-grow-1" style={{ minWidth: '200px' }}>
+            <i className="bi bi-search position-absolute top-50 translate-middle-y text-muted" style={{ left: '15px', zIndex: 5 }}></i>
+            <input 
+              type="text" 
+              className="form-control btn-rounded border-0 box-shadow-small" 
+              placeholder="Search categories..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ height: '40px', paddingLeft: '45px' }}
+            />
+          </div>
+
+          <div className="d-flex gap-2 justify-content-md-end">
+            {selectedIds.length > 0 && (
+              <button
+                className="btn btn-danger btn-small btn-rounded px-3 flex-shrink-0"
+                onClick={handleBulkDelete}
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                <i className="bi bi-trash3-fill me-1"></i> Delete ({selectedIds.length})
+              </button>
+            )}
             <button
-              className="btn btn-danger btn-small btn-rounded px-3 flex-shrink-0"
-              onClick={handleBulkDelete}
+              className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
+              onClick={() => {
+                setIsCreating(!isCreating);
+                setError('');
+                setSuccess('');
+              }}
               style={{ whiteSpace: 'nowrap' }}
             >
-              <i className="bi bi-trash3-fill me-1"></i> Delete ({selectedIds.length})
+              {isCreating ? 'Cancel' : (
+                <>
+                  <i className="bi bi-plus-lg me-1"></i> Add New Category
+                </>
+              )}
             </button>
-          )}
-          <button
-            className="btn btn-dark-gray btn-small btn-rounded px-3 flex-shrink-0"
-            onClick={() => {
-              setIsCreating(!isCreating);
-              setError('');
-              setSuccess('');
-            }}
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            {isCreating ? 'Cancel' : (
-              <>
-                <i className="bi bi-plus-lg me-1"></i> Add New Category
-              </>
-            )}
-          </button>
+          </div>
         </div>
       </div>
 
