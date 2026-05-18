@@ -219,8 +219,8 @@ export default function ManageBlogs() {
           Manage Blog Posts
         </h5>
 
-        <div className="d-flex flex-column flex-sm-row gap-3 w-100 w-md-auto align-items-sm-center">
-          <div className="position-relative flex-grow-1" style={{ minWidth: '200px' }}>
+        <div className="d-flex flex-row gap-2 w-100 w-md-auto align-items-center">
+          <div className="position-relative flex-grow-1">
             <i className="bi bi-search position-absolute top-50 translate-middle-y text-muted" style={{ left: '15px', zIndex: 5 }}></i>
             <input 
               type="text" 
@@ -232,14 +232,14 @@ export default function ManageBlogs() {
             />
           </div>
 
-          <div className="d-flex gap-2 justify-content-md-end">
+          <div className="d-flex gap-2 justify-content-md-end flex-shrink-0">
             {selectedIds.length > 0 && (
               <button
                 className="btn btn-danger btn-small btn-rounded px-3 flex-shrink-0"
                 onClick={handleBulkDelete}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                <i className="bi bi-trash3-fill me-1"></i> Delete ({selectedIds.length})
+                <i className="bi bi-trash3-fill me-1"></i> <span className="d-none d-sm-inline">Delete ({selectedIds.length})</span><span className="d-inline d-sm-none">({selectedIds.length})</span>
               </button>
             )}
             <button
@@ -253,7 +253,7 @@ export default function ManageBlogs() {
             >
               {isCreating ? 'Cancel' : (
                 <>
-                  <i className="bi bi-plus-lg me-1"></i> New Post
+                  <i className="bi bi-plus-lg me-1"></i> <span className="d-none d-sm-inline">New Post</span><span className="d-inline d-sm-none">Add</span>
                 </>
               )}
             </button>
