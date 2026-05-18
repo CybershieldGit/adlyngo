@@ -247,8 +247,8 @@ export default function DashboardOverview() {
                 />
               </div>
             </div>
-            <div style={{ height: '420px', width: '100%' }}>
-              <ResponsiveContainer width="100%" height={400}>
+            <div style={{ height: '420px', width: '100%', position: 'relative' }}>
+              <ResponsiveContainer width="100%" height={400} minWidth={0}>
                 <BarChart layout="vertical" data={chartData} margin={{ top: 20, right: 20, left: 40, bottom: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="#f0f0f0" />
                   <XAxis
@@ -285,8 +285,8 @@ export default function DashboardOverview() {
           <div className="card summary-card border-0 shadow-sm border-radius-15px p-4 bg-white h-100">
             <h5 className="fw-700 mb-4 text-center">Summary</h5>
 
-            <div className="position-relative d-flex justify-content-center align-items-center mb-4" style={{ minHeight: '220px' }}>
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="position-relative d-flex justify-content-center align-items-center mb-4" style={{ height: '220px', width: '100%' }}>
+              <ResponsiveContainer width="100%" height={220} minWidth={0}>
                 <PieChart>
                   <Pie
                     data={chartData}

@@ -678,6 +678,15 @@
   font-size: 13px !important;
 }
 
+.custom-select-trigger span {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
 .custom-select-trigger:hover {
   border-color: var(--admin-primary);
   background: #fff;
