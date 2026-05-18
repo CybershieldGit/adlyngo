@@ -64,7 +64,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="no-js">
+    <html lang="en" className="no-js" suppressHydrationWarning>
       <head>
         <link rel="stylesheet" href="/css/vendors.min.css" />
         <link rel="stylesheet" href="/css/icon.min.css" />
@@ -78,6 +78,7 @@ export default function RootLayout({ children }) {
         data-mobile-nav-style="full-screen-menu" 
         data-mobile-nav-bg-color="#2d2c2b" 
         className="overflow-x-hidden custom-cursor"
+        suppressHydrationWarning
       >
         <ThemeInitializer />
         <div className="cursor-page-inner">

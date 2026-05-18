@@ -33,6 +33,7 @@ const reelSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Client",
       index: true,
+      set: (v) => (v === "" ? undefined : v),
     },
     featured: {
       type: Boolean,

@@ -39,6 +39,9 @@ export const getGalleryItems = async (query = {}) => {
  * Create a new gallery item
  */
 export const createGalleryItem = async (data) => {
+  if (data.client === "") {
+    delete data.client;
+  }
   const item = await Gallery.create(data);
   return item.populate([
     { path: "category", select: "name slug" },
@@ -50,6 +53,9 @@ export const createGalleryItem = async (data) => {
  * Update a gallery item
  */
 export const updateGalleryItem = async (id, data) => {
+  if (data.client === "") {
+    data.client = null;
+  }
   const item = await Gallery.findByIdAndUpdate(id, data, {
     new: true,
     runValidators: true,

@@ -38,6 +38,7 @@ const blogSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       index: true,
+      set: (v) => (v === "" ? undefined : v),
     },
 
     // SEO fields
@@ -68,6 +69,7 @@ const blogSchema = new mongoose.Schema(
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
+      set: (v) => (v === "" ? undefined : v),
     },
   },
   {

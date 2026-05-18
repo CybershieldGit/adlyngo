@@ -34,6 +34,7 @@ const projectSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       index: true,
+      set: (v) => (v === "" ? undefined : v),
     },
     technologies: {
       type: [String],
@@ -48,6 +49,7 @@ const projectSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Client",
       index: true,
+      set: (v) => (v === "" ? undefined : v),
     },
     liveUrl: {
       type: String,

@@ -236,6 +236,26 @@ export default function ManageReels() {
           setMultiFormData(updatedMultiData);
           setError('Please fix the errors in the reels below.');
           setSubmitting(false);
+
+          // Scroll first invalid item into view
+          const firstErrorIndex = updatedMultiData.findIndex(item => item.errors.title || item.errors.category);
+          if (firstErrorIndex !== -1) {
+            setTimeout(() => {
+              const element = document.getElementById(`bulk-reel-${firstErrorIndex}`);
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Focus the first invalid field
+                const reelData = updatedMultiData[firstErrorIndex];
+                if (reelData.errors.title) {
+                  const input = element.querySelector('input.is-invalid');
+                  if (input) input.focus();
+                } else if (reelData.errors.category) {
+                  const selectTrigger = element.querySelector('.custom-select-trigger');
+                  if (selectTrigger) selectTrigger.click(); // Open dropdown for category selection
+                }
+              }
+            }, 100);
+          }
           return;
         }
 
@@ -515,7 +535,7 @@ export default function ManageReels() {
                     <h6 className="fs-14 fw-700 mb-3 border-bottom pb-2">Video Details ({multiFormData.length})</h6>
                     <div className="overflow-auto no-scrollbar" style={{ maxHeight: '400px', paddingRight: '5px', paddingBottom: '100px' }}>
                       {multiFormData.map((reel, index) => (
-                        <div key={index} className={`card border p-2 mb-2 ${reel.isUploading ? 'bg-white border-dashed' : 'bg-white shadow-sm'}`}>
+                        <div key={index} id={`bulk-reel-${index}`} className={`card border p-2 mb-2 ${reel.isUploading ? 'bg-white border-dashed' : 'bg-white shadow-sm'}`}>
                           <div className="row g-2">
                             <div className="col-md-3">
                               {/* Video Preview */}
