@@ -20,7 +20,7 @@ export default function AdminLogin() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      
+
       const response = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -45,7 +45,7 @@ export default function AdminLogin() {
 
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 bg-very-light-gray">
-      <div className="card border-0 box-shadow-extra-large border-radius-10px p-5" style={{ maxWidth: '450px', width: '100%' }}>
+      <div className="card border-0 box-shadow-extra-large border-radius-10px p-3" style={{ maxWidth: '450px', width: '100%' }}>
         <div className="text-center mb-4">
           <Image src="/images/logo.svg" alt="Adlyngo Admin" width={150} height={40} className="mb-4" />
           <h4 className="text-dark-gray fw-600 mb-0">Admin Access</h4>
@@ -61,28 +61,28 @@ export default function AdminLogin() {
         <form onSubmit={handleLogin}>
           <div className="mb-3">
             <label className="form-label text-dark-gray fw-500 fs-14">Email address</label>
-            <input 
+            <input
               name="email"
-              type="email" 
-              className="form-control" 
-              required 
+              type="email"
+              className="form-control"
+              required
               disabled={loading}
             />
           </div>
           <div className="mb-4">
             <label className="form-label text-dark-gray fw-500 fs-14">Password</label>
-            <input 
+            <input
               name="password"
-              type="password" 
-              className="form-control" 
-              required 
+              type="password"
+              className="form-control"
+              required
               disabled={loading}
               autoComplete="current-password"
             />
           </div>
-          <button 
-            type="submit" 
-            className="btn btn-dark-gray btn-medium w-100 btn-rounded" 
+          <button
+            type="submit"
+            className="btn btn-dark-gray btn-medium w-100 btn-rounded"
             disabled={loading}
           >
             {loading ? 'Authenticating...' : 'Sign In'}
