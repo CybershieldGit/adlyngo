@@ -59,8 +59,6 @@ export const metadata = {
   },
 };
 
-import ThemeInitializer from "@/components/ThemeInitializer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function RootLayout({ children }) {
   return (
@@ -80,18 +78,11 @@ export default function RootLayout({ children }) {
         className="overflow-x-hidden custom-cursor"
         suppressHydrationWarning
       >
-        <ThemeInitializer />
         <div className="cursor-page-inner">
           <div className="circle-cursor circle-cursor-inner"></div>
           <div className="circle-cursor circle-cursor-outer"></div>
         </div>
         {children}
-        
-        
-        {/* Progressive blur removed as requested */}
-        
-        
-        <WhatsAppButton />
 
         <Script src="/js/jquery.js" strategy="beforeInteractive" />
         <Script src="/js/vendors.min.js" strategy="beforeInteractive" />
