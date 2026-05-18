@@ -427,7 +427,7 @@
   }
 
   .admin-main {
-    padding: 10px 8px !important;
+    padding: 10px 8px 40px 8px !important;
     margin-top: 70px;
   }
   
@@ -496,7 +496,7 @@
 
 @media (max-width: 991.98px) {
   .admin-table-card {
-    max-height: calc(100vh - 160px);
+    max-height: calc(100vh - 250px);
     margin-bottom: 0;
   }
 }
@@ -527,6 +527,11 @@
     max-height: 98vh;
     border-radius: 8px;
     margin: 0;
+  }
+
+  .admin-table-pagination {
+    padding: 10px 15px !important;
+    gap: 8px !important;
   }
 }
 

@@ -248,8 +248,8 @@ export default function ManageClients() {
           Manage Clients
         </h5>
 
-        <div className="d-flex flex-column flex-sm-row gap-3 w-100 w-md-auto align-items-sm-center">
-          <div className="position-relative flex-grow-1" style={{ minWidth: '200px' }}>
+        <div className="d-flex flex-row gap-2 w-100 w-md-auto align-items-center">
+          <div className="position-relative flex-grow-1">
             <i className="bi bi-search position-absolute top-50 translate-middle-y text-muted" style={{ left: '15px', zIndex: 5 }}></i>
             <input 
               type="text" 
@@ -261,14 +261,14 @@ export default function ManageClients() {
             />
           </div>
 
-          <div className="d-flex gap-2 justify-content-md-end">
+          <div className="d-flex gap-2 justify-content-md-end flex-shrink-0">
             {selectedIds.length > 0 && (
               <button
                 className="btn btn-danger btn-small btn-rounded px-3 flex-shrink-0"
                 onClick={handleBulkDelete}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                <i className="bi bi-trash3-fill me-1"></i> Delete ({selectedIds.length})
+                <i className="bi bi-trash3-fill me-1"></i> <span className="d-none d-sm-inline">Delete ({selectedIds.length})</span><span className="d-inline d-sm-none">({selectedIds.length})</span>
               </button>
             )}
             <button
@@ -282,7 +282,7 @@ export default function ManageClients() {
             >
               {isCreating ? 'Cancel' : (
                 <>
-                  <i className="bi bi-plus-lg me-1"></i> Add New Client
+                  <i className="bi bi-plus-lg me-1"></i> <span className="d-none d-sm-inline">Add New Client</span><span className="d-inline d-sm-none">Add</span>
                 </>
               )}
             </button>
@@ -439,7 +439,7 @@ export default function ManageClients() {
         
         {/* Pagination Footer */}
         {totalPages > 1 && (
-          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center px-4 py-3 border-top bg-light bg-opacity-50 gap-3">
+          <div className="admin-table-pagination d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
             <div className="text-muted fs-13 fw-500">
               Showing <span className="text-dark-gray fw-700">{(page - 1) * 10 + 1}</span> to <span className="text-dark-gray fw-700">{Math.min(page * 10, totalDocs)}</span> of <span className="text-dark-gray fw-700">{totalDocs}</span> clients
             </div>

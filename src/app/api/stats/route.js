@@ -5,6 +5,7 @@ import Project from "../../../models/Project.js";
 import Reel from "../../../models/Reel.js";
 import Category from "../../../models/Category.js";
 import Gallery from "../../../models/Gallery.js";
+import Client from "../../../models/Client.js";
 
 export async function GET(request) {
   try {
@@ -20,12 +21,13 @@ export async function GET(request) {
       query = { createdAt: { $gte: date } };
     }
 
-    const [blogsCount, projectsCount, reelsCount, categoriesCount, galleryCount] = await Promise.all([
+    const [blogsCount, projectsCount, reelsCount, categoriesCount, galleryCount, clientsCount] = await Promise.all([
       Blog.countDocuments(query),
       Project.countDocuments(query),
       Reel.countDocuments(query),
       Category.countDocuments(query),
       Gallery.countDocuments(query),
+      Client.countDocuments(query),
     ]);
 
     return NextResponse.json({
@@ -36,6 +38,7 @@ export async function GET(request) {
         reels: reelsCount,
         categories: categoriesCount,
         gallery: galleryCount,
+        clients: clientsCount,
       }
     });
   } catch (error) {
