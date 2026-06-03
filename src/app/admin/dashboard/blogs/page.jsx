@@ -164,7 +164,7 @@ export default function ManageBlogs() {
 
       await fetchData();
       setSelectedIds([]);
-      
+
       setTimeout(() => {
         closeModals();
         setSubmitting(false);
@@ -176,7 +176,7 @@ export default function ManageBlogs() {
   };
 
   const toggleSelect = (id) => {
-    setSelectedIds(prev => 
+    setSelectedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
@@ -222,9 +222,9 @@ export default function ManageBlogs() {
         <div className="d-flex flex-row gap-2 w-100 w-md-auto align-items-center">
           <div className="position-relative flex-grow-1">
             <i className="bi bi-search position-absolute top-50 translate-middle-y text-muted" style={{ left: '15px', zIndex: 5 }}></i>
-            <input 
-              type="text" 
-              className="form-control btn-rounded border-0 box-shadow-small" 
+            <input
+              type="text"
+              className="form-control btn-rounded border-0 box-shadow-small"
               placeholder="Search blogs..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -334,9 +334,9 @@ export default function ManageBlogs() {
                     style={{ cursor: 'pointer', width: '36px', height: '18px' }}
                   />
                 </div>
-                <label 
-                  className="fs-14 fw-500 text-dark-gray mb-0" 
-                  htmlFor="blogFeaturedSwitch" 
+                <label
+                  className="fs-14 fw-500 text-dark-gray mb-0"
+                  htmlFor="blogFeaturedSwitch"
                   style={{ cursor: 'pointer', userSelect: 'none', marginLeft: '5px' }}
                 >
                   Featured on Home
@@ -406,9 +406,9 @@ export default function ManageBlogs() {
               <tr>
                 <th className="py-3 border-0 sticky-column-header-start text-center" style={{ width: '70px' }}>
                   <div className="d-flex justify-content-center align-items-center h-100">
-                    <input 
-                      className="admin-checkbox" 
-                      type="checkbox" 
+                    <input
+                      className="admin-checkbox"
+                      type="checkbox"
                       checked={blogs.length > 0 && selectedIds.length === blogs.length}
                       onChange={toggleSelectAll}
                     />
@@ -418,7 +418,7 @@ export default function ManageBlogs() {
                 <th className="py-3 fw-600 border-0 ps-3" style={{ minWidth: '150px', whiteSpace: 'nowrap' }}>Article Title</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Category</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
+                <th className="py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ minWidth: '180px', whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -429,9 +429,9 @@ export default function ManageBlogs() {
                   <tr key={b._id} className={selectedIds.includes(b._id) ? 'bg-light-gray' : ''}>
                     <td className="py-3 sticky-column-start text-center">
                       <div className="d-flex justify-content-center align-items-center h-100">
-                        <input 
-                          className="admin-checkbox" 
-                          type="checkbox" 
+                        <input
+                          className="admin-checkbox"
+                          type="checkbox"
                           checked={selectedIds.includes(b._id)}
                           onChange={() => toggleSelect(b._id)}
                         />
@@ -454,28 +454,28 @@ export default function ManageBlogs() {
                         {b.published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-center sticky-column-end actions-column">
+                    <td className="py-3 text-center sticky-column-end actions-column">
                       <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(b)}
                           title="View"
                         >
-                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                          <img src="/images/views.png" alt="View" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-primary-light btn-sm"
                           onClick={() => handleEdit(b)}
                           title="Edit"
                         >
-                          <img src="/images/edit.png" alt="Edit" />
+                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
                           onClick={() => handleDelete(b._id)}
                           title="Delete"
                         >
-                          <img src="/images/trash.png" alt="Delete" />
+                          <img src="/images/trash.png" alt="Delete" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                       </div>
                     </td>
@@ -531,7 +531,7 @@ export default function ManageBlogs() {
             <p className="text-muted fs-14 mb-4">
               You are about to delete <span className="fw-700 text-dark">{selectedIds.length} blog posts</span>. This action cannot be undone.
             </p>
-            
+
             {error && (
               <div className="alert alert-danger py-2 fs-12 mb-4">
                 <i className="bi bi-exclamation-circle me-2"></i>{error}
@@ -539,15 +539,15 @@ export default function ManageBlogs() {
             )}
 
             <div className="d-flex gap-3 mt-2">
-              <button 
-                className="btn btn-light btn-rounded flex-grow-1" 
+              <button
+                className="btn btn-light btn-rounded flex-grow-1"
                 onClick={closeModals}
                 disabled={submitting}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-danger btn-rounded flex-grow-1 position-relative" 
+              <button
+                className="btn btn-danger btn-rounded flex-grow-1 position-relative"
                 onClick={confirmBulkDelete}
                 disabled={submitting}
                 style={{ minWidth: '120px' }}
