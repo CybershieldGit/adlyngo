@@ -15,7 +15,6 @@ export const getBlogs = async (queryData) => {
     Blog.find(filter)
       .populate("category", "name slug")
       .populate("author", "name")
-      .select("-content") // Exclude heavy content for listing
       .sort(sort)
       .skip(skip)
       .limit(limit),
@@ -42,14 +41,14 @@ export const getBlogBySlug = async (slug) => {
 
 export const createBlog = async (blogData, authorId) => {
   const slug = await uniqueSlug(blogData.title, Blog);
-  
+
   // Set fallback SEO values if not provided
   const seoTitle = blogData.seoTitle || blogData.title.substring(0, 70);
   const seoDescription = blogData.seoDescription || blogData.excerpt.substring(0, 160);
 
-  const blog = await Blog.create({ 
-    ...blogData, 
-    slug, 
+  const blog = await Blog.create({
+    ...blogData,
+    slug,
     author: authorId,
     seoTitle,
     seoDescription
@@ -58,7 +57,7 @@ export const createBlog = async (blogData, authorId) => {
   const populatedBlog = await Blog.findById(blog._id)
     .populate("category", "name slug")
     .populate("author", "name");
-  
+
   return populatedBlog;
 };
 
