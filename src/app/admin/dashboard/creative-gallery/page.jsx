@@ -46,18 +46,18 @@ export default function ManageGallery() {
     try {
       setLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      
+
       // Fetch Gallery Items, Categories and Clients in parallel
       const [galleryRes, categoriesRes, clientsRes] = await Promise.all([
         fetch(`${apiUrl}/gallery?page=${targetPage}&limit=10&search=${searchTerm}`),
         fetch(`${apiUrl}/categories?type=gallery&limit=100`),
         fetch(`${apiUrl}/clients`)
       ]);
-      
+
       const galleryData = await galleryRes.json();
       const categoriesData = await categoriesRes.json();
       const clientsData = await clientsRes.json();
-      
+
       if (galleryData.success) {
         setItems(galleryData.data.items || []);
         setTotalPages(galleryData.data.meta?.totalPages || 1);
@@ -145,7 +145,7 @@ export default function ManageGallery() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      
+
       if (isMultiple && !isEditing) {
         // Handle Multiple Uploads
         // Validation first - per item errors
@@ -203,7 +203,7 @@ export default function ManageGallery() {
               credentials: 'include',
               body: JSON.stringify(item),
             });
-            
+
             if (response.ok) {
               successCount++;
             } else {
@@ -213,7 +213,7 @@ export default function ManageGallery() {
             failCount++;
           }
         }
-        
+
         await fetchData();
 
         if (failCount === 0) {
@@ -266,14 +266,14 @@ export default function ManageGallery() {
     const id = itemToDelete._id;
     setSubmitting(true);
     setError('');
-    
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const response = await fetch(`${apiUrl}/gallery/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      
+
       const data = await response.json();
       if (data.success) {
         setSuccess('Item deleted successfully');
@@ -300,28 +300,28 @@ export default function ManageGallery() {
   const confirmBulkDelete = async () => {
     setSubmitting(true);
     setError('');
-    
+
     let successCount = 0;
     let failCount = 0;
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      
+
       for (const id of selectedIds) {
         const response = await fetch(`${apiUrl}/gallery/${id}`, {
           method: 'DELETE',
           credentials: 'include',
         });
-        
+
         if (response.ok) {
           successCount++;
         } else {
           failCount++;
         }
       }
-      
+
       await fetchData();
-      
+
       setTimeout(() => {
         closeModals();
         setSubmitting(false);
@@ -333,7 +333,7 @@ export default function ManageGallery() {
   };
 
   const toggleSelect = (id) => {
-    setSelectedIds(prev => 
+    setSelectedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
@@ -364,9 +364,9 @@ export default function ManageGallery() {
         <div className="d-flex flex-row gap-2 w-100 w-md-auto align-items-center">
           <div className="position-relative flex-grow-1">
             <i className="bi bi-search position-absolute top-50 translate-middle-y text-muted" style={{ left: '15px', zIndex: 5 }}></i>
-            <input 
-              type="text" 
-              className="form-control btn-rounded border-0 box-shadow-small" 
+            <input
+              type="text"
+              className="form-control btn-rounded border-0 box-shadow-small"
               placeholder="Search gallery..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -417,9 +417,9 @@ export default function ManageGallery() {
               <tr>
                 <th className="py-3 border-0 sticky-column-header-start text-center" style={{ width: '70px' }}>
                   <div className="d-flex justify-content-center align-items-center h-100">
-                    <input 
-                      className="admin-checkbox" 
-                      type="checkbox" 
+                    <input
+                      className="admin-checkbox"
+                      type="checkbox"
                       checked={items.length > 0 && selectedIds.length === items.length}
                       onChange={toggleSelectAll}
                     />
@@ -430,7 +430,7 @@ export default function ManageGallery() {
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Category</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Client</th>
                 <th className="py-3 fw-600 border-0" style={{ whiteSpace: 'nowrap' }}>Status</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
+                <th className="py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ minWidth: '180px', whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -443,18 +443,18 @@ export default function ManageGallery() {
                   <tr key={item._id} className={selectedIds.includes(item._id) ? 'bg-light-gray' : ''}>
                     <td className="py-3 sticky-column-start text-center">
                       <div className="d-flex justify-content-center align-items-center h-100">
-                        <input 
-                          className="admin-checkbox" 
-                          type="checkbox" 
+                        <input
+                          className="admin-checkbox"
+                          type="checkbox"
                           checked={selectedIds.includes(item._id)}
                           onChange={() => toggleSelect(item._id)}
                         />
                       </div>
                     </td>
                     <td className="py-3" style={{ whiteSpace: 'nowrap' }}>
-                      <img 
-                        src={item.imageUrl} 
-                        alt={item.title} 
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
                         className="rounded-2 shadow-sm"
                         style={{ width: '60px', height: '40px', objectFit: 'cover' }}
                       />
@@ -473,28 +473,28 @@ export default function ManageGallery() {
                         {item.published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>
+                    <td className="py-3 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>
                       <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(item)}
                           title="View"
                         >
-                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                          <img src="/images/views.png" alt="View" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleEdit(item)}
                           title="Edit"
                         >
-                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px' }} />
+                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
                           onClick={() => handleDelete(item)}
                           title="Delete"
                         >
-                          <img src="/images/trash.png" alt="Delete" />
+                          <img src="/images/trash.png" alt="Delete" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                       </div>
                     </td>
@@ -562,9 +562,9 @@ export default function ManageGallery() {
                       style={{ cursor: 'pointer', width: '36px', height: '18px' }}
                     />
                   </div>
-                  <label 
-                    className="fs-13 fw-600 text-dark-gray mb-0" 
-                    htmlFor="multipleUploadSwitch" 
+                  <label
+                    className="fs-13 fw-600 text-dark-gray mb-0"
+                    htmlFor="multipleUploadSwitch"
                     style={{ cursor: 'pointer', userSelect: 'none' }}
                   >
                     Multiple Image Upload
@@ -628,9 +628,9 @@ export default function ManageGallery() {
                       style={{ cursor: 'pointer', width: '36px', height: '18px' }}
                     />
                   </div>
-                  <label 
-                    className="fs-14 fw-500 text-dark-gray mb-0" 
-                    htmlFor="publishedSwitch" 
+                  <label
+                    className="fs-14 fw-500 text-dark-gray mb-0"
+                    htmlFor="publishedSwitch"
                     style={{ cursor: 'pointer', userSelect: 'none', marginLeft: '5px' }}
                   >
                     Published
@@ -648,7 +648,7 @@ export default function ManageGallery() {
                     onFilesSelected={(files) => {
                       const placeholders = files.map(file => ({
                         title: file.name?.replace(/\.[^/.]+$/, "") || 'Untitled Image',
-                        imageUrl: '', 
+                        imageUrl: '',
                         previewUrl: URL.createObjectURL(file),
                         fileName: file.name,
                         category: '',
@@ -660,7 +660,7 @@ export default function ManageGallery() {
                       setMultiFormData(prev => [...prev, ...placeholders]);
                     }}
                     onFileComplete={(res) => {
-                      setMultiFormData(prev => prev.map(item => 
+                      setMultiFormData(prev => prev.map(item =>
                         item.fileName === res.originalName && item.isUploading
                           ? { ...item, imageUrl: res.url, publicId: res.publicId, isUploading: false }
                           : item
@@ -672,14 +672,14 @@ export default function ManageGallery() {
                 {multiFormData.length > 0 && (
                   <div className="multi-image-list mt-4">
                     <h6 className="fs-14 fw-700 mb-3 border-bottom pb-2">Image Details ({multiFormData.length})</h6>
-                      <div className="overflow-auto no-scrollbar" style={{ maxHeight: '400px', paddingRight: '5px', paddingBottom: '100px' }}>
-                        {multiFormData.map((item, index) => (
-                          <div key={index} id={`bulk-item-${index}`} className={`card border p-2 mb-2 ${item.isUploading ? 'bg-white border-dashed' : 'bg-white shadow-sm'}`}>
-                            <div className="row g-2">
+                    <div className="overflow-auto no-scrollbar" style={{ maxHeight: '400px', paddingRight: '5px', paddingBottom: '100px' }}>
+                      {multiFormData.map((item, index) => (
+                        <div key={index} id={`bulk-item-${index}`} className={`card border p-2 mb-2 ${item.isUploading ? 'bg-white border-dashed' : 'bg-white shadow-sm'}`}>
+                          <div className="row g-2">
                             <div className="col-md-3">
                               <div className="position-relative rounded overflow-hidden" style={{ aspectRatio: '1/1', maxHeight: '100px' }}>
-                                <img 
-                                  src={item.imageUrl || item.previewUrl} 
+                                <img
+                                  src={item.imageUrl || item.previewUrl}
                                   className="w-100 h-100 object-fit-cover"
                                   alt="Preview"
                                 />
@@ -698,9 +698,9 @@ export default function ManageGallery() {
                                       <span className="badge bg-primary rounded-circle" style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>{index + 1}</span>
                                       <span className="fs-12 fw-600 text-truncate" style={{ maxWidth: '180px' }}>{item.fileName}</span>
                                     </div>
-                                    <button 
-                                      type="button" 
-                                      className="btn btn-link text-danger p-0 border-0" 
+                                    <button
+                                      type="button"
+                                      className="btn btn-link text-danger p-0 border-0"
                                       onClick={() => {
                                         const updated = multiFormData.filter((_, i) => i !== index);
                                         setMultiFormData(updated);
@@ -854,7 +854,7 @@ export default function ManageGallery() {
             <p className="text-muted fs-14 mb-4">
               You are about to delete <span className="fw-700 text-dark">"{itemToDelete?.title}"</span>. This action cannot be undone.
             </p>
-            
+
             {error && (
               <div className="alert alert-danger py-2 fs-12 mb-4">
                 <i className="bi bi-exclamation-circle me-2"></i>{error}
@@ -862,15 +862,15 @@ export default function ManageGallery() {
             )}
 
             <div className="d-flex gap-3 mt-2">
-              <button 
-                className="btn btn-light btn-rounded flex-grow-1" 
+              <button
+                className="btn btn-light btn-rounded flex-grow-1"
                 onClick={closeModals}
                 disabled={submitting}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-danger btn-rounded flex-grow-1 position-relative" 
+              <button
+                className="btn btn-danger btn-rounded flex-grow-1 position-relative"
                 onClick={confirmDelete}
                 disabled={submitting}
                 style={{ minWidth: '120px' }}
@@ -902,7 +902,7 @@ export default function ManageGallery() {
             <p className="text-muted fs-14 mb-4">
               You are about to delete <span className="fw-700 text-dark">{selectedIds.length} items</span>. This action cannot be undone.
             </p>
-            
+
             {error && (
               <div className="alert alert-danger py-2 fs-12 mb-4">
                 <i className="bi bi-exclamation-circle me-2"></i>{error}
@@ -910,15 +910,15 @@ export default function ManageGallery() {
             )}
 
             <div className="d-flex gap-3 mt-2">
-              <button 
-                className="btn btn-light btn-rounded flex-grow-1" 
+              <button
+                className="btn btn-light btn-rounded flex-grow-1"
                 onClick={closeModals}
                 disabled={submitting}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-danger btn-rounded flex-grow-1 position-relative" 
+              <button
+                className="btn btn-danger btn-rounded flex-grow-1 position-relative"
                 onClick={confirmBulkDelete}
                 disabled={submitting}
                 style={{ minWidth: '120px' }}

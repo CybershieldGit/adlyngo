@@ -157,7 +157,7 @@ export default function ManageReels() {
   };
 
   const toggleSelect = (id) => {
-    setSelectedIds(prev => 
+    setSelectedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
@@ -214,7 +214,7 @@ export default function ManageReels() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      
+
       if (isMultiple && !isEditing) {
         // Handle Multiple Uploads
         // Validation first - per item errors
@@ -272,7 +272,7 @@ export default function ManageReels() {
               credentials: 'include',
               body: JSON.stringify(reel),
             });
-            
+
             if (response.ok) {
               successCount++;
             } else {
@@ -282,7 +282,7 @@ export default function ManageReels() {
             failCount++;
           }
         }
-        
+
         await fetchData();
 
         if (failCount === 0) {
@@ -346,13 +346,13 @@ export default function ManageReels() {
         <h5 className="fw-700 text-dark-gray mb-0 text-nowrap">
           Manage Reels
         </h5>
-        
+
         <div className="d-flex flex-row gap-2 w-100 w-md-auto align-items-center">
           <div className="position-relative flex-grow-1">
             <i className="bi bi-search position-absolute top-50 translate-middle-y text-muted" style={{ left: '15px', zIndex: 5 }}></i>
-            <input 
-              type="text" 
-              className="form-control btn-rounded border-0 box-shadow-small" 
+            <input
+              type="text"
+              className="form-control btn-rounded border-0 box-shadow-small"
               placeholder="Search reels..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -421,9 +421,9 @@ export default function ManageReels() {
                       style={{ cursor: 'pointer', width: '36px', height: '18px' }}
                     />
                   </div>
-                  <label 
-                    className="fs-13 fw-600 text-dark-gray mb-0" 
-                    htmlFor="multipleUploadSwitch" 
+                  <label
+                    className="fs-13 fw-600 text-dark-gray mb-0"
+                    htmlFor="multipleUploadSwitch"
                     style={{ cursor: 'pointer', userSelect: 'none' }}
                   >
                     Multiple Video Upload
@@ -484,9 +484,9 @@ export default function ManageReels() {
                         style={{ cursor: 'pointer', width: '36px', height: '18px' }}
                       />
                     </div>
-                    <label 
-                      className="fs-14 fw-500 text-dark-gray mb-0" 
-                      htmlFor="reelPublishedSwitch" 
+                    <label
+                      className="fs-14 fw-500 text-dark-gray mb-0"
+                      htmlFor="reelPublishedSwitch"
                       style={{ cursor: 'pointer', userSelect: 'none', marginLeft: '5px' }}
                     >
                       Published
@@ -506,7 +506,7 @@ export default function ManageReels() {
                     onFilesSelected={(files) => {
                       const placeholders = files.map(file => ({
                         title: file.name?.replace(/\.[^/.]+$/, "") || 'Untitled Reel',
-                        reelUrl: '', 
+                        reelUrl: '',
                         previewUrl: URL.createObjectURL(file),
                         fileName: file.name,
                         category: '',
@@ -518,7 +518,7 @@ export default function ManageReels() {
                       setMultiFormData(prev => [...prev, ...placeholders]);
                     }}
                     onFileComplete={(res) => {
-                      setMultiFormData(prev => prev.map(item => 
+                      setMultiFormData(prev => prev.map(item =>
                         item.fileName === res.originalName && item.isUploading
                           ? { ...item, reelUrl: res.url, isUploading: false }
                           : item
@@ -540,8 +540,8 @@ export default function ManageReels() {
                             <div className="col-md-3">
                               {/* Video Preview */}
                               <div className="position-relative rounded overflow-hidden bg-black" style={{ aspectRatio: '9/16', maxHeight: '140px' }}>
-                                <video 
-                                  src={reel.reelUrl || reel.previewUrl} 
+                                <video
+                                  src={reel.reelUrl || reel.previewUrl}
                                   className="w-100 h-100 object-fit-cover"
                                   muted
                                   onMouseOver={e => e.target.play()}
@@ -572,9 +572,9 @@ export default function ManageReels() {
                                           <span className="fs-11 fw-600 text-primary">Uploading...</span>
                                         </div>
                                       )}
-                                      <button 
-                                        type="button" 
-                                        className="btn btn-link text-danger p-0 border-0" 
+                                      <button
+                                        type="button"
+                                        className="btn btn-link text-danger p-0 border-0"
                                         onClick={() => {
                                           const updated = multiFormData.filter((_, i) => i !== index);
                                           setMultiFormData(updated);
@@ -633,9 +633,9 @@ export default function ManageReels() {
             )}
             <div className="col-12 mt-4 text-end">
               <button type="button" className="btn btn-light btn-small btn-rounded me-2" onClick={closeModals}>Cancel</button>
-              <button 
-                type="submit" 
-                className="btn btn-primary btn-small btn-rounded position-relative" 
+              <button
+                type="submit"
+                className="btn btn-primary btn-small btn-rounded position-relative"
                 disabled={submitting || (isMultiple && multiFormData.some(r => r.isUploading))}
                 style={{ minWidth: '140px', transition: 'all 0.3s ease' }}
               >
@@ -661,9 +661,9 @@ export default function ManageReels() {
               <tr>
                 <th className="py-3 border-0 sticky-column-header-start text-center" style={{ width: '70px' }}>
                   <div className="d-flex justify-content-center align-items-center h-100">
-                    <input 
-                      className="admin-checkbox" 
-                      type="checkbox" 
+                    <input
+                      className="admin-checkbox"
+                      type="checkbox"
                       checked={reels.length > 0 && selectedIds.length === reels.length}
                       onChange={toggleSelectAll}
                     />
@@ -674,7 +674,7 @@ export default function ManageReels() {
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Client</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Date</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
+                <th className="py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ minWidth: '180px', whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -687,9 +687,9 @@ export default function ManageReels() {
                   <tr key={reel._id} className={selectedIds.includes(reel._id) ? 'bg-light-gray' : ''}>
                     <td className="py-3 sticky-column-start text-center">
                       <div className="d-flex justify-content-center align-items-center h-100">
-                        <input 
-                          className="admin-checkbox" 
-                          type="checkbox" 
+                        <input
+                          className="admin-checkbox"
+                          type="checkbox"
                           checked={selectedIds.includes(reel._id)}
                           onChange={() => toggleSelect(reel._id)}
                         />
@@ -706,28 +706,28 @@ export default function ManageReels() {
                     <td className="py-3 fs-14 text-muted" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>
                       {new Date(reel.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="pe-4 py-3 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>
+                    <td className="py-3 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>
                       <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(reel)}
                           title="View"
                         >
-                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                          <img src="/images/views.png" alt="View" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-primary-light btn-sm"
                           onClick={() => handleEdit(reel)}
                           title="Edit"
                         >
-                          <img src="/images/edit.png" alt="Edit" />
+                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
                           onClick={() => handleDelete(reel)}
                           title="Delete"
                         >
-                          <img src="/images/trash.png" alt="Delete" />
+                          <img src="/images/trash.png" alt="Delete" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                       </div>
                     </td>
@@ -780,8 +780,8 @@ export default function ManageReels() {
           <div className="view-details">
             <div className="mb-4 text-center">
               <div className="rounded overflow-hidden bg-black shadow-sm" style={{ aspectRatio: '9/16', maxHeight: '400px', margin: '0 auto' }}>
-                <video 
-                  src={viewingReel.reelUrl} 
+                <video
+                  src={viewingReel.reelUrl}
                   className="w-100 h-100 object-fit-contain"
                   controls
                   autoPlay
@@ -831,24 +831,24 @@ export default function ManageReels() {
             <p className="text-muted fs-14 mb-4">
               You are about to delete <span className="fw-700 text-dark">"{itemToDelete?.title}"</span>. This action cannot be undone.
             </p>
-            
+
             {error && (
               <div className="alert alert-danger py-2 fs-12 mb-4">
                 <i className="bi bi-exclamation-circle me-2"></i>{error}
               </div>
             )}
-            
+
 
             <div className="d-flex gap-3 mt-2">
-              <button 
-                className="btn btn-light btn-rounded flex-grow-1" 
+              <button
+                className="btn btn-light btn-rounded flex-grow-1"
                 onClick={closeModals}
                 disabled={submitting}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-danger btn-rounded flex-grow-1 position-relative" 
+              <button
+                className="btn btn-danger btn-rounded flex-grow-1 position-relative"
                 onClick={confirmDelete}
                 disabled={submitting}
                 style={{ minWidth: '120px' }}
@@ -880,7 +880,7 @@ export default function ManageReels() {
             <p className="text-muted fs-14 mb-4">
               You are about to delete <span className="fw-700 text-dark">{selectedIds.length} reels</span>. This action cannot be undone.
             </p>
-            
+
             {error && (
               <div className="alert alert-danger py-2 fs-12 mb-4">
                 <i className="bi bi-exclamation-circle me-2"></i>{error}
@@ -888,15 +888,15 @@ export default function ManageReels() {
             )}
 
             <div className="d-flex gap-3 mt-2">
-              <button 
-                className="btn btn-light btn-rounded flex-grow-1" 
+              <button
+                className="btn btn-light btn-rounded flex-grow-1"
                 onClick={closeModals}
                 disabled={submitting}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-danger btn-rounded flex-grow-1 position-relative" 
+              <button
+                className="btn btn-danger btn-rounded flex-grow-1 position-relative"
                 onClick={confirmBulkDelete}
                 disabled={submitting}
                 style={{ minWidth: '120px' }}

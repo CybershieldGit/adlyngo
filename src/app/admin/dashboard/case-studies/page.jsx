@@ -84,7 +84,7 @@ export default function ManageProjects() {
 
       await fetchData();
       setSelectedIds([]);
-      
+
       setTimeout(() => {
         closeModals();
         setSubmitting(false);
@@ -96,7 +96,7 @@ export default function ManageProjects() {
   };
 
   const toggleSelect = (id) => {
-    setSelectedIds(prev => 
+    setSelectedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
@@ -241,9 +241,9 @@ export default function ManageProjects() {
         <div className="d-flex flex-row gap-2 w-100 w-md-auto align-items-center">
           <div className="position-relative flex-grow-1">
             <i className="bi bi-search position-absolute top-50 translate-middle-y text-muted" style={{ left: '15px', zIndex: 5 }}></i>
-            <input 
-              type="text" 
-              className="form-control btn-rounded border-0 box-shadow-small" 
+            <input
+              type="text"
+              className="form-control btn-rounded border-0 box-shadow-small"
               placeholder="Search case studies..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -367,15 +367,15 @@ export default function ManageProjects() {
             <div className="col-12 mt-4 pt-3 border-top">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="fs-15 fw-700 text-dark-gray mb-0"><i className="bi bi-share me-2"></i>Social Media Links (Optional)</h6>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn btn-outline-dark-gray btn-sm btn-rounded py-1"
                   onClick={() => setFormData({ ...formData, socialLinks: [...formData.socialLinks, { platform: 'Facebook', url: '' }] })}
                 >
                   <i className="bi bi-plus-lg me-1"></i> Add Link
                 </button>
               </div>
-              
+
               {formData.socialLinks.length === 0 ? (
                 <div className="text-center py-3 border rounded-3 bg-light bg-opacity-50 text-muted fs-13">
                   No social links added yet.
@@ -410,11 +410,11 @@ export default function ManageProjects() {
                           />
                         </div>
                         <div className="col-12 col-md-8 order-3 order-md-2">
-                          <input 
-                            type="text" 
-                            className="form-control" 
-                            placeholder="Enter URL (https://...)" 
-                            value={link.url} 
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Enter URL (https://...)"
+                            value={link.url}
                             onChange={(e) => {
                               const newLinks = [...formData.socialLinks];
                               newLinks[index].url = e.target.value;
@@ -423,8 +423,8 @@ export default function ManageProjects() {
                           />
                         </div>
                         <div className="col-6 col-md-1 order-2 order-md-3 text-end">
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             className="btn btn-danger-light btn-icon"
                             onClick={() => {
                               const newLinks = formData.socialLinks.filter((_, i) => i !== index);
@@ -457,9 +457,9 @@ export default function ManageProjects() {
               <tr>
                 <th className="py-3 border-0 sticky-column-header-start text-center" style={{ width: '70px' }}>
                   <div className="d-flex justify-content-center align-items-center h-100">
-                    <input 
-                      className="admin-checkbox" 
-                      type="checkbox" 
+                    <input
+                      className="admin-checkbox"
+                      type="checkbox"
                       checked={projects.length > 0 && selectedIds.length === projects.length}
                       onChange={toggleSelectAll}
                     />
@@ -470,7 +470,7 @@ export default function ManageProjects() {
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Category</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Client</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ whiteSpace: 'nowrap' }}>Actions</th>
+                <th className="py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ minWidth: '180px', whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -481,9 +481,9 @@ export default function ManageProjects() {
                   <tr key={p._id} className={selectedIds.includes(p._id) ? 'bg-light-gray' : ''}>
                     <td className="py-3 sticky-column-start text-center">
                       <div className="d-flex justify-content-center align-items-center h-100">
-                        <input 
-                          className="admin-checkbox" 
-                          type="checkbox" 
+                        <input
+                          className="admin-checkbox"
+                          type="checkbox"
                           checked={selectedIds.includes(p._id)}
                           onChange={() => toggleSelect(p._id)}
                         />
@@ -507,28 +507,28 @@ export default function ManageProjects() {
                         {p.published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="pe-4 py-3 text-center sticky-column-end actions-column">
+                    <td className="py-3 text-center sticky-column-end actions-column">
                       <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(p)}
                           title="View"
                         >
-                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                          <img src="/images/views.png" alt="View" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-primary-light btn-sm"
                           onClick={() => handleEdit(p)}
                           title="Edit"
                         >
-                          <img src="/images/edit.png" alt="Edit" />
+                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
                           onClick={() => handleDelete(p._id)}
                           title="Delete"
                         >
-                          <img src="/images/trash.png" alt="Delete" />
+                          <img src="/images/trash.png" alt="Delete" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                       </div>
                     </td>
@@ -630,7 +630,7 @@ export default function ManageProjects() {
                       let iconClass = "bi-link-45deg";
                       let colorClass = "text-muted";
                       const p = link.platform.toLowerCase();
-                      
+
                       if (p.includes('facebook')) { iconClass = "bi-facebook"; colorClass = "text-primary"; }
                       else if (p.includes('instagram')) { iconClass = "bi-instagram"; colorClass = "text-danger"; }
                       else if (p.includes('twitter') || p === 'x') { iconClass = "bi-twitter-x"; colorClass = "text-dark"; }
@@ -638,13 +638,13 @@ export default function ManageProjects() {
                       else if (p.includes('reddit')) { iconClass = "bi-reddit"; colorClass = "text-orange"; }
                       else if (p.includes('youtube')) { iconClass = "bi-youtube"; colorClass = "text-danger"; }
                       else if (p.includes('tiktok')) { iconClass = "bi-tiktok"; colorClass = "text-dark"; }
-                      
+
                       return (
-                        <a 
-                          key={idx} 
-                          href={link.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        <a
+                          key={idx}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="btn btn-outline-light border btn-sm d-flex align-items-center gap-2 px-3"
                           style={{ borderRadius: '20px' }}
                         >
@@ -680,7 +680,7 @@ export default function ManageProjects() {
             <p className="text-muted fs-14 mb-4">
               You are about to delete <span className="fw-700 text-dark">{selectedIds.length} case studies</span>. This action cannot be undone.
             </p>
-            
+
             {error && (
               <div className="alert alert-danger py-2 fs-12 mb-4">
                 <i className="bi bi-exclamation-circle me-2"></i>{error}
@@ -688,15 +688,15 @@ export default function ManageProjects() {
             )}
 
             <div className="d-flex gap-3 mt-2">
-              <button 
-                className="btn btn-light btn-rounded flex-grow-1" 
+              <button
+                className="btn btn-light btn-rounded flex-grow-1"
                 onClick={closeModals}
                 disabled={submitting}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-danger btn-rounded flex-grow-1 position-relative" 
+              <button
+                className="btn btn-danger btn-rounded flex-grow-1 position-relative"
                 onClick={confirmBulkDelete}
                 disabled={submitting}
                 style={{ minWidth: '120px' }}

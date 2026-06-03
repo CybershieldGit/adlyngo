@@ -16,10 +16,10 @@ export default function ManageClients() {
   const [isViewing, setIsViewing] = useState(false);
   const [viewingClient, setViewingClient] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ 
-    name: '', 
-    slug: '', 
-    logo: { url: '', publicId: '' }, 
+  const [formData, setFormData] = useState({
+    name: '',
+    slug: '',
+    logo: { url: '', publicId: '' },
     description: ''
   });
   const [submitting, setSubmitting] = useState(false);
@@ -175,10 +175,10 @@ export default function ManageClients() {
   };
 
   const resetForm = () => {
-    setFormData({ 
-      name: '', 
-      slug: '', 
-      logo: { url: '', publicId: '' }, 
+    setFormData({
+      name: '',
+      slug: '',
+      logo: { url: '', publicId: '' },
       description: ''
     });
   };
@@ -214,7 +214,7 @@ export default function ManageClients() {
 
       await fetchData();
       setSelectedIds([]);
-      
+
       setTimeout(() => {
         closeModals();
         setSubmitting(false);
@@ -226,7 +226,7 @@ export default function ManageClients() {
   };
 
   const toggleSelect = (id) => {
-    setSelectedIds(prev => 
+    setSelectedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
@@ -251,9 +251,9 @@ export default function ManageClients() {
         <div className="d-flex flex-row gap-2 w-100 w-md-auto align-items-center">
           <div className="position-relative flex-grow-1">
             <i className="bi bi-search position-absolute top-50 translate-middle-y text-muted" style={{ left: '15px', zIndex: 5 }}></i>
-            <input 
-              type="text" 
-              className="form-control btn-rounded border-0 box-shadow-small" 
+            <input
+              type="text"
+              className="form-control btn-rounded border-0 box-shadow-small"
               placeholder="Search clients..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -318,10 +318,10 @@ export default function ManageClients() {
                 type="text"
                 className="form-control"
                 value={formData.name}
-                onChange={e => setFormData({ 
-                  ...formData, 
-                  name: e.target.value, 
-                  slug: e.target.value.toLowerCase().trim().replace(/[^a-z0-9]/g, '-') 
+                onChange={e => setFormData({
+                  ...formData,
+                  name: e.target.value,
+                  slug: e.target.value.toLowerCase().trim().replace(/[^a-z0-9]/g, '-')
                 })}
                 required
               />
@@ -362,9 +362,9 @@ export default function ManageClients() {
               <tr>
                 <th className="py-3 border-0 sticky-column-header-start text-center" style={{ width: '70px' }}>
                   <div className="d-flex justify-content-center align-items-center h-100">
-                    <input 
-                      className="admin-checkbox" 
-                      type="checkbox" 
+                    <input
+                      className="admin-checkbox"
+                      type="checkbox"
                       checked={clients.length > 0 && selectedIds.length === clients.length}
                       onChange={toggleSelectAll}
                     />
@@ -373,7 +373,7 @@ export default function ManageClients() {
                 <th className="py-3 fw-600 border-0 ps-3">Logo</th>
                 <th className="py-3 fw-600 border-0">Name</th>
                 <th className="py-3 fw-600 border-0">Description</th>
-                <th className="pe-4 py-3 fw-600 border-0 text-center sticky-column-end actions-column">Actions</th>
+                <th className="py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ minWidth: '180px', whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -386,9 +386,9 @@ export default function ManageClients() {
                   <tr key={client._id} className={selectedIds.includes(client._id) ? 'bg-light-gray' : ''}>
                     <td className="py-3 sticky-column-start text-center">
                       <div className="d-flex justify-content-center align-items-center h-100">
-                        <input 
-                          className="admin-checkbox" 
-                          type="checkbox" 
+                        <input
+                          className="admin-checkbox"
+                          type="checkbox"
                           checked={selectedIds.includes(client._id)}
                           onChange={() => toggleSelect(client._id)}
                         />
@@ -405,28 +405,28 @@ export default function ManageClients() {
                     <td className="py-3 text-muted fs-13 text-truncate" style={{ maxWidth: '200px' }}>
                       {client.description || '-'}
                     </td>
-                    <td className="pe-4 py-3 text-center sticky-column-end actions-column">
+                    <td className="py-3 text-center sticky-column-end actions-column">
                       <div className="d-flex justify-content-center gap-2">
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleView(client)}
                           title="View"
                         >
-                          <i className="bi bi-eye-fill" style={{ fontSize: '14px' }}></i>
+                          <img src="/images/views.png" alt="View" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-light-gray btn-sm"
                           onClick={() => handleEdit(client)}
                           title="Edit"
                         >
-                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px' }} />
+                          <img src="/images/edit.png" alt="Edit" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                         <button
                           className="btn btn-icon btn-danger-light btn-sm"
                           onClick={() => handleDelete(client._id)}
                           title="Delete"
                         >
-                          <img src="/images/trash.png" alt="Delete" />
+                          <img src="/images/trash.png" alt="Delete" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
                         </button>
                       </div>
                     </td>
@@ -436,7 +436,7 @@ export default function ManageClients() {
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination Footer */}
         {totalPages > 1 && (
           <div className="admin-table-pagination d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
@@ -512,7 +512,7 @@ export default function ManageClients() {
             <p className="text-muted fs-14 mb-4">
               You are about to delete <span className="fw-700 text-dark">{selectedIds.length} clients</span>. This action cannot be undone.
             </p>
-            
+
             {error && (
               <div className="alert alert-danger py-2 fs-12 mb-4">
                 <i className="bi bi-exclamation-circle me-2"></i>{error}
@@ -520,15 +520,15 @@ export default function ManageClients() {
             )}
 
             <div className="d-flex gap-3 mt-2">
-              <button 
-                className="btn btn-light btn-rounded flex-grow-1" 
+              <button
+                className="btn btn-light btn-rounded flex-grow-1"
                 onClick={closeModals}
                 disabled={submitting}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-danger btn-rounded flex-grow-1 position-relative" 
+              <button
+                className="btn btn-danger btn-rounded flex-grow-1 position-relative"
                 onClick={confirmBulkDelete}
                 disabled={submitting}
                 style={{ minWidth: '120px' }}
