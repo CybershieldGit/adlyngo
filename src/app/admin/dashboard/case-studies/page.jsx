@@ -336,7 +336,6 @@ export default function ManageProjects() {
               <label className="form-label fs-14 fw-500">Cover Image (Drag & Drop)</label>
               <FileUpload
                 type="image"
-                folder="adlyngo/projects"
                 onUploadSuccess={(result) => setFormData({ ...formData, coverImage: result })}
                 currentUrl={formData.coverImage.url}
               />

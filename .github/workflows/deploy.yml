@@ -18,9 +18,9 @@ jobs:
       MONGODB_URI: mongodb://127.0.0.1:27017/ci
       JWT_SECRET: ci-build-placeholder-secret-minimum-32-chars
       COOKIE_SECRET: ci-build-placeholder-secret-minimum-32-chars
-      CLOUDINARY_CLOUD_NAME: ci
-      CLOUDINARY_API_KEY: ci
-      CLOUDINARY_API_SECRET: ci
+      UPLOAD_BASE_URL: https://www.adlyngo.com/uploads
+      UPLOAD_DIR_IMAGES: /tmp/adlyngo-uploads/images
+      UPLOAD_DIR_VIDEOS: /tmp/adlyngo-uploads/videos
       CLIENT_URL: http://localhost:3000
       PORT: 3001
     steps:

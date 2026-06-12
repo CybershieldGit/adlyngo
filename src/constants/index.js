@@ -6,18 +6,10 @@
 export const COOKIE_NAME = "adlyngo_token";
 
 export const UPLOAD_LIMITS = {
-  IMAGE_MAX_SIZE: 5 * 1024 * 1024,   // 5 MB
-  VIDEO_MAX_SIZE: 50 * 1024 * 1024,  // 50 MB
+  IMAGE_MAX_SIZE: 10 * 1024 * 1024,   // 10 MB
+  VIDEO_MAX_SIZE: 100 * 1024 * 1024,  // 100 MB
   ALLOWED_IMAGE_TYPES: ["image/jpeg", "image/png", "image/webp", "image/svg+xml"],
   ALLOWED_VIDEO_TYPES: ["video/mp4", "video/webm"],
-};
-
-export const CLOUDINARY_FOLDERS = {
-  BLOGS: "adlyngo/blogs",
-  REELS: "adlyngo/reels",
-  PROJECTS: "adlyngo/projects",
-  GALLERY: "adlyngo/gallery",
-  GENERAL: "adlyngo/uploads",
 };
 
 export const CATEGORY_TYPES = {

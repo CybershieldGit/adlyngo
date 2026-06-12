@@ -310,7 +310,6 @@ export default function ManageBlogs() {
               <label className="form-label fs-14 fw-500">Post Thumbnail (Drag & Drop)</label>
               <FileUpload
                 type="image"
-                folder="adlyngo/blogs"
                 onUploadSuccess={(result) => setFormData({ ...formData, thumbnail: result })}
                 currentUrl={formData.thumbnail.url}
               />

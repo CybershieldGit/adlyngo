@@ -2,6 +2,7 @@ import Client from "../models/Client.js";
 import ApiError from "../utils/ApiError.js";
 import { uniqueSlug } from "../utils/slugify.js";
 import { parsePagination, buildPaginationMeta } from "../utils/pagination.js";
+import { deleteUploadedFile } from "./upload.service.js";
 
 /**
  * Create a new client.
@@ -63,6 +64,10 @@ export const updateClient = async (id, updateData) => {
     updates.slug = await uniqueSlug(updates.name, Client, client._id);
   }
 
+  if (updates.logo?.url && client.logo?.publicId && updates.logo.url !== client.logo.url) {
+    deleteUploadedFile(client.logo.publicId);
+  }
+
   const updatedClient = await Client.findByIdAndUpdate(
     id,
     { $set: updates },
@@ -80,5 +85,10 @@ export const deleteClient = async (id) => {
   if (!client) {
     throw new ApiError(404, "Client not found");
   }
+
+  if (client.logo?.publicId) {
+    deleteUploadedFile(client.logo.publicId);
+  }
+
   return client;
 };

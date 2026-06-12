@@ -333,7 +333,6 @@ export default function ManageClients() {
                 onUploadSuccess={(result) => setFormData({ ...formData, logo: { url: result.url, publicId: result.publicId } })}
                 onRemove={() => setFormData({ ...formData, logo: { url: '', publicId: '' } })}
                 currentUrl={formData.logo?.url}
-                folder="adlyngo/clients"
               />
             </div>
             <div className="col-12">

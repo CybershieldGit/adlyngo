@@ -1,0 +1,24 @@
+# Serve uploaded media directly from disk (add inside your Nginx server block)
+#
+# aaPanel: Website -> your site -> Config -> paste before the final closing brace
+# Replace paths if your upload directories differ.
+
+location /uploads/ {
+    alias /www/wwwroot/uploads/;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000, immutable";
+    add_header X-Content-Type-Options nosniff;
+
+    # Only allow GET/HEAD for static files
+    limit_except GET HEAD {
+        deny all;
+    }
+
+    # Block directory listing
+    autoindex off;
+
+    try_files $uri =404;
+}
+
+# Allow large uploads through the API proxy (adjust if your API is on a subdomain)
+client_max_body_size 100M;
