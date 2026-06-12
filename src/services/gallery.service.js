@@ -2,6 +2,7 @@ import Gallery from "../models/Gallery.js";
 import Category from "../models/Category.js";
 import Client from "../models/Client.js";
 import ApiError from "../utils/ApiError.js";
+import { deleteUploadedFile } from "./upload.service.js";
 
 /**
  * Get all gallery items with pagination and filtering
@@ -56,6 +57,16 @@ export const updateGalleryItem = async (id, data) => {
   if (data.client === "") {
     data.client = null;
   }
+
+  const existing = await Gallery.findById(id);
+  if (!existing) {
+    throw new ApiError(404, "Gallery item not found");
+  }
+
+  if (data.imageUrl && existing.imageUrl && data.imageUrl !== existing.imageUrl) {
+    deleteUploadedFile(existing.publicId || existing.imageUrl);
+  }
+
   const item = await Gallery.findByIdAndUpdate(id, data, {
     new: true,
     runValidators: true,
@@ -80,6 +91,8 @@ export const deleteGalleryItem = async (id) => {
   if (!item) {
     throw new ApiError(404, "Gallery item not found");
   }
+
+  deleteUploadedFile(item.publicId || item.imageUrl);
 
   return item.populate([
     { path: "category", select: "name slug" },

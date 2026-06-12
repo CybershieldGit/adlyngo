@@ -611,7 +611,6 @@ export default function ManageGallery() {
                   <label className="form-label fs-14 fw-600 text-dark-gray">Gallery Image</label>
                   <FileUpload
                     type="image"
-                    folder="adlyngo/gallery"
                     currentUrl={formData.imageUrl}
                     onUploadSuccess={(res) => setFormData({ ...formData, imageUrl: res.url, publicId: res.publicId })}
                   />
@@ -643,7 +642,6 @@ export default function ManageGallery() {
                   <label className="form-label fs-14 fw-600 text-dark-gray">Upload Multiple Images</label>
                   <FileUpload
                     type="image"
-                    folder="adlyngo/gallery"
                     multiple={true}
                     onFilesSelected={(files) => {
                       const placeholders = files.map(file => ({

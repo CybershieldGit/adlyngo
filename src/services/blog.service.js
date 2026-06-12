@@ -5,7 +5,7 @@ import ApiError from "../utils/ApiError.js";
 import { uniqueSlug } from "../utils/slugify.js";
 import { buildQuery } from "../utils/queryBuilder.js";
 import { parsePagination, buildPaginationMeta } from "../utils/pagination.js";
-import { deleteFromCloudinary } from "./upload.service.js";
+import { deleteUploadedFile } from "./upload.service.js";
 
 export const getBlogs = async (queryData) => {
   const { filter, sort } = buildQuery(queryData, ["title", "content", "tags"]);
@@ -72,7 +72,7 @@ export const updateBlog = async (id, updateData) => {
   }
 
   if (updateData.thumbnail && blog.thumbnail?.publicId) {
-    deleteFromCloudinary(blog.thumbnail.publicId);
+    deleteUploadedFile(blog.thumbnail.publicId);
   }
 
   Object.assign(blog, updateData);
@@ -92,7 +92,7 @@ export const deleteBlog = async (id) => {
   }
 
   if (blog.thumbnail?.publicId) {
-    deleteFromCloudinary(blog.thumbnail.publicId);
+    deleteUploadedFile(blog.thumbnail.publicId);
   }
 
   return blog;

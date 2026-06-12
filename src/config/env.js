@@ -15,9 +15,10 @@ const envSchema = z.object({
 
   COOKIE_SECRET: z.string().min(32, "COOKIE_SECRET must be at least 32 characters"),
 
-  CLOUDINARY_CLOUD_NAME: z.string().min(1, "CLOUDINARY_CLOUD_NAME is required"),
-  CLOUDINARY_API_KEY: z.string().min(1, "CLOUDINARY_API_KEY is required"),
-  CLOUDINARY_API_SECRET: z.string().min(1, "CLOUDINARY_API_SECRET is required"),
+  UPLOAD_ROOT: z.string().optional(),
+  UPLOAD_DIR_IMAGES: z.string().optional(),
+  UPLOAD_DIR_VIDEOS: z.string().optional(),
+  UPLOAD_BASE_URL: z.string().optional(),
 
   CLIENT_URL: z.string().default("http://localhost:3000"),
 

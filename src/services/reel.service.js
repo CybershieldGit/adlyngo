@@ -5,7 +5,7 @@ import ApiError from "../utils/ApiError.js";
 import { uniqueSlug } from "../utils/slugify.js";
 import { buildQuery } from "../utils/queryBuilder.js";
 import { parsePagination, buildPaginationMeta } from "../utils/pagination.js";
-import { deleteFromCloudinary } from "./upload.service.js";
+import { deleteUploadedFile, extractPublicIdFromUrl } from "./upload.service.js";
 
 export const getReels = async (queryData) => {
   const { filter, sort } = buildQuery(queryData, ["title"]);
@@ -51,8 +51,11 @@ export const updateReel = async (id, updateData) => {
 
   // Handle new thumbnail (assumes controller uploads and passes the object)
   if (updateData.thumbnail && reel.thumbnail?.publicId) {
-    // Fire and forget old image deletion
-    deleteFromCloudinary(reel.thumbnail.publicId);
+    deleteUploadedFile(reel.thumbnail.publicId);
+  }
+
+  if (updateData.reelUrl && reel.reelUrl && updateData.reelUrl !== reel.reelUrl) {
+    deleteUploadedFile(extractPublicIdFromUrl(reel.reelUrl) || reel.reelUrl);
   }
 
   Object.assign(reel, updateData);
@@ -71,7 +74,11 @@ export const deleteReel = async (id) => {
   }
 
   if (reel.thumbnail?.publicId) {
-    deleteFromCloudinary(reel.thumbnail.publicId);
+    deleteUploadedFile(reel.thumbnail.publicId);
+  }
+
+  if (reel.reelUrl) {
+    deleteUploadedFile(extractPublicIdFromUrl(reel.reelUrl) || reel.reelUrl);
   }
 
   return reel;

@@ -5,7 +5,7 @@ import ApiError from "../utils/ApiError.js";
 import { uniqueSlug } from "../utils/slugify.js";
 import { buildQuery } from "../utils/queryBuilder.js";
 import { parsePagination, buildPaginationMeta } from "../utils/pagination.js";
-import { deleteFromCloudinary } from "./upload.service.js";
+import { deleteUploadedFile } from "./upload.service.js";
 
 export const getProjects = async (queryData) => {
   const { filter, sort } = buildQuery(queryData, ["title", "technologies", "clientName"]);
@@ -58,14 +58,14 @@ export const updateProject = async (id, updateData) => {
 
   // Handle Cover Image replacement
   if (updateData.coverImage && project.coverImage?.publicId) {
-    deleteFromCloudinary(project.coverImage.publicId);
+    deleteUploadedFile(project.coverImage.publicId);
   }
 
   // Note: Appending/removing from gallery should ideally have its own dedicated endpoints,
   // but for simplicity, if a new gallery array is passed, we replace the old one and clean up.
   if (updateData.gallery) {
     if (project.gallery?.length > 0) {
-      project.gallery.forEach((img) => deleteFromCloudinary(img.publicId));
+      project.gallery.forEach((img) => deleteUploadedFile(img.publicId));
     }
   }
 
@@ -85,11 +85,11 @@ export const deleteProject = async (id) => {
   }
 
   if (project.coverImage?.publicId) {
-    deleteFromCloudinary(project.coverImage.publicId);
+    deleteUploadedFile(project.coverImage.publicId);
   }
   
   if (project.gallery?.length > 0) {
-    project.gallery.forEach((img) => deleteFromCloudinary(img.publicId));
+    project.gallery.forEach((img) => deleteUploadedFile(img.publicId));
   }
 
   return project;

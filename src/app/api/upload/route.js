@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
-import { uploadBufferToCloudinary } from "../../../services/upload.service.js";
+import {
+  saveUploadedFile,
+  validateUploadFile,
+} from "../../../services/upload.service.js";
 import connectDB from "../../../lib/mongodb.js";
 import ApiResponse from "../../../utils/ApiResponse.js";
+import ApiError from "../../../utils/ApiError.js";
 
 export async function POST(request) {
   try {
-    // Manual Auth Check (since we bypassed middleware)
     const token = request.cookies.get("adlyngo_token")?.value;
     if (!token) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    // Logging headers for debugging
-    console.log("Upload Request Headers:", Object.fromEntries(request.headers.entries()));
-
-    // Check content type
     const contentType = request.headers.get("content-type") || "";
     if (!contentType.includes("multipart/form-data")) {
       return NextResponse.json(
@@ -25,31 +24,47 @@ export async function POST(request) {
 
     const formData = await request.formData();
     const file = formData.get("file");
-    const folder = formData.get("folder") || "adlyngo/others";
+    const declaredType = formData.get("type") || "image";
 
-    if (!file) {
+    if (!file || typeof file === "string") {
       return NextResponse.json(
         { success: false, message: "No file uploaded" },
         { status: 400 }
       );
     }
 
-    // Connect to DB after parsing body to prioritize body stream consumption
+    if (declaredType !== "image" && declaredType !== "video") {
+      return NextResponse.json(
+        { success: false, message: "Invalid upload type. Must be 'image' or 'video'" },
+        { status: 400 }
+      );
+    }
+
+    validateUploadFile(
+      { name: file.name, type: file.type, size: file.size },
+      declaredType
+    );
+
     await connectDB();
 
-    // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-
-    // Upload to Cloudinary
-    const result = await uploadBufferToCloudinary(buffer, folder);
+    const result = await saveUploadedFile(buffer, file.type, file.name);
 
     return NextResponse.json(
       new ApiResponse(200, result, "File uploaded successfully"),
       { status: 200 }
     );
   } catch (error) {
-    console.error("Upload API Error Details:", error);
+    console.error("[upload] API error:", error);
+
+    if (error instanceof ApiError) {
+      return NextResponse.json(
+        { success: false, message: error.message },
+        { status: error.statusCode }
+      );
+    }
+
     return NextResponse.json(
       { success: false, message: error.message || "Upload failed" },
       { status: 500 }

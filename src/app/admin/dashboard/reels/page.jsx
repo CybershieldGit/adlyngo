@@ -449,7 +449,6 @@ export default function ManageReels() {
                   <label className="form-label fs-14 fw-500">Reel Video (Drag & Drop)</label>
                   <FileUpload
                     type="video"
-                    folder="adlyngo/reels"
                     onUploadSuccess={(result) => setFormData({ ...formData, reelUrl: result.url })}
                     currentUrl={formData.reelUrl}
                   />
@@ -501,7 +500,6 @@ export default function ManageReels() {
                   <label className="form-label fs-14 fw-500">Upload Multiple Videos</label>
                   <FileUpload
                     type="video"
-                    folder="adlyngo/reels"
                     multiple={true}
                     onFilesSelected={(files) => {
                       const placeholders = files.map(file => ({
