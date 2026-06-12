@@ -13,7 +13,7 @@ const videosDir = env.UPLOAD_DIR_VIDEOS || path.join(uploadRoot, "videos");
 const baseUrl =
   env.UPLOAD_BASE_URL ||
   (isProduction
-    ? "https://www.adlyngo.com/uploads"
+    ? "https://admin.adlyngo.com/uploads"
     : `http://localhost:${env.PORT}/uploads`);
 
 const uploadConfig = Object.freeze({
