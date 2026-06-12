@@ -380,6 +380,23 @@
     height: 100%;
 }
 
+.maintenance-toggle-card .form-check-input {
+  width: 3rem;
+  height: 1.5rem;
+  cursor: pointer;
+  border: none;
+  background-color: #dee2e6;
+  transition: background-color 0.2s ease;
+}
+
+.maintenance-toggle-card .form-check-input:checked {
+  background-color: var(--admin-primary);
+}
+
+.maintenance-toggle-card .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--admin-primary-rgb), 0.25);
+}
+
 .analytics-card,
 .summary-card {
     height: 100%;
