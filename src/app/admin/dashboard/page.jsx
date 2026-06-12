@@ -25,21 +25,25 @@ export default function DashboardOverview() {
   const [totalStats, setTotalStats] = useState({ reels: 0, projects: 0, blogs: 0, categories: 0, gallery: 0, clients: 0 });
   const [timeRange, setTimeRange] = useState(7);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceToggling, setMaintenanceToggling] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
 
-        const [authRes, totalStatsRes, analyticsRes] = await Promise.all([
+        const [authRes, totalStatsRes, analyticsRes, maintenanceRes] = await Promise.all([
           fetch(`${apiUrl}/auth/me`, { credentials: 'include' }),
           fetch(`${apiUrl}/stats`, { credentials: 'include' }),
-          fetch(`${apiUrl}/stats?days=${timeRange}`, { credentials: 'include' })
+          fetch(`${apiUrl}/stats?days=${timeRange}`, { credentials: 'include' }),
+          fetch(`${apiUrl}/maintenance`, { credentials: 'include' })
         ]);
 
         const authData = await authRes.json();
         const totalData = await totalStatsRes.json();
         const analyticsData = await analyticsRes.json();
+        const maintenanceData = await maintenanceRes.json();
 
         if (authRes.ok && authData.success) {
           setAdmin(authData.data.admin);
@@ -56,6 +60,10 @@ export default function DashboardOverview() {
           setStats(analyticsData.data);
         }
 
+        if (maintenanceRes.ok && maintenanceData.success) {
+          setMaintenanceMode(Boolean(maintenanceData.data?.maintenanceMode));
+        }
+
       } catch (err) {
         console.error("Failed to authenticate or fetch data", err);
         router.push('/admin/login');
@@ -66,6 +74,24 @@ export default function DashboardOverview() {
 
     fetchData();
   }, [router]);
+
+  const toggleMaintenance = async () => {
+    if (maintenanceToggling) return;
+    setMaintenanceToggling(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const res = await fetch(`${apiUrl}/maintenance`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: !maintenanceMode }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) setMaintenanceMode(!!data.data?.maintenanceMode);
+    } finally {
+      setMaintenanceToggling(false);
+    }
+  };
 
   useEffect(() => {
     if (loading) return;
@@ -123,9 +149,43 @@ export default function DashboardOverview() {
             <div className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1">Last Updated</div>
             <div className="fw-600 fs-14">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
           </div>
-          <div className="bg-success bg-opacity-10 text-success px-3 py-2 rounded-3 d-flex align-items-center gap-2 border border-success border-opacity-10">
-            <div className="bg-success rounded-circle" style={{ width: '8px', height: '8px' }}></div>
-            <span className="fw-600 fs-13 text-uppercase ls-1">System Optimal</span>
+          <div className={`${maintenanceMode ? 'bg-warning' : 'bg-success'} bg-opacity-10 ${maintenanceMode ? 'text-warning' : 'text-success'} px-3 py-2 rounded-3 d-flex align-items-center gap-2 border ${maintenanceMode ? 'border-warning' : 'border-success'} border-opacity-10`}>
+            <div className={`${maintenanceMode ? 'bg-warning' : 'bg-success'} rounded-circle`} style={{ width: '8px', height: '8px' }}></div>
+            <span className="fw-600 fs-13 text-uppercase ls-1">{maintenanceMode ? 'Maintenance Active' : 'Site Live'}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="card maintenance-toggle-card border-0 shadow-sm border-radius-15px p-4 bg-white mb-5">
+        <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+          <div className="d-flex align-items-center gap-3">
+            <div className={`rounded-3 p-3 ${maintenanceMode ? 'bg-warning bg-opacity-10 text-warning' : 'bg-admin-primary bg-opacity-10 text-admin-primary'}`}>
+              <i className="bi bi-tools fs-4"></i>
+            </div>
+            <div>
+              <h6 className="fw-700 mb-1">Website Maintenance</h6>
+              <p className="text-muted mb-0 fs-13">
+                {maintenanceMode
+                  ? 'Visitors see the maintenance page. Toggle off when you are ready to go live.'
+                  : 'Your website is public. Toggle on to show a maintenance page to visitors.'}
+              </p>
+            </div>
+          </div>
+          <div className="d-flex align-items-center gap-3 ps-sm-2">
+            <span className={`fw-600 fs-12 text-uppercase ${maintenanceMode ? 'text-warning' : 'text-success'}`}>
+              {maintenanceToggling ? 'Updating...' : maintenanceMode ? 'On' : 'Off'}
+            </span>
+            <div className="form-check form-switch mb-0">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="maintenanceSwitch"
+                checked={maintenanceMode}
+                disabled={maintenanceToggling}
+                onChange={toggleMaintenance}
+              />
+            </div>
           </div>
         </div>
       </div>
