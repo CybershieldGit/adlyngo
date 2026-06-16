@@ -23,7 +23,7 @@ export default function ManageReels() {
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
-  const [formData, setFormData] = useState({ title: '', reelUrl: '', category: '', client: '', published: true });
+  const [formData, setFormData] = useState({ title: '', reelUrl: '', category: '', client: '', published: true, order: 1 });
   const [multiFormData, setMultiFormData] = useState([]); // Array for multiple uploads
   const [isMultiple, setIsMultiple] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -177,7 +177,8 @@ export default function ManageReels() {
       reelUrl: reel.reelUrl || '',
       category: reel.category?._id || reel.category || '',
       client: reel.client?._id || reel.client || '',
-      published: reel.published ?? true
+      published: reel.published ?? true,
+      order: reel.order ?? 1,
     });
     setIsEditing(true);
     setError('');
@@ -199,7 +200,7 @@ export default function ManageReels() {
     setItemToDelete(null);
     setSelectedIds([]);
     setEditingId(null);
-    setFormData({ title: '', reelUrl: '', category: '', client: '', published: true });
+    setFormData({ title: '', reelUrl: '', category: '', client: '', published: true, order: totalDocs + 1 || 1 });
     setMultiFormData([]);
     setIsMultiple(false);
     setError('');
@@ -302,7 +303,10 @@ export default function ManageReels() {
           method,
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            ...formData,
+            order: Number(formData.order) || 1,
+          }),
         });
 
         const data = await response.json();
@@ -416,7 +420,7 @@ export default function ManageReels() {
                       onChange={e => {
                         setIsMultiple(e.target.checked);
                         setMultiFormData([]);
-                        setFormData({ title: '', reelUrl: '', category: '', client: '', published: true });
+                        setFormData({ title: '', reelUrl: '', category: '', client: '', published: true, order: totalDocs + 1 || 1 });
                       }}
                       style={{ cursor: 'pointer', width: '36px', height: '18px' }}
                     />
@@ -471,8 +475,21 @@ export default function ManageReels() {
                     placeholder="Select Client"
                   />
                 </div>
-                <div className="col-md-12 mt-2">
-                  <div className="d-flex align-items-center gap-2">
+                <div className="col-md-6">
+                  <label className="form-label fs-14 fw-500">Display Priority</label>
+                  <input
+                    type="number"
+                    min="1"
+                    className="form-control"
+                    value={formData.order}
+                    onChange={e => setFormData({ ...formData, order: parseInt(e.target.value, 10) || 1 })}
+                    required
+                  />
+                  <div className="form-text fs-12">1 = first (left). Higher numbers appear later (right).</div>
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label fs-14 fw-500 d-block">&nbsp;</label>
+                  <div className="d-flex align-items-center gap-2 mt-1">
                     <div className="form-check form-switch mb-0">
                       <input
                         className="form-check-input mt-0"
@@ -670,6 +687,7 @@ export default function ManageReels() {
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>Title</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Category</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Client</th>
+                <th className="py-3 fw-600 border-0" style={{ minWidth: '80px', whiteSpace: 'nowrap' }}>Priority</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Status</th>
                 <th className="py-3 fw-600 border-0" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>Date</th>
                 <th className="py-3 fw-600 border-0 text-center sticky-column-end actions-column" style={{ minWidth: '180px', whiteSpace: 'nowrap' }}>Actions</th>
@@ -678,7 +696,7 @@ export default function ManageReels() {
             <tbody>
               {(!Array.isArray(reels) || reels.length === 0) ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-5 text-muted">No reels found. Create one above!</td>
+                  <td colSpan="8" className="text-center py-5 text-muted">No reels found. Create one above!</td>
                 </tr>
               ) : (
                 reels?.map(reel => (
@@ -696,6 +714,7 @@ export default function ManageReels() {
                     <td className="py-3 fw-500" style={{ minWidth: '120px', whiteSpace: 'nowrap' }}>{reel.title}</td>
                     <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>{reel.category?.name || 'Unknown'}</td>
                     <td className="py-3 text-muted fs-13" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>{reel.client?.name || '-'}</td>
+                    <td className="py-3 fw-600 text-primary" style={{ minWidth: '80px', whiteSpace: 'nowrap' }}>{reel.order ?? 1}</td>
                     <td className="py-3" style={{ minWidth: '100px', whiteSpace: 'nowrap' }}>
                       <span className={`badge ${reel.published ? 'bg-success' : 'bg-secondary'} bg-opacity-10 text-${reel.published ? 'success' : 'secondary'} px-2 py-1`}>
                         {reel.published ? 'Published' : 'Draft'}
@@ -801,6 +820,12 @@ export default function ManageReels() {
                 <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Client</label>
                 <span className="badge bg-light text-dark-gray px-3 py-2 border">
                   {viewingReel.client?.name || '-'}
+                </span>
+              </div>
+              <div className="col-6 mb-4">
+                <label className="text-muted fs-12 text-uppercase fw-700 ls-1 mb-1 d-block">Display Priority</label>
+                <span className="badge bg-light text-dark-gray px-3 py-2 border">
+                  {viewingReel.order ?? 1}
                 </span>
               </div>
             </div>
