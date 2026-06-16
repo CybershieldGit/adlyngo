@@ -18,10 +18,10 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '100mb',
+      bodySizeLimit: '250mb',
     },
     // Middleware buffers POST bodies; default 10MB breaks large video uploads
-    proxyClientMaxBodySize: '100mb',
+    proxyClientMaxBodySize: '250mb',
   },
 };
 

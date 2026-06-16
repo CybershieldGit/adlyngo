@@ -7,7 +7,7 @@ export const COOKIE_NAME = "adlyngo_token";
 
 export const UPLOAD_LIMITS = {
   IMAGE_MAX_SIZE: 10 * 1024 * 1024,   // 10 MB
-  VIDEO_MAX_SIZE: 100 * 1024 * 1024,  // 100 MB
+  VIDEO_MAX_SIZE: 250 * 1024 * 1024,  // 250 MB
   ALLOWED_IMAGE_TYPES: ["image/jpeg", "image/png", "image/webp", "image/svg+xml"],
   ALLOWED_VIDEO_TYPES: ["video/mp4", "video/webm"],
 };

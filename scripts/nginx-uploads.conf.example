@@ -21,4 +21,4 @@ location /uploads/ {
 }
 
 # Allow large uploads through the API proxy (adjust if your API is on a subdomain)
-client_max_body_size 100M;
+client_max_body_size 250M;

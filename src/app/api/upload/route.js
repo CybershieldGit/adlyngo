@@ -39,7 +39,7 @@ export async function POST(request) {
       return NextResponse.json(
         {
           success: false,
-          message: "Upload failed. File may exceed the 100MB limit or the server body-size limit.",
+          message: "Upload failed. File may exceed the 250MB limit or the server body-size limit.",
         },
         { status: 413 }
       );
