@@ -44,8 +44,9 @@ if [ ! -f .env ]; then
   echo "   Uploads:  UPLOAD_DIR_IMAGES=$UPLOAD_ROOT/images"
   echo "             UPLOAD_DIR_VIDEOS=$UPLOAD_ROOT/videos"
   echo "             UPLOAD_BASE_URL=https://www.adlyngo.com/uploads"
-  echo "   Nginx:    Add scripts/nginx-uploads.conf.example to your site config"
-  echo "             Add scripts/nginx-admin.conf.example for admin.adlyngo.com"
+  echo "   Nginx:    Run on VPS after first deploy:"
+  echo "             bash scripts/fix-nginx-upload-limit.sh admin.adlyngo.com 250M"
+  echo "             Or add scripts/nginx-admin.conf.example to aaPanel site config"
 fi
 
 echo "==> Backend server setup complete"
