@@ -72,17 +72,11 @@ export async function middleware(request) {
         const requestHeaders = new Headers(request.headers);
         requestHeaders.set('x-admin-id', payload.id);
 
-        // CRITICAL: Re-creating the request with modified headers can cause issues with 
-        // large file uploads (FormData stream corruption). We skip this for the upload route.
-        if (pathname === '/api/upload') {
-          response = NextResponse.next();
-        } else {
-          response = NextResponse.next({
-            request: {
-              headers: requestHeaders,
-            },
-          });
-        }
+        response = NextResponse.next({
+          request: {
+            headers: requestHeaders,
+          },
+        });
       } catch (error) {
         if (isAdminArea) {
           response = NextResponse.redirect(new URL('/admin/login', request.url));
@@ -120,6 +114,7 @@ export async function middleware(request) {
 export const config = {
   matcher: [
     '/admin/:path*',
-    '/api/:path*',
+    // Exclude /api/upload — middleware body buffering breaks large FormData uploads
+    '/api/((?!upload$).*)',
   ],
 };

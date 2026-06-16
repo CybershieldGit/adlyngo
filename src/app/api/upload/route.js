@@ -6,11 +6,21 @@ import {
 import connectDB from "../../../lib/mongodb.js";
 import ApiResponse from "../../../utils/ApiResponse.js";
 import ApiError from "../../../utils/ApiError.js";
+import { jwtVerify } from "jose";
+
+export const maxDuration = 300;
 
 export async function POST(request) {
   try {
     const token = request.cookies.get("adlyngo_token")?.value;
     if (!token) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+      await jwtVerify(token, secret);
+    } catch {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
@@ -22,7 +32,18 @@ export async function POST(request) {
       );
     }
 
-    const formData = await request.formData();
+    let formData;
+    try {
+      formData = await request.formData();
+    } catch {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Upload failed. File may exceed the 100MB limit or the server body-size limit.",
+        },
+        { status: 413 }
+      );
+    }
     const file = formData.get("file");
     const declaredType = formData.get("type") || "image";
 
