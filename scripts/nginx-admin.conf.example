@@ -3,7 +3,7 @@
 # aaPanel: Website -> admin.adlyngo.com -> Config
 
 # Allow large video uploads through the API proxy
-client_max_body_size 100M;
+client_max_body_size 250M;
 
 location /uploads/ {
     alias /www/wwwroot/uploads/;
