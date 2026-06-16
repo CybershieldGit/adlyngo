@@ -10,12 +10,13 @@ import { deleteUploadedFile, extractPublicIdFromUrl } from "./upload.service.js"
 export const getReels = async (queryData) => {
   const { filter, sort } = buildQuery(queryData, ["title"]);
   const { page, limit, skip } = parsePagination(queryData);
+  const reelSort = queryData.sort ? sort : { order: 1, createdAt: -1 };
 
   const [reels, totalDocs] = await Promise.all([
     Reel.find(filter)
       .populate("category", "name slug")
       .populate("client", "name slug logo")
-      .sort(sort)
+      .sort(reelSort)
       .skip(skip)
       .limit(limit),
     Reel.countDocuments(filter),
