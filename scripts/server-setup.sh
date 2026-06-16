@@ -45,6 +45,7 @@ if [ ! -f .env ]; then
   echo "             UPLOAD_DIR_VIDEOS=$UPLOAD_ROOT/videos"
   echo "             UPLOAD_BASE_URL=https://www.adlyngo.com/uploads"
   echo "   Nginx:    Add scripts/nginx-uploads.conf.example to your site config"
+  echo "             Add scripts/nginx-admin.conf.example for admin.adlyngo.com"
 fi
 
 echo "==> Backend server setup complete"
