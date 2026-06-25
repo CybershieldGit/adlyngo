@@ -41,21 +41,12 @@ jobs:
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Validate SSH key secret
         env:
           SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
-        run: |
-          if [ -z "$SSH_PRIVATE_KEY" ]; then
-            echo "::error::VPS_SSH_KEY is empty. Add the full private key in Settings → Secrets (Repository or Production environment)."
-            exit 1
-          fi
-          install -m 700 -d ~/.ssh
-          printf '%s' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          if ! ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null 2>&1; then
-            echo "::error::VPS_SSH_KEY is invalid. Paste the FULL private key (starts with -----BEGIN OPENSSH PRIVATE KEY----- or -----BEGIN RSA PRIVATE KEY-----)."
-            exit 1
-          fi
+        run: bash scripts/validate-deploy-key.sh
 
       - name: Deploy to Hostinger VPS
         env:
@@ -64,7 +55,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key_path: ~/.ssh/deploy_key
+          key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           command_timeout: 15m
           envs: VPS_BACKEND_PATH
