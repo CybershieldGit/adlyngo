@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: backend-ci-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MONGODB_URI: mongodb://127.0.0.1:27017/ci
+      JWT_SECRET: ci-build-placeholder-secret-minimum-32-chars
+      COOKIE_SECRET: ci-build-placeholder-secret-minimum-32-chars
+      UPLOAD_BASE_URL: https://www.adlyngo.com/uploads
+      UPLOAD_DIR_IMAGES: /tmp/adlyngo-uploads/images
+      UPLOAD_DIR_VIDEOS: /tmp/adlyngo-uploads/videos
+      CLIENT_URL: http://localhost:3000
+      PORT: 3001
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
